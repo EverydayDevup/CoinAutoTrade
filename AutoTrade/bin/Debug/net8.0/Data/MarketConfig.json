@@ -1,3 +1,5 @@
 ﻿{  
-  "Market" : "Bithumb"
+  "Market" : "Bithumb",
+  "APIKey" : "4ae2c0d387ab02ad331afc9ba8b0fa48",
+  "SecretKey" : "ba0bfbbb9b47e4b2a4d1c108f547c445"
 }

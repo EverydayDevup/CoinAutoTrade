@@ -39,6 +39,9 @@ public static class MarketFactory
             return null;
         }
 
-        return factory.Invoke();
+        var market = factory.Invoke();
+        market.SetKey(config.ApiKey, config.SecretKey);
+        
+        return market;
     }
 }

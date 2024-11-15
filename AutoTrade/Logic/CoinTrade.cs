@@ -102,8 +102,7 @@ public class CoinTradeProcess
         while (buyAmount > 0)
         {
             // 현재 보유한 원화 호가인 후, 구매할 수 있는 금액이 없다면 멈춤
-            // todo 잔액 구하기
-            var currentAmount = 1000000;
+            var currentAmount = await market.RequestBalance("KRW");
             if (buyAmount > currentAmount)
             {
                 NotifyManager.Notify($"{nameof(RequestBuy)} Fail {nameof(currentAmount)} : {currentAmount} {nameof(buyAmount)} : {buyAmount}");
@@ -163,7 +162,11 @@ public class CoinTradeProcess
                     var calSellPrice = limitAmount / coinAmount;
                     SellPrice = price - calSellPrice;
                 }
-                
+                else
+                {
+                    SellPrice = price * (1 + coinConfig.SellRate / 100f);
+                }
+
                 buyCount++;
                 NotifyManager.Notify($"{nameof(RequestBuy)} Buy Complete {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount} {nameof(buyAmount)} : {buyAmount}" +
                                      $" {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice} {nameof(buyCount)} : {buyCount}");
@@ -173,6 +176,45 @@ public class CoinTradeProcess
 
     private async Task RequestSell()
     {
-        
+        // 현재 보유한 코인 개수
+        var sellAmount = 0;
+        while (sellAmount > 0)
+        {
+            var orderBooks = await market.RequestOrderbook(coinConfig.MarketCode);
+            if (orderBooks?.SellOrderbooks == null)
+            {
+                Console.WriteLine($"{nameof(RequestSell)} Error {nameof(orderBooks.SellOrderbooks)} is null");
+                return;
+            }
+
+            if (orderBooks.SellOrderbooks.Length < 1)
+            {
+                Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.SellOrderbooks)} length less than 1");
+                return;
+            }
+            
+            var sellOrderbook = orderBooks.SellOrderbooks[0];
+            double price = sellOrderbook.Price;
+            if (price <= 0)
+            {
+                Console.WriteLine($"{nameof(RequestSell)} Error {nameof(price)} is zero");
+                return;
+            }
+
+            var orderAmount = Math.Min(sellOrderbook.Amount, sellAmount);
+            // todo 주문
+            Console.WriteLine($"{nameof(RequestSell)} Sell Wait {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount}");
+            
+            // 구매 완료 여부 확인 후 구매가 완료 되지 않았다면 주문을 취소함
+            // todo 주문 완료 여부 확인
+
+            // 현재 보유한 코인의 개수 
+            var currentAmount = 0;
+            var sellCompleteCount = sellAmount - currentAmount;
+            sellAmount = currentAmount;
+            
+            if (sellCompleteCount > 0)
+                NotifyManager.Notify($"{nameof(RequestSell)} Sell Complete {nameof(price)} : {price} {nameof(sellCompleteCount)} : {sellCompleteCount} {nameof(sellAmount)} : {sellAmount}");
+        }
     }
 }

@@ -36,7 +36,15 @@ public static class CoinConfigFactory
         foreach (var coinConfig in coinConfigList)
         {
             if (marketCodes.Contains(coinConfig.MarketCode))
+            {
+                if (coinConfig.SellRate > coinConfig.BuyRate)
+                {
+                    Console.WriteLine($"{nameof(coinConfig.SellRate)} is over {coinConfig.BuyRate}");
+                    return null;
+                }
+                
                 continue;
+            }
             
             Console.WriteLine($"{nameof(coinConfig.MarketCode)} is not supported : {coinConfig.MarketCode}");
             return null;
