@@ -6,8 +6,17 @@ namespace AutoTrade.Market;
 
 public class Bithumb : IMarket
 {
-    public async Task<string> RequestOrderbook(string marketCode)
+    public async Task<MarketOrderInfo?> RequestOrderbook(string marketCode)
     {
+        var options = new RestClientOptions($"https://api.bithumb.com/v1/orderbook?markets={marketCode}");
+        var client = new RestClient(options);
+        var request = new RestRequest("");
+        request.AddHeader("accept", "application/json");
+        var res = await PacketHelper.RequestAsync<MarketOrderbookResponse>(client, request);
+        if (res is { IsSuccess: true })
+            return res.MarketOrderInfo;
+        
+        Console.WriteLine($"{nameof(RequestOrderbook)} failed");
         return null;
     }
 

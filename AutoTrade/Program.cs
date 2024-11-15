@@ -20,10 +20,4 @@ if (coinConfigList == null)
 
 Console.WriteLine("3. Trade Coin");
 
-var tasks = new Task[coinConfigList.Count];
-for (var i = 0; i < coinConfigList.Count; i++)
-{
-    tasks[i] = CoinTrade.Trade(market, coinConfigList[i]);
-}
-
-await Task.WhenAll(tasks);
+await CoinTrade.Trade(market, coinConfigList);
