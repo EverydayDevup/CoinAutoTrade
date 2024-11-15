@@ -1,0 +1,9 @@
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\Data\CoinConfig.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\Data\MarketConfig.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\AutoTrade.exe
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\AutoTrade.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\AutoTrade.deps.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\AutoTrade.runtimeconfig.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\AutoTrade.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\Newtonsoft.Json.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Release\net8.0\publish\RestSharp.dll
