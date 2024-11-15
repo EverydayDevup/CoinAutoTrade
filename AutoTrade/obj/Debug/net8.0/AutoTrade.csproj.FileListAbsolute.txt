@@ -19,3 +19,9 @@ C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\obj\Debug\net8
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Data\CoinConfig.json
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Data\MarketConfig.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Microsoft.Bcl.TimeProvider.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
