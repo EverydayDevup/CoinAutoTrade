@@ -1,7 +1,7 @@
 ﻿[
   {
     "MarketCode" :"KRW-XPLA",
-    "Currency" : "XPLA",
+    "Symbol" : "XPLA",
     "TotalAmount" : 100000,
     "Amount" : 10000,
     "BuyRate" : 20,

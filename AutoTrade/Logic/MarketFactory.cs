@@ -40,7 +40,7 @@ public static class MarketFactory
         }
 
         var market = factory.Invoke();
-        market.SetKey(config.ApiKey, config.SecretKey);
+        market.SetKey(config.AccessKey, config.SecretKey);
         
         return market;
     }

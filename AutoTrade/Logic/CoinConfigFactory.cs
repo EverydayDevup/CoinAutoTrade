@@ -6,6 +6,9 @@ namespace AutoTrade.Logic;
 
 public static class CoinConfigFactory
 {
+    /// <summary>
+    /// 코인 설정과 관련된 정보를 가져옴
+    /// </summary>
     public static async Task<List<CoinConfig>?> CreateAsync(IMarket market)
     {
         var currentDirectory = Directory.GetCurrentDirectory();

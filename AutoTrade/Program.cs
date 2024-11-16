@@ -1,4 +1,7 @@
-﻿using AutoTrade.Logic;
+﻿#define TEST_RUNNER
+
+using AutoTrade.Logic;
+using AutoTrade.Test;
 
 Console.WriteLine("1. Create Market");
 var market = MarketFactory.Create();
@@ -20,4 +23,8 @@ if (coinConfigList == null)
 
 Console.WriteLine("3. Trade Coin");
 
-await CoinTrade.Trade(market, coinConfigList);
+#if TEST_RUNNER
+    await TestRunner.Run(market);
+#else
+    await CoinTrade.Trade(market, coinConfigList);
+#endif
