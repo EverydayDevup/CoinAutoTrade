@@ -8,9 +8,7 @@ public static class TestRunner
     {
         Console.WriteLine("Starting tests...");
         Console.WriteLine("===========================");
-        Console.WriteLine($"{nameof(market.RequestBalance)}");
-        await market.RequestBalance("XPLA");
-        Console.WriteLine($"{nameof(market.RequestCheckOrder)}");
-        await market.RequestCheckOrder(Guid.NewGuid().ToString());
+        Console.WriteLine($"{nameof(market.RequestBuy)}");
+        var krw = await market.RequestBuy("KRW-XPLA", 550, 10);
     }
 }

@@ -34,10 +34,14 @@ public static class JwtHelper
         var builder = new StringBuilder();
         foreach (var (key, value) in parameters)
             builder.Append(key).Append("=").Append(value).Append("&");
-        var queryString = builder.ToString().TrimEnd('&');
+        var query = builder.ToString().TrimEnd('&');
+        return GenerateQuery(query);
+    }
 
+    public static string GenerateQuery(string query)
+    {
         var sha512 = SHA512.Create();
-        var queryHashByteArray = sha512.ComputeHash(Encoding.UTF8.GetBytes(queryString));
+        var queryHashByteArray = sha512.ComputeHash(Encoding.UTF8.GetBytes(query));
         return BitConverter.ToString(queryHashByteArray).Replace("-", "").ToLower();
     }
 }

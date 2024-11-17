@@ -12,7 +12,7 @@ public struct MarketAccount
 public class MarketAccountResponse : IResponse
 {
     public bool IsSuccess { get; set; }
-    public Dictionary<string, long> DicBalances { get; private set; } = new(); 
+    public Dictionary<string, double> DicBalances { get; private set; } = new(); 
 
     public void Parse(RestResponse res)
     {
@@ -32,7 +32,7 @@ public class MarketAccountResponse : IResponse
         
         foreach (var marketAccount in marketAccountList)
         {
-            var balance = long.TryParse(marketAccount.balance, out var balanceResult) ? balanceResult : 0;
+            var balance = double.TryParse(marketAccount.balance, out var balanceResult) ? balanceResult : 0;
            DicBalances.TryAdd(marketAccount.currency, balance);
         }
         

@@ -20,11 +20,19 @@ public interface IMarket
     /// <summary>
     /// 마켓별로 사용하는 payload 정보가 다르기 때문에 개별 생성
     /// </summary>
-    public JwtPayload GenerateJwtPayload(Dictionary<string, string>? parameters);
+    public JwtPayload GenerateJwtPayload();
+    /// <summary>
+    /// 마켓별로 사용하는 payload 정보가 다르기 때문에 개별 생성
+    /// </summary>
+    public JwtPayload GenerateJwtPayload(Dictionary<string, string> parameters);
+    /// <summary>
+    /// 마켓별로 사용하는 payload 정보가 다르기 때문에 개별 생성
+    /// </summary>
+    public JwtPayload GenerateJwtPayload(string json);
     /// <summary>
     /// jwt 토큰 생성 후 header에 넣는 auth token으로 만듬
     /// </summary>
-    public string GenerateAuthToken(Dictionary<string, string>? parameters);
+    public string GenerateAuthToken(JwtPayload payload);
     /// <summary>
     /// 현재 코인의 매도/매수 정보를 가져옴
     /// </summary>
@@ -40,7 +48,7 @@ public interface IMarket
     /// <summary>
     /// 현재 계정에 보유 재화량을 가져옴
     /// </summary>
-    public Task<long> RequestBalance(string coinSymbol);
+    public Task<double> RequestBalance(string coinSymbol);
     /// <summary>
     /// 주문 uuid가 존재하는지 확인
     /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using AutoTrade.Packet;
 using AutoTrade.Packet.Bithumb;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace AutoTrade.Market;
@@ -16,37 +17,49 @@ public class Bithumb : IMarket
         SecretKey = secretKey;
     }
 
-    public JwtPayload GenerateJwtPayload(Dictionary<string, string>? parameters)
+    public JwtPayload GenerateJwtPayload()
     {
-        if (parameters == null || parameters.Count == 0)
+        var payload = new JwtPayload
         {
-            var payload = new JwtPayload
-            {
-                { "access_key", AccessKey },
-                { "nonce", Guid.NewGuid().ToString() },
-                { "timestamp", DateTimeOffset.Now.ToUnixTimeMilliseconds()}
-            };
+            { "access_key", AccessKey },
+            { "nonce", Guid.NewGuid().ToString() },
+            { "timestamp", DateTimeOffset.Now.ToUnixTimeMilliseconds()}
+        };
 
-            return payload;
-        }
-        else
-        {
-            var payload = new JwtPayload
-            {
-                { "access_key", AccessKey },
-                { "nonce", Guid.NewGuid().ToString() },
-                { "timestamp", DateTimeOffset.Now.ToUnixTimeMilliseconds()},
-                { "query_hash", JwtHelper.GenerateQuery(parameters) },
-                { "query_hash_alg", "SHA512" }
-            };
-
-            return payload;
-        }
+        return payload;
     }
     
-    public string GenerateAuthToken(Dictionary<string, string>? parameters)
+    public JwtPayload GenerateJwtPayload(Dictionary<string, string> parameters)
     {
-        return JwtHelper.GenerateToken(GenerateJwtPayload(parameters), SecretKey);
+        var payload = new JwtPayload
+        {
+            { "access_key", AccessKey },
+            { "nonce", Guid.NewGuid().ToString() },
+            { "timestamp", DateTimeOffset.Now.ToUnixTimeMilliseconds()},
+            { "query_hash", JwtHelper.GenerateQuery(parameters) },
+            { "query_hash_alg", "SHA512" }
+        };
+
+        return payload;
+    }
+    
+    public JwtPayload GenerateJwtPayload(string json)
+    {
+        var payload = new JwtPayload
+        {
+            { "access_key", AccessKey },
+            { "nonce", Guid.NewGuid().ToString() },
+            { "timestamp", DateTimeOffset.Now.ToUnixTimeMilliseconds()},
+            { "query_hash", JwtHelper.GenerateQuery(json)},
+            { "query_hash_alg", "SHA512" }
+        };
+
+        return payload;
+    }
+    
+    public string GenerateAuthToken(JwtPayload payload)
+    {
+        return JwtHelper.GenerateToken(payload, SecretKey);
     }
 
     public async Task<MarketOrderInfo?> RequestOrderbook(string marketCode)
@@ -93,9 +106,10 @@ public class Bithumb : IMarket
         return null;
     }
 
-    public async Task<long> RequestBalance(string coinSymbol)
+    public async Task<double> RequestBalance(string coinSymbol)
     {
-        var authToken = GenerateAuthToken(null);
+        var payload = GenerateJwtPayload();
+        var authToken = GenerateAuthToken(payload);
         
         var options = new RestClientOptions("https://api.bithumb.com/v1/accounts");
         var client = new RestClient(options);
@@ -113,7 +127,8 @@ public class Bithumb : IMarket
     
     public async Task<bool> RequestCheckOrder(string uuid)
     {
-        var authToken = GenerateAuthToken(new Dictionary<string, string>{{"uuid", uuid}});
+        var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
+        var authToken = GenerateAuthToken(payload);
         
         var options = new RestClientOptions($"https://api.bithumb.com/v1/order?uuid={uuid}");
         var client = new RestClient(options);
@@ -129,15 +144,26 @@ public class Bithumb : IMarket
         return false;
     }
     
-    public async Task<string> RequestBuy(string coinSymbol, double volume, double price)
+    public async Task<string> RequestBuy(string marketCode, double volume, double price)
     {
-        var authToken = GenerateAuthToken(null);
+        var order = new MarketOrder(marketCode, "bid", volume, price, "limit");
+        var json = JsonConvert.SerializeObject(order);
+        var payload = GenerateJwtPayload(json);
+        var authToken = GenerateAuthToken(payload);
         
-        var options = new RestClientOptions("https://api.bithumb.com/v1/accounts");
+        var options = new RestClientOptions("https://api.bithumb.com/v1/orders");
         var client = new RestClient(options);
         var request = new RestRequest("");
         request.AddHeader("accept", "application/json");
+        request.AddHeader("content-type", "application/json");
+        request.AddHeader("charset", "utf-8");
         request.AddHeader("Authorization", authToken);
+        request.AddJsonBody(json, false);
+        
+        var res = await PacketHelper.RequestPostAsync<MarkBuyOrderResponse>(client, request);
+        if (res is { IsSuccess: true })
+            return res.Uuid;
+        
         return string.Empty;
     }
 
@@ -155,7 +181,8 @@ public class Bithumb : IMarket
     
     public async Task<bool> RequestCancelOrder(string uuid)
     {
-        var authToken = GenerateAuthToken(new Dictionary<string, string>{{"uuid", uuid}});
+        var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
+        var authToken = GenerateAuthToken(payload);
         
         var options = new RestClientOptions("https://api.bithumb.com/v1/accounts");
         var client = new RestClient(options);
