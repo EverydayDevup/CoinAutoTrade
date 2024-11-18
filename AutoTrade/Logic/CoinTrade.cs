@@ -6,7 +6,7 @@ namespace AutoTrade.Logic;
 public static class CoinTrade
 {
     private static Dictionary<string, CoinTradeProcess> dicCoinTradeProcess = new();
-    private const int Delay = 1000 / 100;
+    private const int Delay = 1000 / 200;
     
     public static async Task Trade(IMarket market,List<CoinConfig> coinConfigList)
     {
@@ -65,6 +65,9 @@ public class CoinTradeProcess
         Console.WriteLine(NotifyManager.GetLine());
         var tradePrice = await market.RequestTicker(coinConfig.MarketCode);
         Console.WriteLine($"{nameof(TradeAsync)} {coinConfig.MarketCode} - {nameof(tradePrice)} : {tradePrice} {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice}");
+
+        if (tradePrice <= 0)
+            return;
 
         // 매수 여부 확인
         if (buyCount <= buyMaxCount)
