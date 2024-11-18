@@ -14,6 +14,6 @@ public class MarketCheckOrderResponse : Response<MarketCheckOrderResponseJson, b
 {
     protected override void Parse(MarketCheckOrderResponseJson content)
     {
-        Result = !string.IsNullOrEmpty(content.Uuid) && content.State != "cancel";
+        Result = !string.IsNullOrEmpty(content.Uuid) && content.State == "wait";
     }
 }

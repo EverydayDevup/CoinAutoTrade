@@ -1,6 +1,5 @@
-﻿#define TEST_RUNNER
+﻿//#define TEST_RUNNER
 
-using AutoTrade.Config;
 using AutoTrade.Logic;
 using AutoTrade.Test;
 

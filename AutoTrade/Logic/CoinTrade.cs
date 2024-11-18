@@ -61,13 +61,15 @@ public class CoinTradeProcess
         if (!IsTrade)
             return;
         
+        Console.WriteLine("1. Coin Trade Price Check ");
+        Console.WriteLine(NotifyManager.GetLine());
         var tradePrice = await market.RequestTicker(coinConfig.MarketCode);
-        Console.WriteLine("============================================");
         Console.WriteLine($"{nameof(TradeAsync)} {coinConfig.MarketCode} - {nameof(tradePrice)} : {tradePrice} {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice}");
 
         // 매수 여부 확인
         if (buyCount <= buyMaxCount)
         {
+            Console.WriteLine($"2. RequestBuy {nameof(buyCount)} : {buyCount}");
             // 첫 구매
             if (buyCount == 0)
             {
@@ -87,13 +89,14 @@ public class CoinTradeProcess
             return;
         
         // 현재 호가가 손실치만큼 왔다면 모두 매도함
-        if (tradePrice < SellPrice)
+        if (SellPrice > 0 && tradePrice < SellPrice)
         {
+            Console.WriteLine($"3. RequestSell");
             await RequestSell();
             IsTrade = false;
         }
         
-        Console.WriteLine("============================================");
+        Console.WriteLine(NotifyManager.GetLine());
     }
 
     private async Task RequestBuy()
@@ -102,10 +105,10 @@ public class CoinTradeProcess
         while (buyAmount > 0)
         {
             // 현재 보유한 원화 호가인 후, 구매할 수 있는 금액이 없다면 멈춤
-            var currentAmount = await market.RequestBalance("KRW");
-            if (buyAmount > currentAmount)
+            var krwAmount = await market.RequestBalance("KRW");
+            if (buyAmount > krwAmount)
             {
-                NotifyManager.Notify($"{nameof(RequestBuy)} Fail {nameof(currentAmount)} : {currentAmount} {nameof(buyAmount)} : {buyAmount}");
+                NotifyManager.Notify($"{nameof(RequestBuy)} Fail {nameof(krwAmount)} : {krwAmount} {nameof(buyAmount)} : {buyAmount}");
                 return;
             }
             
@@ -139,45 +142,51 @@ public class CoinTradeProcess
             
             var amount = buyAmount / buyOrderbook.Price;
             var orderAmount = Math.Min(amount, buyOrderbook.Amount);
-                
-            // todo 주문
+            var prevCoinAmount = await market.RequestBalance(coinConfig.Symbol);
             Console.WriteLine($"{nameof(RequestBuy)} Buy Wait {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount}");
+            var uuid = await market.RequestBuy(coinConfig.MarketCode, orderAmount, price);
 
-
-            var isSuccess = true;
-            // 구매 완료 여부 확인 후 구매가 완료 되지 않았다면 주문을 취소함
-            // todo 주문 완료 여부 확인
-
-            if (isSuccess)
+            if (string.IsNullOrEmpty(uuid))
             {
-                // todo 현재 보유한 나의 코인
-
-                var coinAmount = orderAmount;
-                
-                buyAmount -= (orderAmount * buyOrderbook.Price);
-                BuyPrice = price * (1 + coinConfig.BuyRate / 100f);
-
-                if (buyCount == 0)
-                {
-                    var calSellPrice = limitAmount / coinAmount;
-                    SellPrice = price - calSellPrice;
-                }
-                else
-                {
-                    SellPrice = price * (1 + coinConfig.SellRate / 100f);
-                }
-
-                buyCount++;
-                NotifyManager.Notify($"{nameof(RequestBuy)} Buy Complete {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount} {nameof(buyAmount)} : {buyAmount}" +
-                                     $" {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice} {nameof(buyCount)} : {buyCount}");
+                Console.WriteLine($"{nameof(RequestBuy)} Error {nameof(uuid)} is null");
+                return;
             }
+            
+            await Task.Delay(100);
+
+            var isOrder = await market.RequestCheckOrder(uuid);
+            if (isOrder)
+            {
+                await market.RequestCancelOrder(uuid);
+                continue;
+            }
+
+            var coinAmount = await market.RequestBalance(coinConfig.Symbol);
+            buyAmount -= ((coinAmount - prevCoinAmount) * price);
+            BuyPrice = price * (1 + coinConfig.BuyRate / 100f);
+
+            if (buyCount == 0)
+            {
+                var calSellPrice = limitAmount / coinAmount;
+                SellPrice = price - calSellPrice;
+            }
+            else
+            {
+                SellPrice = price * (1 + coinConfig.SellRate / 100f);
+            }
+
+            buyCount++;
+            NotifyManager.Notify($"{nameof(RequestBuy)} Buy Complete {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount} {nameof(buyAmount)} : {buyAmount}" +
+                                 $" {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice} {nameof(buyCount)} : {buyCount}");
+            
+            await Task.Delay(50);
         }
     }
 
     private async Task RequestSell()
     {
         // 현재 보유한 코인 개수
-        var sellAmount = 0;
+        var sellAmount = await market.RequestBalance(coinConfig.Symbol);
         while (sellAmount > 0)
         {
             var orderBooks = await market.RequestMarketOrderbook(coinConfig.MarketCode);
@@ -202,19 +211,26 @@ public class CoinTradeProcess
             }
 
             var orderAmount = Math.Min(sellOrderbook.Amount, sellAmount);
-            // todo 주문
             Console.WriteLine($"{nameof(RequestSell)} Sell Wait {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount}");
+            var uuid = await market.RequestSell(coinConfig.MarketCode, orderAmount, price);
             
-            // 구매 완료 여부 확인 후 구매가 완료 되지 않았다면 주문을 취소함
-            // todo 주문 완료 여부 확인
+            if (string.IsNullOrEmpty(uuid))
+            {
+                Console.WriteLine($"{nameof(RequestSell)} Error {nameof(uuid)} is null");
+                return;
+            }
+            
+            await Task.Delay(100);
 
+            var prevAmount = sellAmount;
             // 현재 보유한 코인의 개수 
-            var currentAmount = 0;
-            var sellCompleteCount = sellAmount - currentAmount;
-            sellAmount = currentAmount;
+            sellAmount = await market.RequestBalance(coinConfig.Symbol);
+            var sellCompleteCount = prevAmount - sellAmount;
             
-            if (sellCompleteCount > 0)
+            if (sellAmount > 0)
                 NotifyManager.Notify($"{nameof(RequestSell)} Sell Complete {nameof(price)} : {price} {nameof(sellCompleteCount)} : {sellCompleteCount} {nameof(sellAmount)} : {sellAmount}");
+            
+            await Task.Delay(50);
         }
     }
 }
