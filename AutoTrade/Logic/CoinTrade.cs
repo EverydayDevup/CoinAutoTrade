@@ -6,7 +6,7 @@ namespace AutoTrade.Logic;
 public static class CoinTrade
 {
     private static Dictionary<string, CoinTradeProcess> dicCoinTradeProcess = new();
-    private const int Delay = 1000 / 200;
+    private const int Delay = 1000 / 50;
     
     public static async Task Trade(IMarket market,List<CoinConfig> coinConfigList)
     {
