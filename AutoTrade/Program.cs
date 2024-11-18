@@ -1,27 +1,41 @@
 ﻿#define TEST_RUNNER
 
+using AutoTrade.Config;
 using AutoTrade.Logic;
 using AutoTrade.Test;
 
-Console.WriteLine("1. Create Market");
-var market = MarketFactory.Create();
+Console.WriteLine("1. Market Config");
+Console.WriteLine(NotifyManager.GetLine());
+// 사용할 거래소 선택
+var marketType = MarketFactory.SelectMarketType();
+// 거래소 정보를 새로 만들지, 불러올지 결정
+var marketMenu = MarketFactory.SelectMarketMenu();
+// 선택한 거래소의 정보에 따라 거래소를 불러옴
+var market = MarketFactory.GetMarket(marketType, marketMenu);
 
 if (market == null)
 {
-    Console.WriteLine("Create Market Failed");
+    NotifyManager.NotifyError($"{nameof(market)} : {marketType} is null");
     return;
 }
+Console.WriteLine("1. Market Config Complete");
+Console.WriteLine(NotifyManager.GetLine());
 
-Console.WriteLine("2. Create Coin");
-var coinConfigList = await CoinConfigFactory.CreateAsync(market);
+Console.WriteLine("2. Load Coin Config");
+Console.WriteLine(NotifyManager.GetLine());
+var coinConfigList = await CoinConfigFactory.LoadAsync(market);
 
 if (coinConfigList == null)
 {
-    Console.WriteLine("Create Coin Failed");
+    Console.WriteLine("Load Coin Config");
     return;
 }
 
+Console.WriteLine("2. Load Coin Config Complete");
+Console.WriteLine(NotifyManager.GetLine());
+
 Console.WriteLine("3. Trade Coin");
+Console.WriteLine(NotifyManager.GetLine());
 
 #if TEST_RUNNER
     await TestRunner.Run(market);

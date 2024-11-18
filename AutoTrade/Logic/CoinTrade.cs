@@ -12,8 +12,8 @@ public static class CoinTrade
     {
         foreach (var coinConfig in coinConfigList)
         {
-            if (!dicCoinTradeProcess.TryGetValue(coinConfig.MarketCode, out var process))
-                dicCoinTradeProcess.Add(coinConfig.MarketCode, process = new(market, coinConfig));
+            if (!dicCoinTradeProcess.ContainsKey(coinConfig.MarketCode))
+                dicCoinTradeProcess.Add(coinConfig.MarketCode, new CoinTradeProcess(market, coinConfig));
         }
 
         var isTrade = false;
@@ -32,7 +32,7 @@ public static class CoinTrade
 
 public class CoinTradeProcess
 {
-    public bool IsTrade { get; set; }
+    public bool IsTrade { get; private set; }
     public double BuyPrice { get; set; } // 추가 매수 시의 가격
     public double SellPrice { get; set; } // 손실율 기준으로 매도 시의 가격
     
@@ -109,20 +109,20 @@ public class CoinTradeProcess
                 return;
             }
             
-            var orderBooks = await market.RequestOrderbook(coinConfig.MarketCode);
-            if (orderBooks?.BuyOrderbooks == null)
+            var orderBooks = await market.RequestMarketOrderbook(coinConfig.MarketCode);
+            if (orderBooks?.BuyOrders == null)
             {
-                Console.WriteLine($"{nameof(RequestBuy)} Error {nameof(orderBooks.BuyOrderbooks)} is null");
+                Console.WriteLine($"{nameof(RequestBuy)} Error {nameof(orderBooks.BuyOrders)} is null");
                 return;
             }
 
-            if (orderBooks.BuyOrderbooks.Length < 1)
+            if (orderBooks.BuyOrders.Length < 1)
             {
-                Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.BuyOrderbooks)} length less than 1");
+                Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.BuyOrders)} length less than 1");
                 return;
             }
             
-            var buyOrderbook = orderBooks.BuyOrderbooks[0];
+            var buyOrderbook = orderBooks.BuyOrders[0];
             double price = buyOrderbook.Price;
             if (price <= 0)
             {
@@ -180,20 +180,20 @@ public class CoinTradeProcess
         var sellAmount = 0;
         while (sellAmount > 0)
         {
-            var orderBooks = await market.RequestOrderbook(coinConfig.MarketCode);
-            if (orderBooks?.SellOrderbooks == null)
+            var orderBooks = await market.RequestMarketOrderbook(coinConfig.MarketCode);
+            if (orderBooks?.SellOrders == null)
             {
-                Console.WriteLine($"{nameof(RequestSell)} Error {nameof(orderBooks.SellOrderbooks)} is null");
+                Console.WriteLine($"{nameof(RequestSell)} Error {nameof(orderBooks.SellOrders)} is null");
                 return;
             }
 
-            if (orderBooks.SellOrderbooks.Length < 1)
+            if (orderBooks.SellOrders.Length < 1)
             {
-                Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.SellOrderbooks)} length less than 1");
+                Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.SellOrders)} length less than 1");
                 return;
             }
             
-            var sellOrderbook = orderBooks.SellOrderbooks[0];
+            var sellOrderbook = orderBooks.SellOrders[0];
             double price = sellOrderbook.Price;
             if (price <= 0)
             {

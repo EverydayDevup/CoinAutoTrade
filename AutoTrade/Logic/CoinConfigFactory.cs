@@ -9,7 +9,7 @@ public static class CoinConfigFactory
     /// <summary>
     /// 코인 설정과 관련된 정보를 가져옴
     /// </summary>
-    public static async Task<List<CoinConfig>?> CreateAsync(IMarket market)
+    public static async Task<List<CoinConfig>?> LoadAsync(IMarket market)
     {
         var currentDirectory = Directory.GetCurrentDirectory();
         var coinConfigFilepath = Path.Combine(currentDirectory, PathConfig.DataDirectoryName, PathConfig.CoinConfigFileName);
@@ -40,9 +40,10 @@ public static class CoinConfigFactory
         {
             if (marketCodes.Contains(coinConfig.MarketCode))
             {
+                // 판매 시점이 구매 시점 보다 높을 순 없음
                 if (coinConfig.SellRate > coinConfig.BuyRate)
                 {
-                    Console.WriteLine($"{nameof(coinConfig.SellRate)} is over {coinConfig.BuyRate}");
+                    Console.WriteLine($"{nameof(coinConfig.SellRate)} : {coinConfig.SellRate} is over {nameof(coinConfig.BuyRate)} : {coinConfig.BuyRate}");
                     return null;
                 }
                 
@@ -53,11 +54,14 @@ public static class CoinConfigFactory
             return null;
         }
         
+        Console.WriteLine($"{nameof(coinConfigList)}");
+        Console.WriteLine(NotifyManager.GetLine());
         foreach (var coinConfig in coinConfigList)
         {
             Console.WriteLine(coinConfig.ToLog());
         }
-
+        Console.WriteLine(NotifyManager.GetLine());
+        
         return coinConfigList;
     }
 }

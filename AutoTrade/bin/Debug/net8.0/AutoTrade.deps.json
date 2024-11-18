@@ -10,22 +10,10 @@
         "dependencies": {
           "Newtonsoft.Json": "13.0.3",
           "RestSharp": "112.1.0",
-          "System.IdentityModel.Tokens.Jwt": "8.2.0",
-          "ccxt": "4.4.31"
+          "System.IdentityModel.Tokens.Jwt": "8.2.0"
         },
         "runtime": {
           "AutoTrade.dll": {}
-        }
-      },
-      "ccxt/4.4.31": {
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3"
-        },
-        "runtime": {
-          "lib/netstandard2.1/ccxt.dll": {
-            "assemblyVersion": "4.4.31.0",
-            "fileVersion": "4.4.31.0"
-          }
         }
       },
       "Microsoft.Bcl.TimeProvider/8.0.1": {
@@ -114,13 +102,6 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
-    },
-    "ccxt/4.4.31": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-tv1u6GBdxnsp13K7txNuZr5An/JsA47O1nLSaBEyEWpi3ERAlKPjPp51e+CeIrQBuwg63T90Gz4kDnmf0yHBJQ==",
-      "path": "ccxt/4.4.31",
-      "hashPath": "ccxt.4.4.31.nupkg.sha512"
     },
     "Microsoft.Bcl.TimeProvider/8.0.1": {
       "type": "package",

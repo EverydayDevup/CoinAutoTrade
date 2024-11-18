@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AutoTrade.Market;
+namespace AutoTrade.Logic;
 
 public static class JwtHelper
 {

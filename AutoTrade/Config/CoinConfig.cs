@@ -1,15 +1,16 @@
 ﻿using System.Text;
+using AutoTrade.Logic;
 
 namespace AutoTrade.Config;
 
-public struct CoinConfig()
+public class CoinConfig()
 {
     /// <summary>
     /// 거래소에서 사용하는 마켓 코드 ex) KRW-BTC
     /// </summary>
     public string MarketCode { get; set; } = string.Empty;
     /// <summary>
-    /// 코인 심볼
+    /// 코인 심볼 ex) BTC
     /// </summary>
     public string Symbol { get; set; } = string.Empty;
     /// <summary>
@@ -29,20 +30,20 @@ public struct CoinConfig()
     /// 코인을 구매할 당시의 가격 * (1 + SellRate)로 손절 가격을 결정함
     /// </summary>
     public int SellRate { get; set; }
-    private StringBuilder LogStringBuilder { get; set; }
+
+    private StringBuilder LogStringBuilder { get; } = new();
 
     public string ToLog()
     {
-        LogStringBuilder ??= new StringBuilder();
         LogStringBuilder.Clear();
-        LogStringBuilder.AppendLine("=============================");
+        LogStringBuilder.AppendLine(NotifyManager.GetLine());
         LogStringBuilder.AppendLine($"{nameof(MarketCode)}: {MarketCode}");
         LogStringBuilder.AppendLine($"{nameof(Symbol)}: {Symbol}");
         LogStringBuilder.AppendLine($"{nameof(TotalAmount)}: {TotalAmount}");
         LogStringBuilder.AppendLine($"{nameof(Amount)}: {Amount}");
         LogStringBuilder.AppendLine($"{nameof(BuyRate)}: {BuyRate}");
         LogStringBuilder.AppendLine($"{nameof(SellRate)}: {SellRate}");
-        LogStringBuilder.AppendLine("=============================");
+        LogStringBuilder.AppendLine(NotifyManager.GetLine());
         
         return LogStringBuilder.ToString();
     }
