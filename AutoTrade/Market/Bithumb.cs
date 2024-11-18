@@ -91,15 +91,18 @@ public class Bithumb(string accessKey, string secretKey) : Market(accessKey, sec
         return await RequestJwtDelete<bool, MarketCancelOrderResponse>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
     }
 
-    public async Task<string> RequestSell(string coinSymbol, double volume)
+    public async Task<string?> RequestSell(string marketCode, double volume, double price)
     {
-        // var authToken = GenerateAuthToken(null);
-        //
-        // var options = new RestClientOptions("https://api.bithumb.com/v1/accounts");
-        // var client = new RestClient(options);
-        // var request = new RestRequest("");
-        // request.AddHeader("accept", "application/json");
-        // request.AddHeader("Authorization", authToken);
-        return string.Empty;
+        var order = new Dictionary<string, string>
+        {
+            { "market", marketCode },
+            { "side", "ask" },
+            { "volume", volume.ToString(CultureInfo.InvariantCulture) },
+            { "price", price.ToString(CultureInfo.InvariantCulture) },
+            { "ord_type", "limit" }
+        };
+        
+        var payload = GenerateJwtPayload(order);
+        return await RequestJwtPost<string, MarketSellResponse>($"https://api.bithumb.com/v1/orders", payload, order);
     }
 }

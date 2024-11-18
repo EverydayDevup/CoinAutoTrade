@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RestSharp;
 
 namespace AutoTrade.Packet.Bithumb;
 

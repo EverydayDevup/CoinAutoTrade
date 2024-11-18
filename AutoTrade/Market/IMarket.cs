@@ -40,7 +40,7 @@ public interface IMarket
     /// <summary>
     /// 코인 매도 주문 (시장가 매도)
     /// </summary>
-    public Task<string> RequestSell(string coinSymbol, double volume); 
+    public Task<string?> RequestSell(string marketCode, double volume, double price); 
     /// <summary>
     /// 코인 주문 취소
     /// </summary>

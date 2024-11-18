@@ -51,13 +51,24 @@ public static class TestRunner
         Console.WriteLine(NotifyManager.GetLine());
         var checkOrder = await market.RequestCheckOrder(buyUuid);
         Console.WriteLine($"5.{nameof(market.RequestCheckOrder)}  uuid complete : {checkOrder}");
-
         Console.WriteLine(NotifyManager.GetLine());
         
         Console.WriteLine($"6. {nameof(market.RequestCancelOrder)} uuid");
         Console.WriteLine(NotifyManager.GetLine());
         var deleteOrder = await market.RequestCancelOrder(buyUuid);
         Console.WriteLine($"6.{nameof(market.RequestCancelOrder)}  uuid complete : {deleteOrder}");
+        Console.WriteLine(NotifyManager.GetLine());
+
+        Console.WriteLine($"7. {nameof(market.RequestCheckOrder)} cancel uuid");
+        Console.WriteLine(NotifyManager.GetLine());
+        checkOrder = await market.RequestCheckOrder(buyUuid);
+        Console.WriteLine($"7.{nameof(market.RequestCheckOrder)} cancel uuid complete : {checkOrder}");
+        Console.WriteLine(NotifyManager.GetLine());
+        
+        Console.WriteLine($"8. {nameof(market.RequestSell)} KRW-XPLA / 250 / 20");
+        Console.WriteLine(NotifyManager.GetLine());
+        var sellUuid = await market.RequestSell("KRW-XPLA", 10, 524);
+        Console.WriteLine($"8.{nameof(market.RequestSell)} uuid complete : {sellUuid}");
         Console.WriteLine(NotifyManager.GetLine());
     }
 
