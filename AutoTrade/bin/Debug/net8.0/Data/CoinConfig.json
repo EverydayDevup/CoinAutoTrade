@@ -1,10 +1,10 @@
 ﻿[
   {
-    "MarketCode" :"KRW-XPLA",
-    "Symbol" : "XPLA",
+    "MarketCode" :"KRW-CTXC",
+    "Symbol" : "CTXC",
     "TotalAmount" : 40000,
     "Amount" : 6000,
-    "BuyRate" : 20,
-    "SellRate" : 10
+    "BuyRate" : 2,
+    "SellRate" : 1
   }
 ]

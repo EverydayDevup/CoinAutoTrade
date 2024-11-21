@@ -19,6 +19,8 @@ public static class CoinTrade
         var isTrade = false;
         do
         {
+            isTrade = false;
+            
             foreach (var (_, process) in dicCoinTradeProcess)
             {
                 await process.TradeAsync();
@@ -26,6 +28,7 @@ public static class CoinTrade
                 isTrade |= process.IsTrade;
                 await Task.Delay(Delay);
             }
+            
         } while (isTrade);
     }
 }
@@ -39,7 +42,6 @@ public class CoinTradeProcess
     private readonly IMarket market;
     private readonly CoinConfig coinConfig;
     private readonly double buyMaxCount; // 총 투자 횟수
-    private readonly double limitAmount; // 전체 자산의 1%를 손실 보는 값
     
     private int buyCount; // 현재까지 투자 횟수
 
@@ -53,7 +55,6 @@ public class CoinTradeProcess
         this.coinConfig = coinConfig;
 
         buyMaxCount = coinConfig.TotalAmount / coinConfig.Amount;
-        limitAmount = coinConfig.TotalAmount * 0.01f;
     }
     
     public async Task TradeAsync()
@@ -166,16 +167,17 @@ public class CoinTradeProcess
 
             var coinAmount = await market.RequestBalance(coinConfig.Symbol);
             buyAmount -= ((coinAmount - prevCoinAmount) * price);
+
             BuyPrice = price * (1 + coinConfig.BuyRate / 100f);
 
             if (buyCount == 0)
             {
-                var calSellPrice = limitAmount / coinAmount;
+                var calSellPrice = (coinConfig.TotalAmount * 0.01f) / coinAmount;
                 SellPrice = price - calSellPrice;
             }
             else
             {
-                SellPrice = price * (1 + coinConfig.SellRate / 100f);
+                SellPrice = price * (1 - coinConfig.SellRate / 100f);
             }
 
             buyCount++;
@@ -206,7 +208,7 @@ public class CoinTradeProcess
             }
             
             var sellOrderbook = orderBooks.SellOrders[0];
-            double price = sellOrderbook.Price;
+            var price = sellOrderbook.Price;
             if (price <= 0)
             {
                 Console.WriteLine($"{nameof(RequestSell)} Error {nameof(price)} is zero");

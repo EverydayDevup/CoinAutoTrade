@@ -3,7 +3,7 @@ using AutoTrade.Logic;
 
 namespace AutoTrade.Config;
 
-public class CoinConfig()
+public class CoinConfig
 {
     /// <summary>
     /// 거래소에서 사용하는 마켓 코드 ex) KRW-BTC
