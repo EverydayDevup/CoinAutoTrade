@@ -1,10 +1,10 @@
 ﻿[
   {
-    "MarketCode" :"KRW-CTXC",
-    "Symbol" : "CTXC",
-    "TotalAmount" : 40000,
+    "MarketCode" :"KRW-FLOKI",
+    "Symbol" : "FLOKI",
+    "TotalAmount" : 300000,
     "Amount" : 6000,
-    "BuyRate" : 2,
-    "SellRate" : 1
+    "BuyRate" : 15,
+    "SellRate" : 10
   }
 ]
