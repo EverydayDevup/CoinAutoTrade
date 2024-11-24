@@ -55,12 +55,12 @@ public static class CoinConfigFactory
         }
         
         Console.WriteLine($"{nameof(coinConfigList)}");
-        Console.WriteLine(NotifyManager.GetLine());
+        Console.WriteLine(MessageManager.GetLine());
         foreach (var coinConfig in coinConfigList)
         {
             Console.WriteLine(coinConfig.ToLog());
         }
-        Console.WriteLine(NotifyManager.GetLine());
+        Console.WriteLine(MessageManager.GetLine());
         
         return coinConfigList;
     }

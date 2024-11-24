@@ -1,10 +1,98 @@
 ﻿[
   {
-    "MarketCode" :"KRW-CTXC",
-    "Symbol" : "CTXC",
-    "TotalAmount" : 40000,
-    "Amount" : 6000,
+    "MarketCode" :"KRW-BOA",
+    "Symbol" : "BOA",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
     "BuyRate" : 15,
-    "SellRate" : 6
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-ARB",
+    "Symbol" : "ARB",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-CTK",
+    "Symbol" : "CTK",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-AL",
+    "Symbol" : "AL",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-AKT",
+    "Symbol" : "AKT",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-VET",
+    "Symbol" : "VET",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-FLR",
+    "Symbol" : "FLR",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-MVL",
+    "Symbol" : "MVL",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-FIT",
+    "Symbol" : "FLR",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-GRND",
+    "Symbol" : "GRND",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-FLOKI",
+    "Symbol" : "FLOKI",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "MarketCode" :"KRW-APT",
+    "Symbol" : "APT",
+    "TotalAmount" : 400000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
   }
 ]

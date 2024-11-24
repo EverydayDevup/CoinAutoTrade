@@ -36,14 +36,14 @@ public class CoinConfig
     public string ToLog()
     {
         LogStringBuilder.Clear();
-        LogStringBuilder.AppendLine(NotifyManager.GetLine());
+        LogStringBuilder.AppendLine(MessageManager.GetLine());
         LogStringBuilder.AppendLine($"{nameof(MarketCode)}: {MarketCode}");
         LogStringBuilder.AppendLine($"{nameof(Symbol)}: {Symbol}");
         LogStringBuilder.AppendLine($"{nameof(TotalAmount)}: {TotalAmount}");
         LogStringBuilder.AppendLine($"{nameof(Amount)}: {Amount}");
         LogStringBuilder.AppendLine($"{nameof(BuyRate)}: {BuyRate}");
         LogStringBuilder.AppendLine($"{nameof(SellRate)}: {SellRate}");
-        LogStringBuilder.AppendLine(NotifyManager.GetLine());
+        LogStringBuilder.AppendLine(MessageManager.GetLine());
         
         return LogStringBuilder.ToString();
     }

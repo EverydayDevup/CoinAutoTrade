@@ -46,13 +46,13 @@ public class Response<T, TK> : IResponse
                 };
                 
                 var result = JsonConvert.DeserializeAnonymousType(res.Content, template);
-                NotifyManager.NotifyError(result == null
+                MessageManager.Error(result == null
                     ? $"{GetType().Name} {nameof(res.StatusCode)} : {res.StatusCode} - {nameof(result)} not fount deserialize type"
                     : $"{GetType().Name} {nameof(res.StatusCode)} : {res.StatusCode} - {nameof(result.error.name)} : {result.error.name} {nameof(result.error.message)} : : {result.error.message} ");
             }
             else
             {
-                NotifyManager.NotifyError($"{GetType().Name} - {nameof(res.ResponseStatus)} : {res.ResponseStatus}");
+                MessageManager.Error($"{GetType().Name} - {nameof(res.ResponseStatus)} : {res.ResponseStatus}");
             }
             
             return;
@@ -61,11 +61,11 @@ public class Response<T, TK> : IResponse
         if (res.StatusCode == HttpStatusCode.OK || 
             res.StatusCode == HttpStatusCode.Created)
         {
-            NotifyManager.Notify($"{GetType().Name} : {res.Content}");
+            MessageManager.Notify($"{GetType().Name} : {res.Content}");
             
             var obj = JsonConvert.DeserializeObject<T>(res.Content);
             if (obj == null)
-                NotifyManager.NotifyError($"{nameof(GetType)} - {nameof(T)} not fount deserialize type");
+                MessageManager.Error($"{nameof(GetType)} - {nameof(T)} not fount deserialize type");
             else
             {
                 IsSuccess = true;

@@ -41,7 +41,6 @@ public class CoinTradeProcess
     
     private readonly IMarket market;
     private readonly CoinConfig coinConfig;
-    private readonly double buyMaxCount; // 총 투자 횟수
     
     private int buyCount; // 현재까지 투자 횟수
 
@@ -53,8 +52,6 @@ public class CoinTradeProcess
         
         this.market = market;
         this.coinConfig = coinConfig;
-
-        buyMaxCount = coinConfig.TotalAmount / coinConfig.Amount;
     }
     
     public async Task TradeAsync()
@@ -63,29 +60,24 @@ public class CoinTradeProcess
             return;
         
         Console.WriteLine("1. Coin Trade Price Check ");
-        Console.WriteLine(NotifyManager.GetLine());
+        Console.WriteLine(MessageManager.GetLine());
         var tradePrice = await market.RequestTicker(coinConfig.MarketCode);
         Console.WriteLine($"{nameof(TradeAsync)} {coinConfig.MarketCode} - {nameof(tradePrice)} : {tradePrice} {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice}");
 
         if (tradePrice <= 0)
             return;
 
-        // 매수 여부 확인
-        if (buyCount <= buyMaxCount)
+        // 첫 구매
+        if (buyCount == 0)
         {
-            Console.WriteLine($"2. RequestBuy {nameof(buyCount)} : {buyCount}");
-            // 첫 구매
-            if (buyCount == 0)
-            {
-                // 현재 매도 창을 확인해서, 투자금 대비 구매 가능한 영역까지 구매를 시도함
+            // 현재 매도 창을 확인해서, 투자금 대비 구매 가능한 영역까지 구매를 시도함
+            await RequestBuy();
+        }
+        else
+        {
+            // 현재 호가가 구매하려는 목표치만큼 온 경우, 추가매수
+            if (tradePrice >= BuyPrice)
                 await RequestBuy();
-            }
-            else
-            {
-                // 현재 호가가 구매하려는 목표치만큼 온 경우, 추가매수
-                if (tradePrice >= BuyPrice)
-                    await RequestBuy();
-            }
         }
         
         // 매도 여부 확인
@@ -95,12 +87,11 @@ public class CoinTradeProcess
         // 현재 호가가 손실치만큼 왔다면 모두 매도함
         if (SellPrice > 0 && tradePrice < SellPrice)
         {
-            Console.WriteLine($"3. RequestSell");
             await RequestSell();
             IsTrade = false;
         }
         
-        Console.WriteLine(NotifyManager.GetLine());
+        Console.WriteLine(MessageManager.GetLine());
     }
 
     private async Task RequestBuy()
@@ -112,7 +103,7 @@ public class CoinTradeProcess
             var krwAmount = await market.RequestBalance("KRW");
             if (buyAmount > krwAmount)
             {
-                NotifyManager.Notify($"{nameof(RequestBuy)} Fail {nameof(krwAmount)} : {krwAmount} {nameof(buyAmount)} : {buyAmount}");
+                MessageManager.Notify($"{nameof(RequestBuy)} Fail {nameof(krwAmount)} : {krwAmount} {nameof(buyAmount)} : {buyAmount}");
                 return;
             }
             
@@ -181,7 +172,7 @@ public class CoinTradeProcess
             }
 
             buyCount++;
-            NotifyManager.Notify($"{nameof(RequestBuy)} Buy Complete {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount} {nameof(buyAmount)} : {buyAmount}" +
+            MessageManager.Notify($"{nameof(RequestBuy)} Buy Complete {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount} {nameof(buyAmount)} : {buyAmount}" +
                                  $" {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice} {nameof(buyCount)} : {buyCount}");
             
             await Task.Delay(50);
@@ -233,7 +224,7 @@ public class CoinTradeProcess
             var sellCompleteCount = prevAmount - sellAmount;
             
             if (sellAmount > 0)
-                NotifyManager.Notify($"{nameof(RequestSell)} Sell Complete {nameof(price)} : {price} {nameof(sellCompleteCount)} : {sellCompleteCount} {nameof(sellAmount)} : {sellAmount}");
+                MessageManager.Notify($"{nameof(RequestSell)} Sell Complete {nameof(price)} : {price} {nameof(sellCompleteCount)} : {sellCompleteCount} {nameof(sellAmount)} : {sellAmount}");
             
             await Task.Delay(50);
         }
