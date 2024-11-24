@@ -1,9 +1,85 @@
 ﻿[
   {
-    "MarketCode" :"KRW-FLOKI",
+    "Symbol" : "AKT",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "BOA",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "GRND",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
     "Symbol" : "FLOKI",
-    "TotalAmount" : 300000,
-    "Amount" : 6000,
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "MVL",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "APT",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "ARB",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "FIT",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "FLR",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "AL",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "CTK",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "VET",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
     "BuyRate" : 15,
     "SellRate" : 10
   }
