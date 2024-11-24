@@ -1,96 +1,84 @@
 ﻿[
   {
-    "MarketCode" :"KRW-BOA",
-    "Symbol" : "BOA",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-ARB",
-    "Symbol" : "ARB",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-CTK",
-    "Symbol" : "CTK",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-AL",
-    "Symbol" : "AL",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-AKT",
     "Symbol" : "AKT",
-    "TotalAmount" : 400000,
+    "TotalAmount" : 500000,
     "Amount" : 70000,
     "BuyRate" : 15,
     "SellRate" : 10
   },
   {
-    "MarketCode" :"KRW-VET",
-    "Symbol" : "VET",
-    "TotalAmount" : 400000,
+    "Symbol" : "BOA",
+    "TotalAmount" : 500000,
     "Amount" : 70000,
     "BuyRate" : 15,
     "SellRate" : 10
   },
   {
-    "MarketCode" :"KRW-FLR",
-    "Symbol" : "FLR",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-MVL",
-    "Symbol" : "MVL",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-FIT",
-    "Symbol" : "FLR",
-    "TotalAmount" : 400000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "MarketCode" :"KRW-GRND",
     "Symbol" : "GRND",
-    "TotalAmount" : 400000,
+    "TotalAmount" : 500000,
     "Amount" : 70000,
     "BuyRate" : 15,
     "SellRate" : 10
   },
   {
-    "MarketCode" :"KRW-FLOKI",
     "Symbol" : "FLOKI",
-    "TotalAmount" : 400000,
+    "TotalAmount" : 500000,
     "Amount" : 70000,
     "BuyRate" : 15,
     "SellRate" : 10
   },
   {
-    "MarketCode" :"KRW-APT",
+    "Symbol" : "MVL",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
     "Symbol" : "APT",
-    "TotalAmount" : 400000,
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "ARB",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "FIT",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "FLR",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "AL",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "CTK",
+    "TotalAmount" : 500000,
+    "Amount" : 70000,
+    "BuyRate" : 15,
+    "SellRate" : 10
+  },
+  {
+    "Symbol" : "VET",
+    "TotalAmount" : 500000,
     "Amount" : 70000,
     "BuyRate" : 15,
     "SellRate" : 10

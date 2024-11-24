@@ -8,7 +8,8 @@ public class CoinConfig
     /// <summary>
     /// 거래소에서 사용하는 마켓 코드 ex) KRW-BTC
     /// </summary>
-    public string MarketCode { get; set; } = string.Empty;
+    public string MarketCode => $"KRW-{Symbol}";
+
     /// <summary>
     /// 코인 심볼 ex) BTC
     /// </summary>
