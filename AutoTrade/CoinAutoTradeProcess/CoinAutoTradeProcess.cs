@@ -6,7 +6,7 @@ static class CoinAutoTradeProcess
     
     static void Main(string[] args)
     {
-        _coinAutoTradeProcessServer = new CoinAutoTradeProcessServer(55555);
+        _coinAutoTradeProcessServer = new CoinAutoTradeProcessServer("localhost", 55555);
 
         while (_coinAutoTradeProcessServer.IsRunning)
         {
