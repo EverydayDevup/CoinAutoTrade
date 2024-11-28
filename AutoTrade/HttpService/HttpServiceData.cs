@@ -18,8 +18,3 @@ public class ResponseData(int type)
     public int Code { get; set; } = 0;
     public string Body { get; set; }
 }
-
-public class ResponseBodyData(string data)
-{
-    public string Data { get; set; } = data;
-}

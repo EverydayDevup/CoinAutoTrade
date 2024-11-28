@@ -14,7 +14,7 @@ internal class LoggerServiceFileLog(string directoryPath, int writeTimeMinutes)
 
     public void Log(string message)
     {
-        _stringBuilder.AppendLine(message);
+        _stringBuilder.AppendLine(GetMessage(message));
 
         if (_nextWriteTime == DateTime.MinValue)
             _nextWriteTime = DateTime.Now.AddMinutes(writeTimeMinutes);
@@ -33,7 +33,7 @@ internal class LoggerServiceFileLog(string directoryPath, int writeTimeMinutes)
                 Directory.CreateDirectory(directoryPath);
         
             var filePath = Path.Combine(directoryPath, $"{_nextWriteTime.AddMinutes(-writeTimeMinutes):yy-MM-dd_hh_mm_ss}~{_nextWriteTime:yy-MM-dd_hh_mm_ss}.log");
-            File.WriteAllText(filePath, GetMessage(_stringBuilder.ToString()));
+            File.WriteAllText(filePath, _stringBuilder.ToString());
 
             _stringBuilder.Clear();
             _nextWriteTime = DateTime.Now.AddMinutes(writeTimeMinutes);

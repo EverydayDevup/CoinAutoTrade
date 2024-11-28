@@ -30,3 +30,4 @@ C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeC
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeConsole\obj\Debug\net8.0\CoinAutoTradeConsole.pdb
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeConsole\obj\Debug\net8.0\CoinAutoTradeConsole.genruntimeconfig.cache
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeConsole\obj\Debug\net8.0\ref\CoinAutoTradeConsole.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeConsole\bin\Debug\net8.0\Newtonsoft.Json.dll

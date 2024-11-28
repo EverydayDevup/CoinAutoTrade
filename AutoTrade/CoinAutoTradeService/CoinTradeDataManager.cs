@@ -4,7 +4,7 @@ namespace CoinAutoTrade;
 
 public class CoinTradeDataManager
 {
-    private readonly LoggerService.LoggerService _loggerService = new ();
+    private LoggerService.LoggerService _loggerService = null;
     private readonly Dictionary<string, Dictionary<string, CoinTradeData>> _dicMarketCoinTradeData = new();
     private readonly string _coinTradeDataDirectoryName = "CoinTradeData";
     private readonly string _coinConfigFileName = "CoinConfig.json";
@@ -15,13 +15,15 @@ public class CoinTradeDataManager
         return Path.Combine(currentDirectory, marketName, _coinTradeDataDirectoryName, _coinConfigFileName);
     }
     
-    public bool Load(string marketName)
+    public bool Load(string marketName, LoggerService.LoggerService loggerService)
     {
+        _loggerService ??= loggerService;
+        
         var coinTradeDataListFilepath = GetCoinTradeDataListFilePath(marketName);
         
         if (!File.Exists(coinTradeDataListFilepath))
         {
-            _loggerService.ConsoleError($"not found {nameof(coinTradeDataListFilepath)} : {coinTradeDataListFilepath}");
+            _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] Not found {nameof(coinTradeDataListFilepath)} : {coinTradeDataListFilepath}");
             return false;
         }
         
@@ -30,7 +32,7 @@ public class CoinTradeDataManager
 
         if (coinTradeDataList == null)
         {
-            _loggerService.ConsoleError($"not found {nameof(coinTradeDataList)}");
+            _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] Not found {nameof(coinTradeDataList)}");
             return false;
         }
 
@@ -46,7 +48,7 @@ public class CoinTradeDataManager
             var errorMessage = coinTradeData.GetValidMessage();
             if (!string.IsNullOrEmpty(errorMessage))
             {
-                _loggerService.ConsoleError($"{nameof(coinTradeData)} {coinTradeData.Symbol} : {errorMessage}");
+                _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] {nameof(coinTradeData)} {coinTradeData.Symbol} : {errorMessage}");
                 return false;
             }
             
@@ -56,12 +58,12 @@ public class CoinTradeDataManager
         return true;
     }
 
-    public bool Save(string marketName)
+    public void Save(string marketName)
     {
         if (!_dicMarketCoinTradeData.TryGetValue(marketName, out var dicCoinTradeData))
         {
-            _loggerService.ConsoleError($"{nameof(marketName)} {marketName} not found");
-            return false;
+            _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] {nameof(marketName)} {marketName} not found");
+            return;
         }
         
         var coinTradeDataListFilepath = GetCoinTradeDataListFilePath(marketName);
@@ -69,7 +71,6 @@ public class CoinTradeDataManager
         var coinTradeDataListJson = JsonConvert.SerializeObject(coinTradeDataList);
         
         File.WriteAllText(coinTradeDataListFilepath, coinTradeDataListJson);
-        return true;
     }
 
     public void Remove(string marketName, string symbol)

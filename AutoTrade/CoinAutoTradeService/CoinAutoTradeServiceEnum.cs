@@ -9,4 +9,5 @@ public enum ECoinAutoTradeResponseCode
 {
     Success = 0,
     NotFoundRequestType,
+    LoadCoinTradeDataListFail,
 }

@@ -10,7 +10,7 @@ public class LoggerService : IDisposable
     private readonly LoggerServiceTelegramLog? _telegramLog;
     private readonly LoggerServiceConsole _loggerServiceConsole = new();
     private readonly Dictionary<string, LoggerServiceFileLog> _dicFileLogs = new();
-    private readonly int _fileLogWriteTimeMinutes = 5;
+    private readonly int _fileLogWriteTimeMinutes = 1;
     private bool _isDisposed = false;
 
     public LoggerService()

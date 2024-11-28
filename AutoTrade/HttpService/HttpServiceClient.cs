@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using System.Text.Json;
 
 namespace HttpService;
@@ -29,17 +30,34 @@ public class HttpServiceClient
             var requestData = new RequestData(type,  JsonSerializer.Serialize(data));
             var requestJson = JsonSerializer.Serialize(requestData);
             
+            _loggerService.ConsoleLog($"[Request] : " +
+                                        $"{nameof(requestData.Type)} = {requestData.Type} " +
+                                        $"{nameof(requestData.Body)} = {requestData.Body}");
+            
             var content = new StringContent(requestJson, Encoding.UTF8, HttpServiceUtil.ContentType);
             var response = await client.PostAsync(_httpServiceUrl.Url, content);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                _loggerService.ConsoleError($"[Response] Error : " +
+                                            $"{nameof(response.StatusCode)} = {response.StatusCode}");
+
+                return default;
+            }
 
             // 응답 읽기
             var responseJson = await response.Content.ReadAsStringAsync();
             var responseData = JsonSerializer.Deserialize<ResponseData>(responseJson);
             
-            if (responseData == null || string.IsNullOrEmpty(responseData.Body))
+            if (responseData == null)
                 return default;
             
-            return JsonSerializer.Deserialize<T>(responseData.Body);
+            _loggerService.ConsoleLog($"[Response] : " +
+                                        $"{nameof(responseData.Type)} = {responseData.Type} " +
+                                        $"{nameof(responseData.Code)} = {responseData.Code} " +
+                                        $"{nameof(responseData.Body)} = {responseData.Body} ");
+
+            return responseData.Code != 0 ? default : JsonSerializer.Deserialize<T>(responseData.Body);
         }
         catch(Exception ex)
         {

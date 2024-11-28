@@ -9,10 +9,7 @@ public class CoinAutoTradeClient
 
     public async Task StartCoinAutoTradeAsync()
     {
-        var result = await _serviceClient.Request<ResponseData, string>((int)ECoinAutoTradeRequestType.StartCoinAutoTrade, "Bithum");
-        if (result != null)
-        {
-            Console.WriteLine("Success!");
-        }
+        var result = await _serviceClient.Request<string, string>((int)ECoinAutoTradeRequestType.StartCoinAutoTrade, "Bithum");
+        
     }
 }

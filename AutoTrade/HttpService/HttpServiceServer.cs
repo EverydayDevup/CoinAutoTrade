@@ -11,7 +11,7 @@ public abstract class HttpServiceServer
 {
     private readonly HttpServiceUrl _httpServiceUrl;
     private readonly HttpListener _listener = new ();
-    private readonly LoggerService.LoggerService _loggerService = new ();
+    protected LoggerService.LoggerService LoggerService { get; }= new ();
 
     public bool IsRunning => _listener.IsListening;
 
@@ -36,7 +36,7 @@ public abstract class HttpServiceServer
         try
         {
             _listener.Start();
-            _loggerService.ConsoleLog($"[{GetType().Name}] {nameof(HttpServiceServer)} is running : {_httpServiceUrl.Url}");
+            LoggerService.ConsoleLog($"[{GetType().Name}] {nameof(HttpServiceServer)} is running : {_httpServiceUrl.Url}");
 
             while (true)
             {
@@ -59,8 +59,8 @@ public abstract class HttpServiceServer
                             $"[{GetType().Name}] Request : {nameof(requestData.Type)} = {requestData.Type}" +
                             $" {nameof(requestData.Body)} = {requestData.Body}";
                         
-                        _loggerService.ConsoleLog(requestLogMessage);
-                        _loggerService.FileLog(LogDirectoryPath, requestLogMessage);
+                        LoggerService.ConsoleLog(requestLogMessage);
+                        LoggerService.FileLog(LogDirectoryPath, requestLogMessage);
 
                         var responseData = Parse(requestData);
                         var responseJson = JsonSerializer.Serialize(responseData);
@@ -77,8 +77,8 @@ public abstract class HttpServiceServer
                             $"{nameof(responseData.Code)} = {responseData.Code} " +
                             $"{nameof(responseData.Body)} = {responseData.Body}";
                         
-                        _loggerService.ConsoleLog(responseLogMessage);
-                        _loggerService.FileLog(LogDirectoryPath, responseLogMessage);
+                        LoggerService.ConsoleLog(responseLogMessage);
+                        LoggerService.FileLog(LogDirectoryPath, responseLogMessage);
                     }
                     else
                     {
@@ -87,8 +87,8 @@ public abstract class HttpServiceServer
                         var requestErrorLogMessage =
                             $"{nameof(HttpServiceServerRun)} Request : {HttpStatusCode.BadRequest} {nameof(requestBody)} : {requestBody}";
                         
-                        _loggerService.ConsoleError(requestErrorLogMessage);
-                        _loggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
+                        LoggerService.ConsoleError(requestErrorLogMessage);
+                        LoggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
                     }
                 }
                 else
@@ -99,16 +99,16 @@ public abstract class HttpServiceServer
                     var requestErrorLogMessage =
                         $"{nameof(HttpServiceServerRun)} Request : {HttpStatusCode.MethodNotAllowed} {nameof(request.HttpMethod)} : {request.HttpMethod}";
                     
-                    _loggerService.ConsoleError(requestErrorLogMessage);
-                    _loggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
+                    LoggerService.ConsoleError(requestErrorLogMessage);
+                    LoggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
                 }
             }
         }
         catch (Exception ex)
         {
             var exceptionLogMessage = $"{nameof(HttpServiceServerRun)} Exception : {ex}";
-            _loggerService.ConsoleError(exceptionLogMessage);
-            _loggerService.FileLog(LogDirectoryPath, exceptionLogMessage);
+            LoggerService.ConsoleError(exceptionLogMessage);
+            LoggerService.FileLog(LogDirectoryPath, exceptionLogMessage);
         }
         finally
         {
@@ -122,7 +122,7 @@ public abstract class HttpServiceServer
         var response = new ResponseData(requestData.Type)
         {
             Code = code,
-            Body = JsonSerializer.Serialize(new ResponseBodyData(body))
+            Body = body
         };
         return response;
     }
