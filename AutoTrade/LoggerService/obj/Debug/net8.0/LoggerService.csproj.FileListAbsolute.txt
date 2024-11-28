@@ -1,0 +1,13 @@
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\bin\Debug\net8.0\LoggerService.deps.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\bin\Debug\net8.0\LoggerService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\bin\Debug\net8.0\LoggerService.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.csproj.AssemblyReference.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.AssemblyInfoInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.AssemblyInfo.cs
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.csproj.CoreCompileInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.sourcelink.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\refint\LoggerService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\LoggerService.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\LoggerService\obj\Debug\net8.0\ref\LoggerService.dll

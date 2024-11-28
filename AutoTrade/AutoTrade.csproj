@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +16,20 @@
 
     <ItemGroup>
       <None Remove="Config.json" />
+      <None Remove="AutoTradeUtil\**" />
+      <None Remove="AutoTradeChildProcess\**" />
+      <None Remove="TelegramBot\**" />
+      <None Remove="Logger\**" />
+      <None Remove="CoinAutoTradeChildProcess\**" />
+      <None Remove="CoinAutoTrade\**" />
+      <None Remove="CoinAutoTradeUtil\**" />
+      <None Remove="CoinAutoTradeProcess\**" />
+      <None Remove="HttpService\**" />
+      <None Remove="CoinAutoTradeServer\**" />
+      <None Remove="LoggerService\**" />
+      <None Remove="CoinAutoTradeService\**" />
+      <None Remove="CoinAutoTradeClient\**" />
+      <None Remove="CoinAutoTradeConsole\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -24,6 +38,40 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
       <None Remove="Data\Config.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="AutoTradeUtil\**" />
+      <Compile Remove="AutoTradeChildProcess\**" />
+      <Compile Remove="TelegramBot\**" />
+      <Compile Remove="Logger\**" />
+      <Compile Remove="CoinAutoTradeChildProcess\**" />
+      <Compile Remove="CoinAutoTrade\**" />
+      <Compile Remove="CoinAutoTradeUtil\**" />
+      <Compile Remove="CoinAutoTradeProcess\**" />
+      <Compile Remove="HttpService\**" />
+      <Compile Remove="CoinAutoTradeServer\**" />
+      <Compile Remove="LoggerService\**" />
+      <Compile Remove="CoinAutoTradeService\**" />
+      <Compile Remove="CoinAutoTradeClient\**" />
+      <Compile Remove="CoinAutoTradeConsole\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="AutoTradeUtil\**" />
+      <EmbeddedResource Remove="AutoTradeChildProcess\**" />
+      <EmbeddedResource Remove="TelegramBot\**" />
+      <EmbeddedResource Remove="Logger\**" />
+      <EmbeddedResource Remove="CoinAutoTradeChildProcess\**" />
+      <EmbeddedResource Remove="CoinAutoTrade\**" />
+      <EmbeddedResource Remove="CoinAutoTradeUtil\**" />
+      <EmbeddedResource Remove="CoinAutoTradeProcess\**" />
+      <EmbeddedResource Remove="HttpService\**" />
+      <EmbeddedResource Remove="CoinAutoTradeServer\**" />
+      <EmbeddedResource Remove="LoggerService\**" />
+      <EmbeddedResource Remove="CoinAutoTradeService\**" />
+      <EmbeddedResource Remove="CoinAutoTradeClient\**" />
+      <EmbeddedResource Remove="CoinAutoTradeConsole\**" />
     </ItemGroup>
 
 </Project>

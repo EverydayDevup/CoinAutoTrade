@@ -1,0 +1,16 @@
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\bin\Debug\net8.0\CoinAutoTradeUtil.deps.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\bin\Debug\net8.0\CoinAutoTradeUtil.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\bin\Debug\net8.0\CoinAutoTradeUtil.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\bin\Debug\net8.0\Logger.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\bin\Debug\net8.0\Logger.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.csproj.AssemblyReference.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.AssemblyInfoInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.AssemblyInfo.cs
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.csproj.CoreCompileInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.sourcelink.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAuto.4778C39F.Up2Date
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\refint\CoinAutoTradeUtil.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\CoinAutoTradeUtil.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeUtil\obj\Debug\net8.0\ref\CoinAutoTradeUtil.dll

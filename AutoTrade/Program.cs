@@ -1,7 +1,9 @@
 ﻿//#define TEST_RUNNER
 
+using AutoTrade.Config;
 using AutoTrade.Logic;
 using AutoTrade.Test;
+
 
 Console.WriteLine("1. Market Config");
 Console.WriteLine(MessageManager.GetLine());
@@ -22,13 +24,14 @@ Console.WriteLine(MessageManager.GetLine());
 
 Console.WriteLine("2. Load Coin Config");
 Console.WriteLine(MessageManager.GetLine());
-var coinConfigList = await CoinConfigFactory.LoadAsync(market);
 
-if (coinConfigList == null)
+List<CoinConfig>? coinConfigList = null;
+do
 {
-    Console.WriteLine("Load Coin Config");
-    return;
+    coinConfigList = await CoinConfigFactory.LoadAsync(market);
+    await Task.Delay(100);
 }
+while(coinConfigList == null);
 
 Console.WriteLine("2. Load Coin Config Complete");
 Console.WriteLine(MessageManager.GetLine());

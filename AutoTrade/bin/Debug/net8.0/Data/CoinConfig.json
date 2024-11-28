@@ -1,86 +1,44 @@
 ﻿[
   {
-    "Symbol" : "AKT",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
+    "Symbol" : "ATOM",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
     "BuyRate" : 15,
-    "SellRate" : 10
+    "SellRate" : 6
   },
   {
-    "Symbol" : "BOA",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
+    "Symbol" : "AVAX",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
     "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "Symbol" : "GRND",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "Symbol" : "FLOKI",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "Symbol" : "MVL",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "Symbol" : "APT",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
+    "SellRate" : 6
   },
   {
     "Symbol" : "ARB",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
     "BuyRate" : 15,
-    "SellRate" : 10
+    "SellRate" : 6
   },
   {
-    "Symbol" : "FIT",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
+    "Symbol" : "FTM",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
     "BuyRate" : 15,
-    "SellRate" : 10
+    "SellRate" : 6
   },
   {
-    "Symbol" : "FLR",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
+    "Symbol" : "LDO",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
     "BuyRate" : 15,
-    "SellRate" : 10
+    "SellRate" : 6
   },
   {
-    "Symbol" : "AL",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
+    "Symbol" : "DOT",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
     "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "Symbol" : "CTK",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
-  },
-  {
-    "Symbol" : "VET",
-    "TotalAmount" : 500000,
-    "Amount" : 70000,
-    "BuyRate" : 15,
-    "SellRate" : 10
+    "SellRate" : 6
   }
 ]

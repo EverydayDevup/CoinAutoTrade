@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTrade", "AutoTrade.csproj", "{0F529104-AF0C-464B-A1BD-27D811452A86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{73DD9779-E5AB-4053-8F88-8A64F112DFAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinAutoTradeProcess", "CoinAutoTradeProcess\CoinAutoTradeProcess.csproj", "{80479664-4393-4F29-AA88-BC46612539DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinAutoTradeService", "CoinAutoTradeService\CoinAutoTradeService.csproj", "{3EF11AA4-136B-47F7-BC65-D6FEBEF87ACB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpService", "HttpService\HttpService.csproj", "{F10A43E2-1999-4B3A-8A01-CFFFA6B9E0C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinAutoTradeConsole", "CoinAutoTradeConsole\CoinAutoTradeConsole.csproj", "{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F529104-AF0C-464B-A1BD-27D811452A86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F529104-AF0C-464B-A1BD-27D811452A86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F529104-AF0C-464B-A1BD-27D811452A86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F529104-AF0C-464B-A1BD-27D811452A86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F529104-AF0C-464B-A1BD-27D811452A86}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{80479664-4393-4F29-AA88-BC46612539DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80479664-4393-4F29-AA88-BC46612539DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80479664-4393-4F29-AA88-BC46612539DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80479664-4393-4F29-AA88-BC46612539DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80479664-4393-4F29-AA88-BC46612539DF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3EF11AA4-136B-47F7-BC65-D6FEBEF87ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF11AA4-136B-47F7-BC65-D6FEBEF87ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF11AA4-136B-47F7-BC65-D6FEBEF87ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF11AA4-136B-47F7-BC65-D6FEBEF87ACB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F10A43E2-1999-4B3A-8A01-CFFFA6B9E0C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F10A43E2-1999-4B3A-8A01-CFFFA6B9E0C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F10A43E2-1999-4B3A-8A01-CFFFA6B9E0C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F10A43E2-1999-4B3A-8A01-CFFFA6B9E0C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

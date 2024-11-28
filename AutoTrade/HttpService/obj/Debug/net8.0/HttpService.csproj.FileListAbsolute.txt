@@ -1,0 +1,16 @@
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\bin\Debug\net8.0\HttpService.deps.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\bin\Debug\net8.0\HttpService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\bin\Debug\net8.0\HttpService.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\bin\Debug\net8.0\LoggerService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\bin\Debug\net8.0\LoggerService.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.csproj.AssemblyReference.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.AssemblyInfoInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.AssemblyInfo.cs
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.csproj.CoreCompileInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.sourcelink.json
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpServ.4765862B.Up2Date
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\refint\HttpService.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\HttpService.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\obj\Debug\net8.0\ref\HttpService.dll
