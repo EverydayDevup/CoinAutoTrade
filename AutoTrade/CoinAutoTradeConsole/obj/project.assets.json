@@ -579,19 +579,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\every\\.nuget\\packages\\": {}
+    "C:\\Users\\hyodoll\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\CoinAutoTradeConsole\\CoinAutoTradeConsole.csproj",
+      "projectUniqueName": "C:\\Project\\AutoTrade\\CoinAutoTradeConsole\\CoinAutoTradeConsole.csproj",
       "projectName": "CoinAutoTradeConsole",
-      "projectPath": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\CoinAutoTradeConsole\\CoinAutoTradeConsole.csproj",
-      "packagesPath": "C:\\Users\\every\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\CoinAutoTradeConsole\\obj\\",
+      "projectPath": "C:\\Project\\AutoTrade\\CoinAutoTradeConsole\\CoinAutoTradeConsole.csproj",
+      "packagesPath": "C:\\Users\\hyodoll\\.nuget\\packages\\",
+      "outputPath": "C:\\Project\\AutoTrade\\CoinAutoTradeConsole\\obj\\",
       "projectStyle": "PackageReference",
+      "UsingMicrosoftNETSdk": false,
       "configFilePaths": [
-        "C:\\Users\\every\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\hyodoll\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -603,8 +604,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\CoinAutoTradeService\\CoinAutoTradeService.csproj": {
-              "projectPath": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\CoinAutoTradeService\\CoinAutoTradeService.csproj"
+            "C:\\Project\\AutoTrade\\CoinAutoTradeService\\CoinAutoTradeService.csproj": {
+              "projectPath": "C:\\Project\\AutoTrade\\CoinAutoTradeService\\CoinAutoTradeService.csproj"
             }
           }
         }

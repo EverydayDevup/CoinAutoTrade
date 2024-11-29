@@ -1,20 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\LoggerService\\LoggerService.csproj": {}
+    "C:\\Project\\AutoTrade\\LoggerService\\LoggerService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\LoggerService\\LoggerService.csproj": {
+    "C:\\Project\\AutoTrade\\LoggerService\\LoggerService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\LoggerService\\LoggerService.csproj",
+        "projectUniqueName": "C:\\Project\\AutoTrade\\LoggerService\\LoggerService.csproj",
         "projectName": "LoggerService",
-        "projectPath": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\LoggerService\\LoggerService.csproj",
-        "packagesPath": "C:\\Users\\every\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\every\\OneDrive\\바탕 화면\\Project\\AutoTrade\\AutoTrade\\LoggerService\\obj\\",
+        "projectPath": "C:\\Project\\AutoTrade\\LoggerService\\LoggerService.csproj",
+        "packagesPath": "C:\\Users\\hyodoll\\.nuget\\packages\\",
+        "outputPath": "C:\\Project\\AutoTrade\\LoggerService\\obj\\",
         "projectStyle": "PackageReference",
+        "UsingMicrosoftNETSdk": false,
         "configFilePaths": [
-          "C:\\Users\\every\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\hyodoll\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

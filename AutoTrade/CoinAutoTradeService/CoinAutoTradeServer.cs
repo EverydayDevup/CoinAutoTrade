@@ -1,4 +1,5 @@
-﻿using HttpService;
+﻿using CoinAutoTrade.Packet;
+using HttpService;
 
 namespace CoinAutoTrade;
 
@@ -9,11 +10,22 @@ public class CoinAutoTradeServer : HttpServiceServer
     protected override string LogDirectoryPath => $"{nameof(CoinAutoTradeServer)}";
     
     private readonly CoinTradeDataManager _coinTradeDataManager = new();
+
+    private readonly Dictionary<ECoinAutoTradeRequestType, ResponsePacket<,>> _dicPackets = new()
+    {
+        { ECoinAutoTradeRequestType.UserMarketInfo, new UserMarketInfo()}
+    };
     
     protected override Tuple<int, string> GenerateResponseData(int type, string data)
     {
         var code = ECoinAutoTradeResponseCode.NotFoundRequestType;
         var body = string.Empty;
+
+        if (_dicPackets.TryGetValue((ECoinAutoTradeRequestType)type, out var packet))
+        {
+            return packet.MakeResponse(data);
+        }
+        
         switch ((ECoinAutoTradeRequestType)type)
         {
             case ECoinAutoTradeRequestType.StartCoinAutoTrade:

@@ -20,3 +20,25 @@ C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeP
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.pdb
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.genruntimeconfig.cache
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\ref\CoinAutoTradeProcess.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\CoinAutoTradeProcess.exe
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\CoinAutoTradeProcess.deps.json
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\CoinAutoTradeProcess.runtimeconfig.json
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\CoinAutoTradeProcess.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\CoinAutoTradeProcess.pdb
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\Telegram.Bot.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\HttpService.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\LoggerService.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\HttpService.pdb
+C:\Project\AutoTrade\CoinAutoTradeProcess\bin\Debug\net8.0\LoggerService.pdb
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.csproj.AssemblyReference.cache
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.AssemblyInfoInputs.cache
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.AssemblyInfo.cs
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.csproj.CoreCompileInputs.cache
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.sourcelink.json
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAuto.D99DCC3A.Up2Date
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\refint\CoinAutoTradeProcess.dll
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.pdb
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\CoinAutoTradeProcess.genruntimeconfig.cache
+C:\Project\AutoTrade\CoinAutoTradeProcess\obj\Debug\net8.0\ref\CoinAutoTradeProcess.dll

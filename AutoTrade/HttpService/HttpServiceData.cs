@@ -16,5 +16,5 @@ public class ResponseData(int type)
 {
     public int Type { get; init; } = type;
     public int Code { get; set; } = 0;
-    public string Body { get; set; }
+    public string? Body { get; set; } = string.Empty;
 }

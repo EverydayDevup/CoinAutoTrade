@@ -1,0 +1,12 @@
+C:\Project\AutoTrade\SharedClass\bin\Debug\net8.0\SharedClass.deps.json
+C:\Project\AutoTrade\SharedClass\bin\Debug\net8.0\SharedClass.dll
+C:\Project\AutoTrade\SharedClass\bin\Debug\net8.0\SharedClass.pdb
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.GeneratedMSBuildEditorConfig.editorconfig
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.AssemblyInfoInputs.cache
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.AssemblyInfo.cs
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.csproj.CoreCompileInputs.cache
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.sourcelink.json
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.dll
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\refint\SharedClass.dll
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\SharedClass.pdb
+C:\Project\AutoTrade\SharedClass\obj\Debug\net8.0\ref\SharedClass.dll

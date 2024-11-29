@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = HttpService
-build_property.ProjectDir = C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\HttpService\
+build_property.ProjectDir = C:\Project\AutoTrade\HttpService\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

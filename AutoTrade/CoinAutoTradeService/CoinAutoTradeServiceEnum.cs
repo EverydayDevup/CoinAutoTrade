@@ -2,7 +2,8 @@
 
 public enum ECoinAutoTradeRequestType
 {
-    StartCoinAutoTrade = 1,
+    UserMarketInfo = 1,
+    StartCoinAutoTrade = 2,
 }
 
 public enum ECoinAutoTradeResponseCode

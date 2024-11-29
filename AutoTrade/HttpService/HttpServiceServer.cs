@@ -12,10 +12,20 @@ public abstract class HttpServiceServer
     private readonly HttpServiceUrl _httpServiceUrl;
     private readonly HttpListener _listener = new ();
     protected LoggerService.LoggerService LoggerService { get; }= new ();
-
     public bool IsRunning => _listener.IsListening;
+    private string LogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), Name);
 
-    protected virtual string LogDirectoryPath => $"{nameof(HttpServiceServer)}";
+    private string _name = string.Empty;
+    private string Name
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_name))
+                _name = GetType().Name;
+
+            return _name;
+        }
+    }
 
     protected HttpServiceServer(string ip, int port)
     {
@@ -36,7 +46,7 @@ public abstract class HttpServiceServer
         try
         {
             _listener.Start();
-            LoggerService.ConsoleLog($"[{GetType().Name}] {nameof(HttpServiceServer)} is running : {_httpServiceUrl.Url}");
+            LoggerService.ConsoleLog($"[{Name}] Server is running : {_httpServiceUrl.Url}");
 
             while (true)
             {
@@ -56,7 +66,7 @@ public abstract class HttpServiceServer
                     if (requestData != null)
                     {
                         var requestLogMessage =
-                            $"[{GetType().Name}] Request : {nameof(requestData.Type)} = {requestData.Type}" +
+                            $"[{Name}] Request : {nameof(requestData.Type)} = {requestData.Type}" +
                             $" {nameof(requestData.Body)} = {requestData.Body}";
                         
                         LoggerService.ConsoleLog(requestLogMessage);
@@ -73,7 +83,7 @@ public abstract class HttpServiceServer
                         context.Response.OutputStream.Close();
 
                         var responseLogMessage =
-                            $"[{GetType().Name}] Response : {nameof(responseData.Type)} = {responseData.Type} " +
+                            $"[{Name}] Response : {nameof(responseData.Type)} = {responseData.Type} " +
                             $"{nameof(responseData.Code)} = {responseData.Code} " +
                             $"{nameof(responseData.Body)} = {responseData.Body}";
                         
@@ -85,7 +95,7 @@ public abstract class HttpServiceServer
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.OutputStream.Close();
                         var requestErrorLogMessage =
-                            $"{nameof(HttpServiceServerRun)} Request : {HttpStatusCode.BadRequest} {nameof(requestBody)} : {requestBody}";
+                            $"{Name} Request : {HttpStatusCode.BadRequest} {nameof(requestBody)} : {requestBody}";
                         
                         LoggerService.ConsoleError(requestErrorLogMessage);
                         LoggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
@@ -97,7 +107,7 @@ public abstract class HttpServiceServer
                     context.Response.OutputStream.Close();
                     
                     var requestErrorLogMessage =
-                        $"{nameof(HttpServiceServerRun)} Request : {HttpStatusCode.MethodNotAllowed} {nameof(request.HttpMethod)} : {request.HttpMethod}";
+                        $"{Name} Request : {HttpStatusCode.MethodNotAllowed} {nameof(request.HttpMethod)} : {request.HttpMethod}";
                     
                     LoggerService.ConsoleError(requestErrorLogMessage);
                     LoggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);

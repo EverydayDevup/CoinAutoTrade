@@ -37,13 +37,12 @@ public class LoggerService : IDisposable
     /// <summary>
     /// 파일에 로그를 남김
     /// </summary>
-    public void FileLog(string directoryName, string message)
+    public void FileLog(string directoryPath, string message)
     {
-        if (!_dicFileLogs.TryGetValue(directoryName, out var file))
+        if (!_dicFileLogs.TryGetValue(directoryPath, out var file))
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            file = new LoggerServiceFileLog(Path.Combine(currentDirectory, directoryName), _fileLogWriteTimeMinutes);
-            _dicFileLogs.Add(directoryName, file);
+            file = new LoggerServiceFileLog(directoryPath, _fileLogWriteTimeMinutes);
+            _dicFileLogs.Add(directoryPath, file);
         }
         
         file.Log(message);

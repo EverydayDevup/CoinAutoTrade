@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpService", "HttpService\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinAutoTradeConsole", "CoinAutoTradeConsole\CoinAutoTradeConsole.csproj", "{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedClass", "SharedClass\SharedClass.csproj", "{6380D0D5-124A-4A1B-8766-015C051FD09A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,5 +47,9 @@ Global
 		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1AE4138-AD85-4A5B-A056-9B1D77D80A7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6380D0D5-124A-4A1B-8766-015C051FD09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6380D0D5-124A-4A1B-8766-015C051FD09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6380D0D5-124A-4A1B-8766-015C051FD09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6380D0D5-124A-4A1B-8766-015C051FD09A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
