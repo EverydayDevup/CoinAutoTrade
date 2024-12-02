@@ -30,6 +30,7 @@
       <None Remove="CoinAutoTradeService\**" />
       <None Remove="CoinAutoTradeClient\**" />
       <None Remove="CoinAutoTradeConsole\**" />
+      <None Remove="SharedClass\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -55,6 +56,7 @@
       <Compile Remove="CoinAutoTradeService\**" />
       <Compile Remove="CoinAutoTradeClient\**" />
       <Compile Remove="CoinAutoTradeConsole\**" />
+      <Compile Remove="SharedClass\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -72,6 +74,11 @@
       <EmbeddedResource Remove="CoinAutoTradeService\**" />
       <EmbeddedResource Remove="CoinAutoTradeClient\**" />
       <EmbeddedResource Remove="CoinAutoTradeConsole\**" />
+      <EmbeddedResource Remove="SharedClass\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="SharedClass\SharedClass.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using CoinAutoTrade.Packet;
+using SharedClass;
 
 namespace HttpService;
 
@@ -11,8 +13,7 @@ public abstract class HttpServiceServer
 {
     private readonly HttpServiceUrl _httpServiceUrl;
     private readonly HttpListener _listener = new ();
-    protected LoggerService.LoggerService LoggerService { get; }= new ();
-    public bool IsRunning => _listener.IsListening;
+    private LoggerService.LoggerService LoggerService { get; } = new ();
     private string LogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), Name);
 
     private string _name = string.Empty;
@@ -26,6 +27,10 @@ public abstract class HttpServiceServer
             return _name;
         }
     }
+
+    private bool _isInit = false;
+    protected Dictionary<int, HttpServiceProtocol<HttpServiceServer>> DicHttpServiceProtocols { get; } = new();
+    public bool IsRunning => _listener.IsListening;
 
     protected HttpServiceServer(string ip, int port)
     {
@@ -41,10 +46,21 @@ public abstract class HttpServiceServer
         HttpServiceServerRun();
     }
 
+    protected virtual void Init()
+    {
+        
+    }
+
     private void HttpServiceServerRun()
     {
         try
         {
+            if (!_isInit)
+            {
+                Init();
+                _isInit = true;
+            }
+            
             _listener.Start();
             LoggerService.ConsoleLog($"[{Name}] Server is running : {_httpServiceUrl.Url}");
 
@@ -128,14 +144,21 @@ public abstract class HttpServiceServer
 
     private ResponseData Parse(RequestData requestData)
     {
-        var (code, body) = GenerateResponseData(requestData.Type, requestData.Body!);
+        var (code, body) = GenerateResponseData(requestData.Type, requestData.Body);
         var response = new ResponseData(requestData.Type)
         {
             Code = code,
-            Body = body
+            Body = body == null ? null : JsonSerializer.Serialize(body)
         };
+        
         return response;
     }
 
-    protected virtual Tuple<int, string> GenerateResponseData(int type, string data) => new (0, string.Empty);
+    private Tuple<int, ResponseBody?> GenerateResponseData(int type, string? requestBody)
+    {
+        if (DicHttpServiceProtocols.TryGetValue(type, out var func))
+            return func.MakeResponse(requestBody);
+
+        return new Tuple<int, ResponseBody?>((int)EResponseCode.Unknown, null);
+    }
 }

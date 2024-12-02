@@ -10,6 +10,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CoinAutoTradeService\CoinAutoTradeService.csproj" />
+      <ProjectReference Include="..\HttpService\HttpService.csproj" />
+      <ProjectReference Include="..\LoggerService\LoggerService.csproj" />
+      <ProjectReference Include="..\SharedClass\SharedClass.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
 </Project>

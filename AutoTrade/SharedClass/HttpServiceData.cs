@@ -1,4 +1,4 @@
-﻿namespace HttpService;
+﻿namespace SharedClass;
 
 /// <summary>
 /// 서버에 요청할 데이터
@@ -15,6 +15,16 @@ public class RequestData(int type, string body)
 public class ResponseData(int type)
 {
     public int Type { get; init; } = type;
-    public int Code { get; set; } = 0;
-    public string? Body { get; set; } = string.Empty;
+    public int Code { get; init; } = 0;
+    public string? Body { get; init; } = string.Empty;
+}
+
+public abstract class RequestBody 
+{
+    
+}
+
+public abstract class ResponseBody
+{
+    
 }

@@ -1,9 +1,12 @@
-﻿namespace CoinAutoTrade.Packet;
+﻿using HttpService;
+using SharedClass;
 
-public class UserMarketInfo : ResponsePacket<,>
+namespace CoinAutoTrade.Packet;
+
+public class UserMarketInfo(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer>(server)
 {
-    public Tuple<int, string> MakeResponse(string data)
+    public override Tuple<int, ResponseBody?> MakeResponse(string? requestBody)
     {
-        return Tuple.Create<int, string>(1, data);
+        return new Tuple<int, ResponseBody?>(-1, null);
     }
 }

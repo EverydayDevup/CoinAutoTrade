@@ -1,6 +1,7 @@
 ﻿using AutoTrade.Config;
 using AutoTrade.Market;
 using Newtonsoft.Json;
+using SharedClass;
 
 namespace AutoTrade.Logic;
 

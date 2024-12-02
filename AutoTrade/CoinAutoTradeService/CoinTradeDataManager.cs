@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SharedClass;
 
 namespace CoinAutoTrade;
 
@@ -58,7 +59,7 @@ public class CoinTradeDataManager
         return true;
     }
 
-    public void Save(string marketName)
+    private void Save(string marketName)
     {
         if (!_dicMarketCoinTradeData.TryGetValue(marketName, out var dicCoinTradeData))
         {

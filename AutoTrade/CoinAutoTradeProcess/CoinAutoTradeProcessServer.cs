@@ -10,16 +10,4 @@ public class CoinAutoTradeProcessServer : HttpServiceServer
     public CoinAutoTradeProcessServer(string ip, int port) : base(ip, port) {}
 
     public CoinAutoTradeProcessServer(int port) : base(port) {}
-
-    protected override Tuple<int, string> GenerateResponseData(int type, string data)
-    {
-        switch (type)
-        {
-            case 1:
-                return new Tuple<int, string>(0, JsonSerializer.Serialize(new { Data = "test"}));
-                break;
-        }
-
-        return base.GenerateResponseData(type, data);
-    }
 }

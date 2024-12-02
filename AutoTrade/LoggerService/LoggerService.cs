@@ -16,13 +16,27 @@ public class LoggerService : IDisposable
     public LoggerService()
     {
         _telegramLog = null;
+        Update();
     }
 
     public LoggerService(string telegramApiToken, long telegramChatId)
     {
         _telegramLog = new LoggerServiceTelegramLog(telegramApiToken, telegramChatId);
+        Update();
     }
 
+    private async void Update()
+    {
+        while (true)
+        {
+            await Task.Delay(_fileLogWriteTimeMinutes * 60 * 1000);
+            
+            foreach (var (_, fileLog) in _dicFileLogs)
+                fileLog.Save();
+        }
+        // ReSharper disable once FunctionNeverReturns
+    }
+    
     /// <summary>
     /// 텔레그램에 로그를 남김
     /// </summary>
@@ -72,7 +86,7 @@ public class LoggerService : IDisposable
     {
         _loggerServiceConsole.Debug(message);
     }
-
+    
     public void Dispose()
     {
         if (_isDisposed)

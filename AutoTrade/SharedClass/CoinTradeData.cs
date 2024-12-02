@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace CoinAutoTrade;
+namespace SharedClass;
 
 public class CoinTradeData
 {

@@ -76,7 +76,8 @@
       },
       "HttpService/1.0.0": {
         "dependencies": {
-          "LoggerService": "1.0.0"
+          "LoggerService": "1.0.0",
+          "SharedClass": "1.0.0"
         },
         "runtime": {
           "HttpService.dll": {
@@ -91,6 +92,14 @@
         },
         "runtime": {
           "LoggerService.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "SharedClass/1.0.0": {
+        "runtime": {
+          "SharedClass.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -178,6 +187,11 @@
       "sha512": ""
     },
     "LoggerService/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SharedClass/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

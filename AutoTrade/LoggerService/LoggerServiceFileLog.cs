@@ -15,20 +15,18 @@ internal class LoggerServiceFileLog(string directoryPath, int writeTimeMinutes)
     public void Log(string message)
     {
         _stringBuilder.AppendLine(GetMessage(message));
-
-        if (_nextWriteTime == DateTime.MinValue)
-            _nextWriteTime = DateTime.Now.AddMinutes(writeTimeMinutes);
-
-        if (_nextWriteTime >= DateTime.Now)
-            return;
-        
-        Save();
     }
 
     public void Save()
     {
         try
         {
+            if (_nextWriteTime == DateTime.MinValue)
+                _nextWriteTime = DateTime.Now.AddMinutes(writeTimeMinutes);
+            
+            if (_nextWriteTime >= DateTime.Now)
+                return;
+            
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
         

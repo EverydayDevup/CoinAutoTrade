@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using SharedClass;
 
 namespace HttpService;
 
@@ -10,23 +11,34 @@ namespace HttpService;
 public class HttpServiceClient
 {
     private readonly HttpServiceUrl _httpServiceUrl;
-    private readonly LoggerService.LoggerService _loggerService = new ();
+    private readonly LoggerService.LoggerService _loggerService;
+    private bool IsSending { get; set; } = false;
+    private byte RetryCount { get; set; } = 0;
+    private byte MaxRetryCount { get; set; } = 0;
 
-    public HttpServiceClient(string ip, int port)
+    public HttpServiceClient(string ip, int port, string telegramApiToken, long telegramChatId)
     {
+        _loggerService = new LoggerService.LoggerService(telegramApiToken, telegramChatId);
         _httpServiceUrl = new HttpServiceUrl(ip, port);
     }
 
-    public HttpServiceClient(int port)
+    public HttpServiceClient(int port, string telegramApiToken, long telegramChatId)
     {
+        _loggerService = new LoggerService.LoggerService(telegramApiToken, telegramChatId);
         _httpServiceUrl = new HttpServiceUrl(port);
     }
 
-    public async Task<T?> Request<T, TK>(int type, TK data)
+    public async Task<T?> Request<T, TK>(int type, TK data, Action<int, int>? failAction = null) where T : ResponseBody where TK : RequestBody
     {
         using var client = new HttpClient();
         try
         {
+            while (IsSending)
+                await Task.Delay(100);
+
+            IsSending = true;
+            RetryCount = 0;
+            
             var requestData = new RequestData(type,  JsonSerializer.Serialize(data));
             var requestJson = JsonSerializer.Serialize(requestData);
             
@@ -39,9 +51,21 @@ public class HttpServiceClient
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                _loggerService.ConsoleError($"[Response] Error : " +
-                                            $"{nameof(response.StatusCode)} = {response.StatusCode}");
+                // 3번 재시도 후에도 에러가 났다면 실패처리
+                do
+                {
+                    RetryCount++;
+                    response = await client.PostAsync(_httpServiceUrl.Url, content);
+                    _loggerService.ConsoleLog($"[Response] Fail : {nameof(RetryCount)} : {RetryCount}" + 
+                                              $"{nameof(response.StatusCode)} = {response.StatusCode}");
 
+                } while (response.StatusCode != HttpStatusCode.OK && RetryCount < MaxRetryCount);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                OnError($"[Response] Error : {nameof(RetryCount)} : {RetryCount} " +
+                        $"{nameof(response.StatusCode)} = {response.StatusCode}", type, (int)EResponseCode.Unknown, failAction);
                 return default;
             }
 
@@ -49,20 +73,41 @@ public class HttpServiceClient
             var responseJson = await response.Content.ReadAsStringAsync();
             var responseData = JsonSerializer.Deserialize<ResponseData>(responseJson);
             
-            if (responseData == null)
-                return default;
-            
-            _loggerService.ConsoleLog($"[Response] : " +
-                                        $"{nameof(responseData.Type)} = {responseData.Type} " +
-                                        $"{nameof(responseData.Code)} = {responseData.Code} " +
-                                        $"{nameof(responseData.Body)} = {responseData.Body} ");
+            if (responseData != null && !string.IsNullOrEmpty(responseData.Body))
+            {
+                _loggerService.ConsoleLog($"[Response] : " +
+                                          $"{nameof(responseData.Type)} = {responseData.Type} " +
+                                          $"{nameof(responseData.Code)} = {responseData.Code} " +
+                                          $"{nameof(responseData.Body)} = {responseData.Body} ");
+                
+                IsSending = false;
+                return responseData.Code != (int)EResponseCode.Success ? default : JsonSerializer.Deserialize<T>(responseData.Body);
+            }
 
-            return responseData.Code != 0 ? default : JsonSerializer.Deserialize<T>(responseData.Body);
-        }
-        catch(Exception ex)
-        {
-            _loggerService.ConsoleError($"{nameof(HttpServiceClient)} : {ex.Message}");
+            if (responseData == null)
+            {
+                OnError($"[Response] Error : {nameof(responseData)} is null", type, (int)EResponseCode.Unknown, failAction);
+            }
+            else
+            {
+                OnError($"[Response] Error : {nameof(responseData.Code)} = {responseData.Code}", type, responseData.Code, failAction);
+            }
+            
+            IsSending = false;
             return default;
         }
+        catch (Exception ex)
+        {
+            OnError($"{nameof(HttpServiceClient)} : {ex.Message}", type, (int)EResponseCode.Unknown, failAction);
+            return default;
+        }
+    }
+
+    private void OnError(string message, int type, int code, Action<int, int>? failAction = null)
+    {
+        IsSending = false;
+        _loggerService.ConsoleError(message);
+        _loggerService.Telegram(message);
+        failAction?.Invoke(type, code);
     }
 }

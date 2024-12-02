@@ -1,44 +1,108 @@
 ﻿[
   {
-    "Symbol" : "ATOM",
+    "Symbol" : "STX",
     "TotalAmount" : 400000,
-    "Amount" : 40000,
-    "BuyRate" : 15,
-    "SellRate" : 6
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
   },
   {
-    "Symbol" : "AVAX",
+    "Symbol" : "BEAM",
     "TotalAmount" : 400000,
-    "Amount" : 40000,
-    "BuyRate" : 15,
-    "SellRate" : 6
-  },
-  {
-    "Symbol" : "ARB",
-    "TotalAmount" : 400000,
-    "Amount" : 40000,
-    "BuyRate" : 15,
-    "SellRate" : 6
-  },
-  {
-    "Symbol" : "FTM",
-    "TotalAmount" : 400000,
-    "Amount" : 40000,
-    "BuyRate" : 15,
-    "SellRate" : 6
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
   },
   {
     "Symbol" : "LDO",
     "TotalAmount" : 400000,
-    "Amount" : 40000,
-    "BuyRate" : 15,
-    "SellRate" : 6
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
   },
   {
-    "Symbol" : "DOT",
+    "Symbol" : "GLM",
     "TotalAmount" : 400000,
-    "Amount" : 40000,
-    "BuyRate" : 15,
-    "SellRate" : 6
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "SEI",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "AKT",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "OBSR",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "ONDO",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "BIOT",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "MANA",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "TEMCO",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "MINA",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "IMX",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "FET",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
+  },
+  {
+    "Symbol" : "BRETT",
+    "TotalAmount" : 400000,
+    "Amount" : 50000,
+    "BuyRate" : 10,
+    "SellRate" : 8
   }
 ]
+

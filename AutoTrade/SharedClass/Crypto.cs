@@ -1,10 +1,15 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace AutoTrade.Logic;
+namespace SharedClass;
 
 public static class Crypto
 {
+    /// <summary>
+    /// AES128 암복호화를 위한 키 값
+    /// </summary>
+    public const byte PasswordLength = 16;
+    
     public static string Encrypt(string plainText, string password)
     {
         using var aes = Aes.Create();
