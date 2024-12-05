@@ -16,6 +16,8 @@ public abstract class HttpServiceServer
     private LoggerService.LoggerService LoggerService { get; } = new ();
     private string LogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), Name);
 
+    private Dictionary<string, string> _dicKeys = new();
+    
     private string _name = string.Empty;
     private string Name
     {
@@ -83,14 +85,21 @@ public abstract class HttpServiceServer
                     {
                         var requestLogMessage =
                             $"[{Name}] Request : {nameof(requestData.Type)} = {requestData.Type}" +
+                            $" {nameof(requestData.Id)} = {requestData.Id}" +
                             $" {nameof(requestData.Body)} = {requestData.Body}";
                         
                         LoggerService.ConsoleLog(requestLogMessage);
                         LoggerService.FileLog(LogDirectoryPath, requestLogMessage);
-
+                        
                         var responseData = Parse(requestData);
                         var responseJson = JsonSerializer.Serialize(responseData);
                         
+                        if (requestData.Type != (int)EPacketType.Login)
+                        {
+                            if (_dicKeys.TryGetValue(requestData.Id, out var key))
+                                responseJson = Crypto.Encrypt(responseJson, key);
+                        }
+
                         var buffer = Encoding.UTF8.GetBytes(responseJson);
                         context.Response.StatusCode = (int)HttpStatusCode.OK;
                         context.Response.ContentType = HttpServiceUtil.ContentType;
@@ -144,21 +153,34 @@ public abstract class HttpServiceServer
 
     private ResponseData Parse(RequestData requestData)
     {
-        var (code, body) = GenerateResponseData(requestData.Type, requestData.Body);
+        var requestBody = requestData.Body;
+        if (requestBody != null && requestData.Type != (int)EPacketType.Login)
+        {
+            if (_dicKeys.TryGetValue(requestData.Id, out var key))
+                requestBody = Crypto.Decrypt(requestBody, key);
+        }
+                
+        var (code, body) = GenerateResponseData(requestData.Type, requestData.Id, requestBody);
+        
         var response = new ResponseData(requestData.Type)
         {
             Code = code,
-            Body = body == null ? null : JsonSerializer.Serialize(body)
+            Body = body
         };
         
         return response;
     }
 
-    private Tuple<int, ResponseBody?> GenerateResponseData(int type, string? requestBody)
+    private Tuple<int, string?> GenerateResponseData(int type, string id, string? requestBody)
     {
         if (DicHttpServiceProtocols.TryGetValue(type, out var func))
-            return func.MakeResponse(requestBody);
+            return func.MakeResponse(id, requestBody);
 
-        return new Tuple<int, ResponseBody?>((int)EResponseCode.Unknown, null);
+        return new Tuple<int, string?>((int)EResponseCode.Unknown, null);
+    }
+    
+    public void SetKey(string id, string key)
+    {
+        _dicKeys.TryAdd(id, key);
     }
 }

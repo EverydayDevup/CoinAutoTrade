@@ -1,15 +1,29 @@
-﻿using CoinAutoTrade;
-using HttpService;
+﻿using HttpService;
+using SharedClass;
 
 namespace CoinAutoTradeClient;
 
-public class CoinAutoTradeClient
+public sealed class CoinAutoTradeClient : HttpServiceClient
 {
-    //private readonly HttpServiceClient _serviceClient = new ("127.0.0.1", CoinAutoTradeService.Port);
-
-    public async Task StartCoinAutoTradeAsync()
+    public CoinAutoTradeClient(EMarketType marketType, string id, string ip, int port, string telegramApiToken,
+        long telegramChatId) : base(ip, port, telegramApiToken, telegramChatId)
     {
-        //var result = await _serviceClient.Request<string, string>((int)ECoinAutoTradeRequestType.StartCoinAutoTrade, "Bithum");
+        Id = $"{marketType}_{id}_{DateTime.Now.Ticks}";
+    }
+     
+    public async Task<bool> RequestLoginAsync()
+    {
+        var res = await Request<LoginInfoResponse, RequestBody>((int)EPacketType.Login, new RequestBody());
+        if (res == null)
+            return false;
         
+        Key = res.Key;
+        return true;
+    }
+    
+    public async Task<bool> RequestAliveAsync()
+    {
+        var res = await Request<ResponseBody, RequestBody>((int)EPacketType.Alive, new RequestBody());
+        return res != null;
     }
 }

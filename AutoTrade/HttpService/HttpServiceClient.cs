@@ -15,14 +15,16 @@ public class HttpServiceClient
     private bool IsSending { get; set; } = false;
     private byte RetryCount { get; set; } = 0;
     private byte MaxRetryCount { get; set; } = 0;
+    protected string Key { get; set; } = string.Empty;
+    protected virtual string Id { get; set; }
 
-    public HttpServiceClient(string ip, int port, string telegramApiToken, long telegramChatId)
+    protected HttpServiceClient(string ip, int port, string telegramApiToken, long telegramChatId)
     {
         _loggerService = new LoggerService.LoggerService(telegramApiToken, telegramChatId);
         _httpServiceUrl = new HttpServiceUrl(ip, port);
     }
 
-    public HttpServiceClient(int port, string telegramApiToken, long telegramChatId)
+    protected HttpServiceClient(int port, string telegramApiToken, long telegramChatId)
     {
         _loggerService = new LoggerService.LoggerService(telegramApiToken, telegramChatId);
         _httpServiceUrl = new HttpServiceUrl(port);
@@ -38,12 +40,17 @@ public class HttpServiceClient
 
             IsSending = true;
             RetryCount = 0;
+
+            var requestBody = JsonSerializer.Serialize(data);
+            if (type != (int)EPacketType.Login)
+                requestBody = Crypto.Encrypt(requestBody, Key);
             
-            var requestData = new RequestData(type,  JsonSerializer.Serialize(data));
+            var requestData = new RequestData(type, Id, requestBody);
             var requestJson = JsonSerializer.Serialize(requestData);
             
             _loggerService.ConsoleLog($"[Request] : " +
                                         $"{nameof(requestData.Type)} = {requestData.Type} " +
+                                        $"{nameof(requestData.Id)} = {requestData.Id} " +
                                         $"{nameof(requestData.Body)} = {requestData.Body}");
             
             var content = new StringContent(requestJson, Encoding.UTF8, HttpServiceUtil.ContentType);
@@ -71,6 +78,10 @@ public class HttpServiceClient
 
             // 응답 읽기
             var responseJson = await response.Content.ReadAsStringAsync();
+            
+            if (type != (int)EPacketType.Login)
+                responseJson = Crypto.Decrypt(responseJson, Key);
+            
             var responseData = JsonSerializer.Deserialize<ResponseData>(responseJson);
             
             if (responseData != null && !string.IsNullOrEmpty(responseData.Body))
@@ -103,11 +114,11 @@ public class HttpServiceClient
         }
     }
 
-    private void OnError(string message, int type, int code, Action<int, int>? failAction = null)
+    private async void OnError(string message, int type, int code, Action<int, int>? failAction = null)
     {
         IsSending = false;
         _loggerService.ConsoleError(message);
-        _loggerService.Telegram(message);
+        await _loggerService.TelegramAsync(message);
         failAction?.Invoke(type, code);
     }
 }

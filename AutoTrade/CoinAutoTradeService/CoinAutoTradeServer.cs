@@ -14,6 +14,8 @@ public class CoinAutoTradeServer : HttpServiceServer
     protected override void Init()
     {
         base.Init();
+        DicHttpServiceProtocols.Add((int)EPacketType.Alive, new Alive(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.Login, new LoginInfo(this));
         DicHttpServiceProtocols.Add((int)EPacketType.UserMarketInfo, new UserMarketInfo(this));
     }
 

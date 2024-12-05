@@ -40,7 +40,7 @@ public class LoggerService : IDisposable
     /// <summary>
     /// 텔레그램에 로그를 남김
     /// </summary>
-    public async void Telegram(string message)
+    public async Task TelegramAsync(string message)
     {
         if (_telegramLog == null)
             return;

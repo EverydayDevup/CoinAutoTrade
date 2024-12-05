@@ -8,7 +8,6 @@ public enum EMarketType
 public class UserMarketInfoRequest : RequestBody
 {
     public EMarketType MarketType { get; set; }
-    public string UserId { get; set; } = string.Empty;
 }
 
 public class UserMarketInfoResponse : ResponseBody
