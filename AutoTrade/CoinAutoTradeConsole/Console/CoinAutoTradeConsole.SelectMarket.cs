@@ -18,8 +18,7 @@ public static partial class CoinAutoTradeConsole
         var marketList = new List<EMarketType>();
         foreach (EMarketType type in Enum.GetValues(typeof(EMarketType)))
             marketList.Add(type);
-        var marketMenu = SelectMenu("Select market type : ", marketList);
-        var marketType = marketList[marketMenu];
+        var marketType = SelectMenu("Select market type : ", marketList);
         
         var userId = GetText("Input your user ID : ");
         
@@ -44,9 +43,9 @@ public static partial class CoinAutoTradeConsole
             menuList.Add(ELoadCoinAutoTradeConfigMenu.Create);
         }
         
-        var selectMenu = SelectMenu("Select coin auto trade config menu : ", menuList);
+        var menu = SelectMenu("Select coin auto trade config menu : ", menuList);
 
-        switch (menuList[selectMenu])
+        switch (menu)
         {
             case ELoadCoinAutoTradeConfigMenu.Create:
                 return await CreateUserDataAutoTradeConfigAsync(marketType, userId, filePath);

@@ -4,13 +4,12 @@ namespace CoinAutoTradeClient;
 
 public static partial class CoinAutoTradeConsole
 {
-    private static LoggerService.LoggerService? LoggerService { get; set; }
+    private static LoggerService.LoggerService LoggerService { get; set; } = new();
     private static CoinAutoTradeMarketConfig? CoinAutoTradeMarketConfig { get; set; }
     private static CoinAutoTradeClient? CoinAutoTradeClient { get; set; }
 
     public static async Task Main()
     {
-        LoggerService = new LoggerService.LoggerService();
         // 마켓 정보를 가져옴
         CoinAutoTradeMarketConfig = await SelectCoinAutoTradeMarket();
         if (CoinAutoTradeMarketConfig == null)
@@ -30,12 +29,14 @@ public static partial class CoinAutoTradeConsole
 
         var login = await CoinAutoTradeClient.RequestLoginAsync();
         if (!login)
+        {
             LoggerService.ConsoleLog($"{nameof(CoinAutoTradeClient.RequestLoginAsync)} error.");
-
-        var alive = await CoinAutoTradeClient.RequestAliveAsync();
-        if (!alive)
-            LoggerService.ConsoleLog($"{nameof(CoinAutoTradeClient)} error.");
-
-        Console.ReadLine();
+            LoggerService.ConsoleLog("Please enter the key to end the process.");
+            Console.ReadLine();
+        }
+        else
+        {
+            await ProcessAsync();
+        }
     }
 }

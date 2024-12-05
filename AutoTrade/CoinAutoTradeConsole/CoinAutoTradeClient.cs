@@ -8,7 +8,7 @@ public sealed class CoinAutoTradeClient : HttpServiceClient
     public CoinAutoTradeClient(EMarketType marketType, string id, string ip, int port, string telegramApiToken,
         long telegramChatId) : base(ip, port, telegramApiToken, telegramChatId)
     {
-        Id = $"{marketType}_{id}_{DateTime.Now.Ticks}";
+        Id = $"{marketType}_{id}";
     }
      
     public async Task<bool> RequestLoginAsync()
@@ -19,6 +19,12 @@ public sealed class CoinAutoTradeClient : HttpServiceClient
         
         Key = res.Key;
         return true;
+    }
+    
+    public async Task<UserMarketInfoResponse?> RequestUserMarketInfoAsync()
+    {
+        var res = await Request<UserMarketInfoResponse, RequestBody>((int)EPacketType.UserMarketInfo, new RequestBody());
+        return res;
     }
     
     public async Task<bool> RequestAliveAsync()

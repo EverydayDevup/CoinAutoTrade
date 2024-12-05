@@ -4,12 +4,11 @@ namespace CoinAutoTradeClient;
 
 public static partial class CoinAutoTradeConsole
 {
-    private static int SelectMenu<T>(string menuMessage, List<T> menus) where T : Enum
+    private static T SelectMenu<T>(string menuMessage, List<T> menus) where T : Enum
     {
-        var menu = -1;
+        var index = -1;
         do
         {
-            LoggerService.ConsoleLog("================================================");
             LoggerService.ConsoleLog(menuMessage);
             for (var i = 0; i < menus.Count; i++)
                 LoggerService.ConsoleLog($"{i+1}.{menus[i].ToString()}");
@@ -21,18 +20,17 @@ public static partial class CoinAutoTradeConsole
             {
                 select -= 1;
                 if (select >= 0 && select < menus.Count)
-                    menu = select;
+                    index = select;
             }
             else
             {
-                menu = -1;
+                index = -1;
                 LoggerService.ConsoleLog("Please select again.");
             }
 
-        } while (menu == -1);
-        LoggerService.ConsoleLog("================================================");
+        } while (index == -1);
         
-        return menu;
+        return menus[index];
     }
     
     /// <summary>

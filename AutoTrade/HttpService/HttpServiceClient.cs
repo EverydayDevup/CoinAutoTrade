@@ -42,16 +42,17 @@ public class HttpServiceClient
             RetryCount = 0;
 
             var requestBody = JsonSerializer.Serialize(data);
+            
+            _loggerService.ConsoleLog($"[Request] : " +
+                                      $"{nameof(type)} = {type} " +
+                                      $"{nameof(Id)} = {Id} " +
+                                      $"{nameof(requestBody)} = {requestBody}");
+            
             if (type != (int)EPacketType.Login)
                 requestBody = Crypto.Encrypt(requestBody, Key);
             
             var requestData = new RequestData(type, Id, requestBody);
             var requestJson = JsonSerializer.Serialize(requestData);
-            
-            _loggerService.ConsoleLog($"[Request] : " +
-                                        $"{nameof(requestData.Type)} = {requestData.Type} " +
-                                        $"{nameof(requestData.Id)} = {requestData.Id} " +
-                                        $"{nameof(requestData.Body)} = {requestData.Body}");
             
             var content = new StringContent(requestJson, Encoding.UTF8, HttpServiceUtil.ContentType);
             var response = await client.PostAsync(_httpServiceUrl.Url, content);
