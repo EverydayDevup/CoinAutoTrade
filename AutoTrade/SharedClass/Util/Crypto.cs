@@ -8,13 +8,20 @@ public static class Crypto
     /// <summary>
     /// AES128 암복호화를 위한 키 값
     /// </summary>
-    public const byte PasswordLength = 16;
+    public const byte PasswordMaxLength = 16;
+    public const byte PasswordMinLength = 8;
     
+    private static byte[] GetPassword(string password)
+    {
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        return MD5.HashData(passwordBytes);
+    }
+
     public static string Encrypt(string plainText, string password)
     {
         using var aes = Aes.Create();
-        aes.Key = Encoding.UTF8.GetBytes(password);
-        aes.IV = Encoding.UTF8.GetBytes(password);
+        aes.Key = GetPassword(password);
+        aes.IV = aes.Key;
 
         using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
         using var ms = new MemoryStream();
@@ -29,9 +36,9 @@ public static class Crypto
     
     public static string Decrypt(string cipherText, string password)
     {
-        using Aes aes = Aes.Create();
-        aes.Key = Encoding.UTF8.GetBytes(password);
-        aes.IV = Encoding.UTF8.GetBytes(password);
+        using var aes = Aes.Create();
+        aes.Key = GetPassword(password);
+        aes.IV = aes.Key;
 
         using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
         using var ms = new MemoryStream(Convert.FromBase64String(cipherText));

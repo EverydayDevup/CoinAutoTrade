@@ -29,7 +29,7 @@ public abstract class HttpServiceServer
     }
 
     private bool _isInit = false;
-    protected Dictionary<int, HttpServiceProtocol<HttpServiceServer>> DicHttpServiceProtocols { get; } = new();
+    protected Dictionary<int, IHttpServiceProtocol> DicHttpServiceProtocols { get; } = new();
     public bool IsRunning => _listener.IsListening;
 
     protected HttpServiceServer(string ip, int port)

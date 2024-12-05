@@ -3,9 +3,9 @@ using SharedClass;
 
 namespace CoinAutoTrade.Packet;
 
-public class UserMarketInfo(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer>(server)
+public class UserMarketInfo(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, UserMarketInfoRequest>(server)
 {
-    public override Tuple<int, ResponseBody?> MakeResponse(string? requestBody)
+    protected override Tuple<int, ResponseBody?> MakeResponse(UserMarketInfoRequest request)
     {
         return new Tuple<int, ResponseBody?>(-1, null);
     }

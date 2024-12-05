@@ -2,7 +2,7 @@
 
 public enum EPacketType
 {
-    UserMarketInfo
+    UserMarketInfo, // 사용자의 거래소 정보 
 }
 
 public enum EResponseCode

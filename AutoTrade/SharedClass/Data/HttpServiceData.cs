@@ -19,11 +19,17 @@ public class ResponseData(int type)
     public string? Body { get; init; } = string.Empty;
 }
 
+/// <summary>
+/// 서버에 요청하는 데이터 
+/// </summary>
 public abstract class RequestBody 
 {
     
 }
 
+/// <summary>
+/// 서버에서 받은 응답 데이터
+/// </summary>
 public abstract class ResponseBody
 {
     

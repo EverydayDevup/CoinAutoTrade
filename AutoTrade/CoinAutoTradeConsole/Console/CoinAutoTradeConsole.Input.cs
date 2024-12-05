@@ -2,13 +2,14 @@
 
 namespace CoinAutoTradeClient;
 
-public partial class CoinAutoTradeConsole
+public static partial class CoinAutoTradeConsole
 {
     private static int SelectMenu<T>(string menuMessage, List<T> menus) where T : Enum
     {
         var menu = -1;
         do
         {
+            LoggerService.ConsoleLog("================================================");
             LoggerService.ConsoleLog(menuMessage);
             for (var i = 0; i < menus.Count; i++)
                 LoggerService.ConsoleLog($"{i+1}.{menus[i].ToString()}");
@@ -29,27 +30,49 @@ public partial class CoinAutoTradeConsole
             }
 
         } while (menu == -1);
-
+        LoggerService.ConsoleLog("================================================");
+        
         return menu;
     }
     
     /// <summary>
-    /// 사용자의 Id 정보를 가져옴
+    /// 사용자의 문자열 입력을 가져옴
     /// </summary>
     private static string GetText(string message)
     {
-        string? text;
+        string? input;
         do
         {
             LoggerService.ConsoleLog(message);
-            text = Console.ReadLine();
+            input = Console.ReadLine();
+            
+            if (string.IsNullOrEmpty(input))
+                LoggerService.ConsoleLog($"Invalid {nameof(input)}");
+            
+        } while (string.IsNullOrEmpty(input));
+
+        return input;
+    }
+    
+    /// <summary>
+    /// 사용자의 문자열 입력을 가져옴
+    /// </summary>
+    private static long GetNumber(string message)
+    {
+        long? result = null;
+        do
+        {
+            LoggerService.ConsoleLog(message);
+            var text = Console.ReadLine();
             
             if (string.IsNullOrEmpty(text))
                 LoggerService.ConsoleLog($"Invalid {nameof(text)}");
+            else if (long.TryParse(text, out var value))
+                result = value;
             
-        } while (string.IsNullOrEmpty(text));
+        } while (!result.HasValue || result.Value < 0);
 
-        return text;
+        return result.Value;
     }
     
     /// <summary>
@@ -80,16 +103,18 @@ public partial class CoinAutoTradeConsole
                 Console.Write("*"); // 별표로 표시
             }
 
-            if (keyInfo.Key == ConsoleKey.Enter)
-            {
-                if (string.IsNullOrEmpty(password))
-                    LoggerService.ConsoleLog("Invalid password.");
-                else if (password.Length != Crypto.PasswordLength)
-                    LoggerService.ConsoleLog($"password must be exactly {Crypto.PasswordLength} characters.");
-                else
-                    inputComplete = true;
-            }
+            if (keyInfo.Key != ConsoleKey.Enter)
+                continue;
             
+            if (string.IsNullOrEmpty(password))
+                LoggerService.ConsoleLog("Invalid password.");
+            else if (password.Length < Crypto.PasswordMinLength)
+                LoggerService.ConsoleLog($"The assword must be at least {Crypto.PasswordMinLength} characters long.");
+            else if (password.Length > Crypto.PasswordMaxLength)
+                LoggerService.ConsoleLog($"The password must be a maximum of {Crypto.PasswordMaxLength} characters.");
+            else
+                inputComplete = true;
+
         } while (!inputComplete);
 
         Console.WriteLine();
