@@ -1,6 +1,6 @@
 ﻿namespace SharedClass;
 
-public class LoginInfoResponse : ResponseBody
+public class LoginResponse : ResponseBody
 {
     public string Key { get; set; }
 }

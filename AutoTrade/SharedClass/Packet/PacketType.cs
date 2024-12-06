@@ -4,12 +4,21 @@ public enum EPacketType
 {
     Login,
     Alive, // 서버 상태 체크 
-    UserMarketInfo, // 사용자의 거래소 정보 
+    GetAllCoinTradeData, // 코인 트레이드 정보
+    DeleteAllCoinTradeData,
+    AddOrUpdateCoinTradeData,
+    GetCoinTradeData,
+    DeleteCoinTradeData,
+    UpdateCoinTradeData,
 }
 
 public enum EResponseCode
 {
     Unknown = -1,
     Success = 0,
+    DeleteAllCoinTradeDataFailed = 1000,
+    AddCoinTradeDataFailed = 1001,
+    DeleteCoinTradeDataFailed = 1002,
+    UpdateCoinTradeDataFailed = 1003,
 }
 

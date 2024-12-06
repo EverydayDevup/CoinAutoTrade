@@ -9,14 +9,15 @@ public class CoinAutoTradeServer : HttpServiceServer
     public CoinAutoTradeServer(string ip, int port) : base(ip, port) { }
     public CoinAutoTradeServer(int port) : base(port) { }
 
-    public CoinTradeDataManager CoinTradeDataManager { get; set; } = new();
-
     protected override void Init()
     {
         base.Init();
-        DicHttpServiceProtocols.Add((int)EPacketType.Alive, new Alive(this));
-        DicHttpServiceProtocols.Add((int)EPacketType.Login, new LoginInfo(this));
-        DicHttpServiceProtocols.Add((int)EPacketType.UserMarketInfo, new UserMarketInfo(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.Alive, new AliveProtocol(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.Login, new LoginProtocol(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.GetAllCoinTradeData, new GetAllCoinTradeDataProtocol(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.DeleteAllCoinTradeData, new DeleteAllCoinTradeDataProtocol(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.AddOrUpdateCoinTradeData, new AddOrUpdateCoinTradeDataProtocol(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.GetCoinTradeData, new GetCoinTradeDataProtocol(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.DeleteAllCoinTradeData, new DeleteCoinTradeData(this));
     }
-
 }

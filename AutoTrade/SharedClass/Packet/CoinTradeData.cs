@@ -2,6 +2,21 @@
 
 namespace SharedClass;
 
+public class CoinTradeDataRequest : RequestBody
+{
+    public CoinTradeData CoinTradeData { get; set; }
+}
+
+public class CoinTradeDataResponse : ResponseBody
+{
+    public CoinTradeData? CoinTradeData { get; set; }
+}
+
+public class CoinSymbolRequest : RequestBody
+{
+    public string Symbol { get; set; }
+}
+
 public class CoinTradeData
 {
     /// <summary>
@@ -27,20 +42,20 @@ public class CoinTradeData
     /// <summary>
     /// 최초 구매 시의 가격 정보, 가격이 있을 경우 해당 가격이 되었을 때 주문하고 없을 경우 현재가로 구매함
     /// </summary>
-    public int InitBuyPrice { get; set; }
+    public double InitBuyPrice { get; set; }
     /// <summary>
     /// 해당 가격이 0 이상인 경우, 해당 금액 도달 시 보유한 코인 모두 판매
     /// </summary>
-    public int MaxSellPrice { get; set; }
+    public double MaxSellPrice { get; set; }
     /// <summary>
     /// 추가 매수 시 코인을 구매할 당시의 가격 * (1 + BuyRate) 로 다음 구매 가격을 결정함 
     /// </summary>
-    public int BuyRate { get; set; }
+    public double RoundBuyRate { get; set; }
     /// <summary>
     /// 손절 타이밍 계산 시 첫 구매 때는 총 투자 금액의 1%를 기준으로 하고, 이후 구매 시
     /// 코인을 구매할 당시의 가격 * (1 + SellRate)로 손절 가격을 결정함
     /// </summary>
-    public int SellRate { get; set; }
+    public double RoundSellRate { get; set; }
     private StringBuilder LogStringBuilder { get; } = new();
 
     public string ToLog()
@@ -53,8 +68,8 @@ public class CoinTradeData
         LogStringBuilder.AppendLine($"{nameof(InvestRoundAmount)}: {InvestRoundAmount}");
         LogStringBuilder.AppendLine($"{nameof(InitBuyPrice)}: {InitBuyPrice}");
         LogStringBuilder.AppendLine($"{nameof(MaxSellPrice)}: {MaxSellPrice}");
-        LogStringBuilder.AppendLine($"{nameof(BuyRate)}: {BuyRate}");
-        LogStringBuilder.AppendLine($"{nameof(SellRate)}: {SellRate}");
+        LogStringBuilder.AppendLine($"{nameof(RoundBuyRate)}: {RoundBuyRate}");
+        LogStringBuilder.AppendLine($"{nameof(RoundSellRate)}: {RoundSellRate}");
         
         return LogStringBuilder.ToString();
     }

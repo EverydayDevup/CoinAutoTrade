@@ -3,7 +3,7 @@ using SharedClass;
 
 namespace CoinAutoTrade.Packet;
 
-public class Alive(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, ResponseBody>(server)
+public class AliveProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, ResponseBody>(server)
 {
     protected override Tuple<int, ResponseBody?> MakeResponse(string id, RequestBody request)
     {

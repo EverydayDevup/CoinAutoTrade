@@ -1,227 +1,122 @@
 ﻿[
   {
-    "Symbol" : "CTXC",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
+    "Symbol" : "ZRX",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
   },
   {
-    "Symbol" : "THETA",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
+    "Symbol" : "LPT",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
   },
   {
-    "Symbol" : "LINK",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
+    "Symbol" : "IQ",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
   },
   {
-    "Symbol" : "VET",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
+    "Symbol" : "ZRO",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
   },
   {
-    "Symbol" : "VALOR",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "MXC",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "HIVE",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "EGG",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "UNI",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "AAVE",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "OBSR",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "BLY",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "SOFI",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "GRACY",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "XTZ",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "EGLD",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "ENS",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "JASMY",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "APE",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "AL",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "FLR",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "FLZ",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "ROA",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "IMX",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "FET",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "WLD",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "ICP",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "NEO",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "AIOZ",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "ONDO",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
-  },
-  {
-    "Symbol" : "CARV",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
+    "Symbol" : "CRTS",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
   },
   {
     "Symbol" : "VIRTUAL",
-    "TotalAmount" : 500000,
-    "Amount" : 50000,
-    "BuyRate" : 10,
-    "SellRate" : 8
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "BLAST",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "EIGEN",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "TAIKO",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "OSMO",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "YFI",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "IO",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "AAVE",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "FET",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "ZK",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "SUSHI",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
+  },
+  {
+    "Symbol" : "CELR",
+    "TotalAmount" : 400000,
+    "Amount" : 40000,
+    "BuyRate" : 8,
+    "SellRate" : 5
   }
 ]
 

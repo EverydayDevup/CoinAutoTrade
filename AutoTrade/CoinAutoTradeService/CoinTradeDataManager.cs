@@ -1,97 +1,97 @@
 ﻿using Newtonsoft.Json;
 using SharedClass;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CoinAutoTrade;
 
-public class CoinTradeDataManager
+public static class CoinTradeDataManager
 {
-    private LoggerService.LoggerService _loggerService = null;
-    private readonly Dictionary<string, Dictionary<string, CoinTradeData>> _dicMarketCoinTradeData = new();
-    private readonly string _coinTradeDataDirectoryName = "CoinTradeData";
-    private readonly string _coinConfigFileName = "CoinConfig.json";
-
-    private string GetCoinTradeDataListFilePath(string marketName)
+    private static string GetAllCoinTradeDataFilePath(string id)
     {
-        var currentDirectory = Directory.GetCurrentDirectory();
-        return Path.Combine(currentDirectory, marketName, _coinTradeDataDirectoryName, _coinConfigFileName);
+        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(CoinTradeData)}");
+
+        if (!Directory.Exists(directoryPath))
+            Directory.CreateDirectory(directoryPath);
+        
+        return Path.Combine(directoryPath, $"{id}.json");
+    }
+
+    private static void SaveAllCoinTradeData(string id, List<CoinTradeData> allCoinTradeData)
+    {
+        var filePath = GetAllCoinTradeDataFilePath(id);
+        File.WriteAllText(filePath, JsonConvert.SerializeObject(allCoinTradeData));
     }
     
-    public bool Load(string marketName, LoggerService.LoggerService loggerService)
+    public static List<CoinTradeData>? GetAllCoinTradeData(string id)
     {
-        _loggerService ??= loggerService;
+        List<CoinTradeData>? allCoinTradeData = new();
         
-        var coinTradeDataListFilepath = GetCoinTradeDataListFilePath(marketName);
-        
-        if (!File.Exists(coinTradeDataListFilepath))
+        var filePath = GetAllCoinTradeDataFilePath(id);
+        if (File.Exists(filePath))
+            allCoinTradeData = JsonConvert.DeserializeObject<List<CoinTradeData>>(File.ReadAllText(filePath));
+
+        return allCoinTradeData;
+    }
+
+    public static bool DeleteAllCoinTradeData(string id)
+    {
+        var filePath = GetAllCoinTradeDataFilePath(id);
+        try
         {
-            _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] Not found {nameof(coinTradeDataListFilepath)} : {coinTradeDataListFilepath}");
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            return true;
+        }
+        catch
+        {
             return false;
         }
-        
-        var coinTradeDataListJson = File.ReadAllText(coinTradeDataListFilepath);
-        var coinTradeDataList = JsonConvert.DeserializeObject<List<CoinTradeData>>(coinTradeDataListJson);
-
-        if (coinTradeDataList == null)
+    }
+    
+    public static bool AddCoinTradeData(string id, CoinTradeData coinTradeData)
+    {
+        try
         {
-            _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] Not found {nameof(coinTradeDataList)}");
+            var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
+            var find = allCoinTradeData.Find((data) => data.Symbol == coinTradeData.Symbol);
+            if (find != null)
+                allCoinTradeData.Remove(find);
+
+            allCoinTradeData.Add(coinTradeData);
+            SaveAllCoinTradeData(id, allCoinTradeData);
+
+            return true;
+        }
+        catch
+        {
             return false;
         }
-
-        if (!_dicMarketCoinTradeData.TryGetValue(marketName, out var dicCoinTradeData))
+    }
+    
+    public static CoinTradeData? GetCoinTradeData(string id, string symbol)
+    {
+        var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
+        return allCoinTradeData.Find((data) => data.Symbol == symbol);
+    }
+    
+    public static bool DeleteCoinTradeData(string id, string symbol)
+    {
+        try
         {
-            dicCoinTradeData = new Dictionary<string, CoinTradeData>();
-            _dicMarketCoinTradeData.Add(marketName, dicCoinTradeData);
-        }
-        
-        dicCoinTradeData.Clear();
-        foreach (var coinTradeData in coinTradeDataList)
-        {
-            var errorMessage = coinTradeData.GetValidMessage();
-            if (!string.IsNullOrEmpty(errorMessage))
+            var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
+            var find = allCoinTradeData.Find((data) => data.Symbol == symbol);
+            if (find != null)
             {
-                _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] {nameof(coinTradeData)} {coinTradeData.Symbol} : {errorMessage}");
-                return false;
+                var filePath = GetAllCoinTradeDataFilePath(id);
+                File.WriteAllText(filePath, JsonSerializer.Serialize(allCoinTradeData));
             }
-            
-            dicCoinTradeData.TryAdd(coinTradeData.Symbol, coinTradeData);
+
+            return true;
         }
-
-        return true;
-    }
-
-    private void Save(string marketName)
-    {
-        if (!_dicMarketCoinTradeData.TryGetValue(marketName, out var dicCoinTradeData))
+        catch
         {
-            _loggerService.ConsoleError($"[{nameof(CoinTradeDataManager)}] {nameof(marketName)} {marketName} not found");
-            return;
+            return false;
         }
-        
-        var coinTradeDataListFilepath = GetCoinTradeDataListFilePath(marketName);
-        var coinTradeDataList = dicCoinTradeData.Values.ToList();
-        var coinTradeDataListJson = JsonConvert.SerializeObject(coinTradeDataList);
-        
-        File.WriteAllText(coinTradeDataListFilepath, coinTradeDataListJson);
-    }
-
-    public void Remove(string marketName, string symbol)
-    {
-        if (!_dicMarketCoinTradeData.TryGetValue(marketName, out var dicCoinTradeData))
-            return;
-        
-        if (!dicCoinTradeData.ContainsKey(symbol))
-            return;
-            
-        dicCoinTradeData.Remove(symbol);
-        Save(marketName);
-    }
-
-    public void Update(string marketName, CoinTradeData coinTradeData)
-    {
-        if (!_dicMarketCoinTradeData.TryGetValue(marketName, out var dicCoinTradeData))
-            return;
-        
-        dicCoinTradeData.Remove(coinTradeData.Symbol);
-        dicCoinTradeData.Add(coinTradeData.Symbol, coinTradeData);
     }
 }

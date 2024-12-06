@@ -4,18 +4,18 @@ using SharedClass;
 
 namespace CoinAutoTrade.Packet;
 
-public class LoginInfo(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, LoginInfoResponse>(server)
+public class LoginProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, LoginResponse>(server)
 {
-    protected override Tuple<int, LoginInfoResponse?> MakeResponse(string id, RequestBody request)
+    protected override Tuple<int, LoginResponse?> MakeResponse(string id, RequestBody request)
     {
         var key = $"{DateTime.Now.Ticks}_{GenerateRandomString(16)}";
-        var res = new LoginInfoResponse
+        var res = new LoginResponse
         {
             Key = key
         };
         
         server.SetKey(id, key);
-        return new Tuple<int, LoginInfoResponse?>((int)EResponseCode.Success, res);
+        return new Tuple<int, LoginResponse?>((int)EResponseCode.Success, res);
     }
     
     private string GenerateRandomString(int length)
@@ -24,10 +24,8 @@ public class LoginInfo(CoinAutoTradeServer server) : HttpServiceProtocol<HttpSer
         var result = new StringBuilder(length);
         var random = new Random();
 
-        for (int i = 0; i < length; i++)
-        {
+        for (var i = 0; i < length; i++)
             result.Append(chars[random.Next(chars.Length)]);
-        }
 
         return result.ToString();
     }

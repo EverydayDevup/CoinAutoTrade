@@ -67,7 +67,7 @@ public static partial class CoinAutoTradeConsole
             UserId = userId,
             IP = GetText("Input your IP address: "),
             TelegramApiToken = GetText("Input your Telegram API token: "),
-            TelegramChatId = GetNumber("Input your Telegram Chat ID: ")
+            TelegramChatId = GetLong("Input your Telegram Chat ID: ")
         };
 
         var password = GetPassword();

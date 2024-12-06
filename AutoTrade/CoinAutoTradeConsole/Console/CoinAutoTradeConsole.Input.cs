@@ -55,7 +55,7 @@ public static partial class CoinAutoTradeConsole
     /// <summary>
     /// 사용자의 문자열 입력을 가져옴
     /// </summary>
-    private static long GetNumber(string message)
+    private static long GetLong(string message)
     {
         long? result = null;
         do
@@ -68,7 +68,28 @@ public static partial class CoinAutoTradeConsole
             else if (long.TryParse(text, out var value))
                 result = value;
             
-        } while (!result.HasValue || result.Value < 0);
+        } while (!result.HasValue);
+
+        return result.Value;
+    }
+    
+    /// <summary>
+    /// 사용자의 문자열 입력을 가져옴
+    /// </summary>
+    private static double GetDouble(string message)
+    {
+        double? result = null;
+        do
+        {
+            LoggerService.ConsoleLog(message);
+            var text = Console.ReadLine();
+            
+            if (string.IsNullOrEmpty(text))
+                LoggerService.ConsoleLog($"Invalid {nameof(text)}");
+            else if (double.TryParse(text, out var value))
+                result = value;
+            
+        } while (!result.HasValue);
 
         return result.Value;
     }
