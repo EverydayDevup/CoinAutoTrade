@@ -1,16 +1,12 @@
-﻿namespace CoinAutoTradeProcess;
+﻿using static System.Int32;
+
+namespace CoinAutoTradeProcess;
 
 static class CoinAutoTradeProcess
 {
-    private static CoinAutoTradeProcessServer _coinAutoTradeProcessServer;
-    
     static void Main(string[] args)
     {
-        _coinAutoTradeProcessServer = new CoinAutoTradeProcessServer("localhost", 55555);
-
-        while (_coinAutoTradeProcessServer.IsRunning)
-        {
-            
-        }
+        TryParse(args[0], out var port);
+        var coinAutoTradeProcessServer = new CoinAutoTradeProcessServer("127.0.0.1", port);
     }
 }

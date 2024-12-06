@@ -9,7 +9,7 @@ public enum EPacketType
     AddOrUpdateCoinTradeData,
     GetCoinTradeData,
     DeleteCoinTradeData,
-    UpdateCoinTradeData,
+    StartAllCoinAutoTrade,
 }
 
 public enum EResponseCode
@@ -19,6 +19,5 @@ public enum EResponseCode
     DeleteAllCoinTradeDataFailed = 1000,
     AddCoinTradeDataFailed = 1001,
     DeleteCoinTradeDataFailed = 1002,
-    UpdateCoinTradeDataFailed = 1003,
 }
 

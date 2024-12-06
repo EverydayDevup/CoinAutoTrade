@@ -1,4 +1,5 @@
-﻿using CoinAutoTrade.Packet;
+﻿using System.Diagnostics;
+using CoinAutoTrade.Packet;
 using HttpService;
 using SharedClass;
 
@@ -8,6 +9,7 @@ public class CoinAutoTradeServer : HttpServiceServer
 {
     public CoinAutoTradeServer(string ip, int port) : base(ip, port) { }
     public CoinAutoTradeServer(int port) : base(port) { }
+    public Dictionary<string, Process> DicProcess { get; set; } = new();
 
     protected override void Init()
     {
@@ -18,6 +20,7 @@ public class CoinAutoTradeServer : HttpServiceServer
         DicHttpServiceProtocols.Add((int)EPacketType.DeleteAllCoinTradeData, new DeleteAllCoinTradeDataProtocol(this));
         DicHttpServiceProtocols.Add((int)EPacketType.AddOrUpdateCoinTradeData, new AddOrUpdateCoinTradeDataProtocol(this));
         DicHttpServiceProtocols.Add((int)EPacketType.GetCoinTradeData, new GetCoinTradeDataProtocol(this));
-        DicHttpServiceProtocols.Add((int)EPacketType.DeleteAllCoinTradeData, new DeleteCoinTradeData(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.DeleteCoinTradeData, new DeleteCoinTradeData(this));
+        DicHttpServiceProtocols.Add((int)EPacketType.StartAllCoinAutoTrade, new StartAllCoinAutoTradeProtocol(this));
     }
 }

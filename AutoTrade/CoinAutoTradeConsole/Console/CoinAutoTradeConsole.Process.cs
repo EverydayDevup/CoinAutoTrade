@@ -55,6 +55,7 @@ public static partial class CoinAutoTradeConsole
         DicProcess.Add(ECoinAutoTradeMode.AddOrUpdateCoinTradeData, AddCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.GetCoinTradeData, GetCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.DeleteCoinTradeData, DeleteCoinTradeDataAsync);
+        DicProcess.Add(ECoinAutoTradeMode.StartAllCoinAutoTrade, StartAllCoinAutoTradeAsync);
         
         Mode = ECoinAutoTradeMode.SelectMenu;
         while (Mode != ECoinAutoTradeMode.Exit)
@@ -85,10 +86,10 @@ public static partial class CoinAutoTradeConsole
                 {
                     LoggerService.ConsoleLog("Please press enter to select the menu.");
                     Console.ReadLine();
+                    
+                    if (Mode != ECoinAutoTradeMode.Exit)
+                        Mode = ECoinAutoTradeMode.SelectMenu;
                 }
-                
-                if (Mode != ECoinAutoTradeMode.Exit)
-                    Mode = ECoinAutoTradeMode.SelectMenu;
             }
         }
     }
@@ -212,5 +213,17 @@ public static partial class CoinAutoTradeConsole
             }
             
         } while (!confirm);
+    }
+    
+    private static async Task<bool> StartAllCoinAutoTradeAsync()
+    {
+        if (CoinAutoTradeClient == null)
+            return false;
+
+        var res = await CoinAutoTradeClient.RequestStartAllCoinTradeDataAsync();
+        if (res == null)
+            return false;
+
+        return true;
     }
 }

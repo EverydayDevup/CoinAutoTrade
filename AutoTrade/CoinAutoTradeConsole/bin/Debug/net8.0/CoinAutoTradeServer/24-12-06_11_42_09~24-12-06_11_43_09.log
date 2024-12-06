@@ -1,0 +1,10 @@
+[2024-12-06 23:41:19] [CoinAutoTradeServer] Request : Type = 0 Id = Bithumm_pjhara Body = {}
+[2024-12-06 23:41:19] [CoinAutoTradeServer] Response : Type = 0 Code = 0 Body = {"Key":"638691252799908382_eIYSSkfZRY60C5ok"}
+[2024-12-06 23:41:20] [CoinAutoTradeServer] Request : Type = 1 Id = Bithumm_pjhara Body = ipXJR5W/IvbAEghkXXR8aQ==
+[2024-12-06 23:41:20] [CoinAutoTradeServer] Response : Type = 1 Code = 0 Body = {}
+[2024-12-06 23:41:22] [CoinAutoTradeServer] Request : Type = 1 Id = Bithumm_pjhara Body = ipXJR5W/IvbAEghkXXR8aQ==
+[2024-12-06 23:41:22] [CoinAutoTradeServer] Response : Type = 1 Code = 0 Body = {}
+[2024-12-06 23:41:22] [CoinAutoTradeServer] Request : Type = 7 Id = Bithumm_pjhara Body = ipXJR5W/IvbAEghkXXR8aQ==
+[2024-12-06 23:41:22] [CoinAutoTradeServer] Response : Type = 7 Code = 0 Body = {}
+[2024-12-06 23:41:29] [CoinAutoTradeServer] Request : Type = 1 Id = Bithumm_pjhara Body = ipXJR5W/IvbAEghkXXR8aQ==
+[2024-12-06 23:41:29] [CoinAutoTradeServer] Response : Type = 1 Code = 0 Body = {}

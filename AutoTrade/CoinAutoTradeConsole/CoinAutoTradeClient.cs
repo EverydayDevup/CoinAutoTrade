@@ -65,6 +65,13 @@ public sealed class CoinAutoTradeClient : HttpServiceClient
         var res = await Request<CoinTradeDataResponse, CoinSymbolRequest>((int)EPacketType.DeleteCoinTradeData, req);
         return res;
     }
+    
+    public async Task<ResponseBody?> RequestStartAllCoinTradeDataAsync()
+    {
+        var res = await Request<ResponseBody, RequestBody>((int)EPacketType.StartAllCoinAutoTrade, new RequestBody());
+        return res;
+    }
+
 
     public async Task<bool> RequestAliveAsync()
     {

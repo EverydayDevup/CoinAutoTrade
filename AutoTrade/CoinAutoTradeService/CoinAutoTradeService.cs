@@ -7,6 +7,5 @@ public static class CoinAutoTradeService
     public static void Main()
     {
         var server = new CoinAutoTradeServer(Port);
-        while (server.IsRunning) { }
     }
 }
