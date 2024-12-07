@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CoinAutoTradeService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+899dd24b6f358882223de88773419c09e5e26c48")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+663ba1d47a3b7978a618c9c03edc3dd9c6726508")]
 [assembly: System.Reflection.AssemblyProductAttribute("CoinAutoTradeService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CoinAutoTradeService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
