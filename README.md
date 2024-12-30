@@ -10,12 +10,12 @@
 
 ## 프로젝트 구조
 ### 자동 매매 프로세스
-![자동 매매 프로세스 구조도](CoinAutoTrade.drawio.png)
+![자동 매매 프로세스 구조도](CoinAutoTrade.jpg)
 
 ---
 
 ### 펌핑 체크 프로세스
-![펌핑 체크 프로세스 구조도](PumpingCheck.drawio.png)
+![펌핑 체크 프로세스 구조도](PumpingCheck.jpg)
 
 ---
 
