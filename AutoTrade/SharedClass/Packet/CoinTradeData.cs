@@ -28,14 +28,6 @@ public class CoinTradeData
     /// </summary>
     public string MarketCode => $"KRW-{Symbol}";
     /// <summary>
-    /// 전체 투자 금액, 최대 투자 금액이 없을 경우 구매 횟수를 체크하지 않음
-    /// </summary>
-    public double InvestTotalAmount { get; set; }
-    /// <summary>
-    /// 최대 손실 비율
-    /// </summary>
-    public double MaxLossRate { get; set; }
-    /// <summary>
     /// 한번에 투자할 금액
     /// </summary>
     public double InvestRoundAmount { get; set; }
@@ -52,24 +44,27 @@ public class CoinTradeData
     /// </summary>
     public double RoundBuyRate { get; set; }
     /// <summary>
-    /// 손절 타이밍 계산 시 첫 구매 때는 총 투자 금액의 1%를 기준으로 하고, 이후 구매 시
     /// 코인을 구매할 당시의 가격 * (1 + SellRate)로 손절 가격을 결정함
     /// </summary>
     public double RoundSellRate { get; set; }
+    /// <summary>
+    /// 손절 후 추가 매수를 통해 다시 코인 구매 프로세스를 진행할지의 여부
+    /// 해당 값이 0 이상인 경우 해당 값 만큼 손절 후 구매를 시도함
+    /// </summary>
+    public double Rebalancing { get; set; }
     private StringBuilder LogStringBuilder { get; } = new();
 
-    public string ToLog()
+    public override string ToString()
     {
         LogStringBuilder.Clear();
         LogStringBuilder.AppendLine($"{nameof(Symbol)}: {Symbol}");
         LogStringBuilder.AppendLine($"{nameof(MarketCode)}: {MarketCode}");
-        LogStringBuilder.AppendLine($"{nameof(InvestTotalAmount)}: {InvestTotalAmount}");
-        LogStringBuilder.AppendLine($"{nameof(MaxLossRate)}: {MaxLossRate}");
         LogStringBuilder.AppendLine($"{nameof(InvestRoundAmount)}: {InvestRoundAmount}");
         LogStringBuilder.AppendLine($"{nameof(InitBuyPrice)}: {InitBuyPrice}");
         LogStringBuilder.AppendLine($"{nameof(MaxSellPrice)}: {MaxSellPrice}");
         LogStringBuilder.AppendLine($"{nameof(RoundBuyRate)}: {RoundBuyRate}");
         LogStringBuilder.AppendLine($"{nameof(RoundSellRate)}: {RoundSellRate}");
+        LogStringBuilder.AppendLine($"{nameof(Rebalancing)}: {Rebalancing}");
         
         return LogStringBuilder.ToString();
     }
@@ -79,11 +74,11 @@ public class CoinTradeData
         if (string.IsNullOrEmpty(Symbol))
             return $"not found {nameof(Symbol)}";
 
-        if (InvestTotalAmount > 0 && InvestRoundAmount > InvestTotalAmount)
-            return $"{nameof(InvestRoundAmount)} is bigger than {nameof(InvestTotalAmount)}";
+        if (RoundBuyRate <= 0)
+            return $"{nameof(RoundBuyRate)} is bigger than 0";
 
-        if (MaxLossRate <= 0)
-            return $"{nameof(MaxLossRate)} cannot be zero";
+        if (RoundSellRate <= 0)
+            return $"{nameof(RoundSellRate)} is bigger than 0";
         
         return string.Empty;
     }

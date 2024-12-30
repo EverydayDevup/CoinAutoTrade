@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using SharedClass;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CoinAutoTrade;
 
@@ -15,13 +14,13 @@ public static class CoinTradeDataManager
         
         return Path.Combine(directoryPath, $"{id}.json");
     }
-
+    
     private static void SaveAllCoinTradeData(string id, List<CoinTradeData> allCoinTradeData)
     {
         var filePath = GetAllCoinTradeDataFilePath(id);
         File.WriteAllText(filePath, JsonConvert.SerializeObject(allCoinTradeData));
     }
-    
+
     public static List<CoinTradeData>? GetAllCoinTradeData(string id)
     {
         List<CoinTradeData>? allCoinTradeData = new();
@@ -32,7 +31,7 @@ public static class CoinTradeDataManager
 
         return allCoinTradeData;
     }
-
+    
     public static bool DeleteAllCoinTradeData(string id)
     {
         var filePath = GetAllCoinTradeDataFilePath(id);
@@ -69,11 +68,6 @@ public static class CoinTradeDataManager
         }
     }
     
-    public static CoinTradeData? GetCoinTradeData(string id, string symbol)
-    {
-        var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
-        return allCoinTradeData.Find((data) => data.Symbol == symbol);
-    }
     
     public static bool DeleteCoinTradeData(string id, string symbol)
     {
@@ -81,11 +75,11 @@ public static class CoinTradeDataManager
         {
             var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
             var find = allCoinTradeData.Find((data) => data.Symbol == symbol);
-            if (find != null)
-            {
-                var filePath = GetAllCoinTradeDataFilePath(id);
-                File.WriteAllText(filePath, JsonSerializer.Serialize(allCoinTradeData));
-            }
+            if (find == null)
+                return true;
+            
+            allCoinTradeData.Remove(find);
+            SaveAllCoinTradeData(id, allCoinTradeData);
 
             return true;
         }
@@ -93,5 +87,11 @@ public static class CoinTradeDataManager
         {
             return false;
         }
+    }
+    
+    public static CoinTradeData? GetCoinTradeData(string id, string symbol)
+    {
+        var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
+        return allCoinTradeData.Find((data) => data.Symbol == symbol);
     }
 }

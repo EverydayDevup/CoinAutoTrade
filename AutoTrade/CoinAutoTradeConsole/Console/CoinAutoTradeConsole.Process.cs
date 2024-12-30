@@ -9,16 +9,13 @@ public static partial class CoinAutoTradeConsole
         None,
         SelectMenu, // 메뉴 선택
         GetAllCoinTradeData, // 모든 코인 트레이드 정보 가져오기
-        DeleteAllCoinTradeData, // 모든 코인 트레이드 정보 삭제하기
         AddOrUpdateCoinTradeData, // 특정 코인 트레이드 정보 추가하기
+        DeleteAllCoinTradeData, // 모든 코인 트레이드 정보 삭제하기
         GetCoinTradeData, // 특정 코인 트레이드 정보 가져오기
         DeleteCoinTradeData, // 특정 코인 트레이드 정보 삭제하기
         StartAllCoinAutoTrade, // 모든 코인 트레이드 시작
         StopAllCoinAutoTrade, // 모든 코인 트레이드 중단
-        RestartAllCoinAutoTrade, // 모든 코인 트레이드 재시작
-        StartCoinAutoTrade, // 특정 코인 트레이드 시작 
-        StopCoinAutoTrade, // 특정 코인 트레이드 중단
-        RestartCoinsAutoTrade, // 특정 코인 트레이드 재시작
+        RestartCoinAutoTradeData, // 특정 코인 트레이드 정보 삭제
         Exit, // 콘솔 종료
     }
 
@@ -45,17 +42,22 @@ public static partial class CoinAutoTradeConsole
     }
     
     private static Dictionary<ECoinAutoTradeMode, Func<Task<bool>>> DicProcess { get; set; } = new();
-    
-    private static async Task ProcessAsync()
-    {   
+
+    private static void Init()
+    {
         DicProcess.Clear();
         DicProcess.Add(ECoinAutoTradeMode.SelectMenu, SelectMenuAsync);
-        DicProcess.Add(ECoinAutoTradeMode.GetAllCoinTradeData, AllCoinTradeDataAsync);
+        DicProcess.Add(ECoinAutoTradeMode.GetAllCoinTradeData, GetAllCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.DeleteAllCoinTradeData, DeleteAllCoinTradeDataAsync);
-        DicProcess.Add(ECoinAutoTradeMode.AddOrUpdateCoinTradeData, AddCoinTradeDataAsync);
+        DicProcess.Add(ECoinAutoTradeMode.AddOrUpdateCoinTradeData, AddOrUpdateCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.GetCoinTradeData, GetCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.DeleteCoinTradeData, DeleteCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.StartAllCoinAutoTrade, StartAllCoinAutoTradeAsync);
+    }
+    
+    private static async Task ProcessAsync()
+    {
+        Init();
         
         Mode = ECoinAutoTradeMode.SelectMenu;
         while (Mode != ECoinAutoTradeMode.Exit)
@@ -67,30 +69,33 @@ public static partial class CoinAutoTradeConsole
             var alive = await CoinAutoTradeClient.RequestAliveAsync();
             if (!alive)
             {
-                LoggerService.ConsoleLog($"Process {nameof(alive)} : {alive}");
+                LoggerService.ConsoleLog($"Server Process {nameof(alive)} : {alive}");
                 return;
             }
 
             if (Mode == ECoinAutoTradeMode.Exit)
                 return;
 
-            if (DicProcess.TryGetValue(Mode, out var modeFunc))
+            if (!DicProcess.TryGetValue(Mode, out var modeFunc))
             {
-                var mode = Mode;
-                LoggerService.ConsoleLog($"Process {nameof(Mode)} : {Mode}");
-                var result = await modeFunc.Invoke();
-                if (!result)
-                    LoggerService.ConsoleLog($"{nameof(Mode)} : {Mode} Failed");
-
-                if (mode != ECoinAutoTradeMode.SelectMenu)
-                {
-                    LoggerService.ConsoleLog("Please press enter to select the menu.");
-                    Console.ReadLine();
-                    
-                    if (Mode != ECoinAutoTradeMode.Exit)
-                        Mode = ECoinAutoTradeMode.SelectMenu;
-                }
+                LoggerService.ConsoleLog($"Undefined {nameof(Mode)} : {Mode}");
+                return;
             }
+            
+            var mode = Mode;
+            LoggerService.ConsoleLog($"{nameof(Mode)} : {Mode}");
+            var result = await modeFunc.Invoke();
+            if (!result)
+                LoggerService.ConsoleLog($"{nameof(Mode)} : {Mode} Failed");
+
+            if (mode == ECoinAutoTradeMode.SelectMenu)
+                continue;
+            
+            LoggerService.ConsoleLog("Please press enter to select the menu.");
+            Console.ReadLine();
+                    
+            if (Mode != ECoinAutoTradeMode.Exit)
+                Mode = ECoinAutoTradeMode.SelectMenu;
         }
     }
 
@@ -99,11 +104,11 @@ public static partial class CoinAutoTradeConsole
         if (CoinAutoTradeClient == null)
             return false;
         
-        Mode = SelectMenu("Select Mode", Modes);
+        Mode = SelectMenu("Select Mode : ", Modes);
         return true;
     }
 
-    private static async Task<bool> AllCoinTradeDataAsync()
+    private static async Task<bool> GetAllCoinTradeDataAsync()
     {
         if (CoinAutoTradeClient == null)
             return false;
@@ -122,7 +127,7 @@ public static partial class CoinAutoTradeConsole
                 for (var i = 0; i < coinTradeDataList.Count; i++)
                 {
                     LoggerService.ConsoleLog($"====== {i} ========");
-                    LoggerService.ConsoleLog(coinTradeDataList[i].ToLog());
+                    LoggerService.ConsoleLog(coinTradeDataList[i].ToString());
                     LoggerService.ConsoleLog($"===================");
                 }
             }
@@ -140,7 +145,7 @@ public static partial class CoinAutoTradeConsole
         return res != null;
     }
     
-    private static async Task<bool> AddCoinTradeDataAsync()
+    private static async Task<bool> AddOrUpdateCoinTradeDataAsync()
     {
         if (CoinAutoTradeClient == null)
             return false;
@@ -164,7 +169,7 @@ public static partial class CoinAutoTradeConsole
         if (res == null || res.CoinTradeData == null)
             LoggerService.ConsoleLog($"not found {nameof(symbol)} : {symbol}");
         else
-            LoggerService.ConsoleLog($"{res.CoinTradeData.ToLog()}");
+            LoggerService.ConsoleLog($"{res.CoinTradeData}");
 
         return true;
     }
@@ -178,10 +183,8 @@ public static partial class CoinAutoTradeConsole
         symbol = symbol.ToUpper();
         var res = await CoinAutoTradeClient.RequestDeleteCoinTradeDataAsync(symbol);
         
-        if (res == null || res.CoinTradeData == null)
-            LoggerService.ConsoleLog($"not found {nameof(symbol)} : {symbol}");
-        else
-            LoggerService.ConsoleLog($"{res.CoinTradeData.ToLog()}");
+        if (res != null)
+            LoggerService.ConsoleLog($"Delete CoinTradeData : {symbol}");
 
         return true;
     }
@@ -193,14 +196,13 @@ public static partial class CoinAutoTradeConsole
         {
             coinTradeData.Symbol = GetText($"Input coin symbol :");
             coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
-            coinTradeData.InvestTotalAmount = GetLong($"Input invest total amount : ");
-            coinTradeData.MaxLossRate = GetDouble($"Input max loss rate (%) [total amount * max loss rate : ");
-            coinTradeData.InvestRoundAmount = GetLong($"Input invest round amount [must amount < total amount] : ");
+            coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount : ");
             coinTradeData.InitBuyPrice = GetDouble($"Input init buy price [-1 is immediate] : ");
             coinTradeData.MaxSellPrice = GetDouble($"Input max sell price [-1 is infinity] : ");
             coinTradeData.RoundBuyRate = GetDouble($"Input round buy rate [buy price * (1 + round buy rate)] : ");
             coinTradeData.RoundSellRate = GetDouble($"Input round sell rate [buy price * (1 - round buy rate)] : ");
-            LoggerService.ConsoleLog($"{nameof(coinTradeData)} : {coinTradeData.ToLog()}");
+            coinTradeData.Rebalancing = GetDouble($"Input rebanlancing count : ");
+            LoggerService.ConsoleLog($"{nameof(coinTradeData)} : {coinTradeData}");
 
             var validMessage = coinTradeData.GetValidMessage();
             if (!string.IsNullOrEmpty(validMessage))

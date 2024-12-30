@@ -25,6 +25,11 @@ public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServ
             process.StartInfo = processStartInfo;
             process.Start();
         }
+
+        if (!process.HasExited)
+        {
+            
+        }
         
         server.DicProcess[id] = process;
         return new Tuple<int, ResponseBody?>((int)EResponseCode.Success, new ResponseBody()); 
