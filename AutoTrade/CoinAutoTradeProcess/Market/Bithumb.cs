@@ -1,11 +1,8 @@
 ﻿using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
-using AutoTrade.Logic;
 using AutoTrade.Packet.Bithumb;
-using AutoTrade.Packet.Common;
-using RestSharp;
 
-namespace AutoTrade.Market;
+namespace CoinAutoTradeProcess;
 
 public class Bithumb(string accessKey, string secretKey) : Market(accessKey, secretKey), IMarket
 {

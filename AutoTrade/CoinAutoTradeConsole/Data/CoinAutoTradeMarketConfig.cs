@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using SharedClass;
 
-namespace CoinAutoTradeClient;
+namespace CoinAutoTradeConsole;
 
 public class CoinAutoTradeMarketConfig
 {

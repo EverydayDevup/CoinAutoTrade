@@ -2,7 +2,7 @@
 using SharedClass;
 using File = System.IO.File;
 
-namespace CoinAutoTradeClient;
+namespace CoinAutoTradeConsole;
 
 public static partial class CoinAutoTradeConsole
 {

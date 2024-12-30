@@ -1,6 +1,6 @@
 ﻿using SharedClass;
 
-namespace CoinAutoTradeClient;
+namespace CoinAutoTradeConsole;
 
 public static partial class CoinAutoTradeConsole
 {
@@ -38,6 +38,23 @@ public static partial class CoinAutoTradeConsole
             }
 
             return _modes;
+        }
+    }
+
+    private static List<ECoinTradeDataState>? _states = null;
+
+    private static List<ECoinTradeDataState> States
+    {
+        get
+        {
+            if (_states == null)
+            {
+                _states = new List<ECoinTradeDataState>();
+                foreach (ECoinTradeDataState state in Enum.GetValues(typeof(ECoinTradeDataState)))
+                    _states.Add(state);
+            }
+
+            return _states;
         }
     }
     
@@ -196,12 +213,17 @@ public static partial class CoinAutoTradeConsole
         {
             coinTradeData.Symbol = GetText($"Input coin symbol :");
             coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
+            coinTradeData.State = (int)SelectMenu($"Input state : ", States);
             coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount : ");
             coinTradeData.InitBuyPrice = GetDouble($"Input init buy price [-1 is immediate] : ");
             coinTradeData.MaxSellPrice = GetDouble($"Input max sell price [-1 is infinity] : ");
             coinTradeData.RoundBuyRate = GetDouble($"Input round buy rate [buy price * (1 + round buy rate)] : ");
             coinTradeData.RoundSellRate = GetDouble($"Input round sell rate [buy price * (1 - round buy rate)] : ");
-            coinTradeData.Rebalancing = GetDouble($"Input rebanlancing count : ");
+            coinTradeData.RebalancingMaxCount = GetDouble($"Input rebanlancing max count : ");
+            coinTradeData.RebalancingCount = GetDouble($"Input rebanlancing count : ");
+            coinTradeData.BuyPrice = GetDouble($"Input buy price : ");
+            coinTradeData.BuyCount = GetDouble($"Input buy count : ");
+            coinTradeData.SellPrice = GetDouble($"Input sell price : ");
             LoggerService.ConsoleLog($"{nameof(coinTradeData)} : {coinTradeData}");
 
             var validMessage = coinTradeData.GetValidMessage();
@@ -219,10 +241,12 @@ public static partial class CoinAutoTradeConsole
     
     private static async Task<bool> StartAllCoinAutoTradeAsync()
     {
-        if (CoinAutoTradeClient == null)
+        if (CoinAutoTradeClient == null || CoinAutoTradeMarketConfig == null)
             return false;
 
-        var res = await CoinAutoTradeClient.RequestStartAllCoinTradeDataAsync();
+        var res = await CoinAutoTradeClient.RequestStartAllCoinTradeDataAsync(CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.MarketApiKey, CoinAutoTradeMarketConfig.MarketSecretKey,
+            CoinAutoTradeMarketConfig.TelegramApiToken, CoinAutoTradeMarketConfig.TelegramChatId);
+        
         if (res == null)
             return false;
 

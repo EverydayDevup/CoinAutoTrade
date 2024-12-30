@@ -1,6 +1,6 @@
 ﻿using SharedClass;
 
-namespace CoinAutoTradeClient;
+namespace CoinAutoTradeConsole;
 
 public class CoinAutoTradeUserData
 {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SharedClass;
 
-namespace CoinAutoTrade;
+namespace CoinAutoTradeService;
 
 public static class CoinTradeDataManager
 {

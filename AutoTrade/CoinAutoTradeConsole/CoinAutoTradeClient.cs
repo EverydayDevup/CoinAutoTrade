@@ -1,7 +1,7 @@
 ﻿using HttpService;
 using SharedClass;
 
-namespace CoinAutoTradeClient;
+namespace CoinAutoTradeConsole;
 
 public sealed class CoinAutoTradeClient : HttpServiceClient
 {
@@ -17,7 +17,7 @@ public sealed class CoinAutoTradeClient : HttpServiceClient
         if (res == null)
             return false;
         
-        Key = res.Key;
+        Key = res.SymmetricKey;
         return true;
     }
     
@@ -72,9 +72,18 @@ public sealed class CoinAutoTradeClient : HttpServiceClient
         return res;
     }
     
-    public async Task<ResponseBody?> RequestStartAllCoinTradeDataAsync()
+    public async Task<ResponseBody?> RequestStartAllCoinTradeDataAsync(EMarketType marketType, string apiKey, string secretKey, string telegramApiToken, long telegramChatId)
     {
-        var res = await Request<ResponseBody, RequestBody>((int)EPacketType.StartAllCoinAutoTrade, new RequestBody());
+        var req = new StartAllCoinTradeDataRequest()
+        {
+            MarketType = (int)marketType,
+            ApiKey = apiKey,
+            SecretKey = secretKey,
+            TelegramApiKey = telegramApiToken,
+            TelegramChatId = telegramChatId
+        };
+
+        var res = await Request<ResponseBody, StartAllCoinTradeDataRequest>((int)EPacketType.StartAllCoinAutoTrade, req);
         return res;
     }
 }

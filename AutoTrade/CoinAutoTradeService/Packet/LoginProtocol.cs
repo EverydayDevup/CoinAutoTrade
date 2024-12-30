@@ -2,7 +2,7 @@
 using HttpService;
 using SharedClass;
 
-namespace CoinAutoTrade.Packet;
+namespace CoinAutoTradeService;
 
 public class LoginProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, LoginResponse>(server)
 {
@@ -12,7 +12,7 @@ public class LoginProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<Htt
         key = Crypto.GetSha256Hash(key);
         var res = new LoginResponse
         {
-            Key = key
+            SymmetricKey = key
         };
         
         server.SetKey(id, key);

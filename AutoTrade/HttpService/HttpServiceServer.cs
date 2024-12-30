@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
-using CoinAutoTrade.Packet;
-using Microsoft.Net.Http.Headers;
 using SharedClass;
 
 namespace HttpService;

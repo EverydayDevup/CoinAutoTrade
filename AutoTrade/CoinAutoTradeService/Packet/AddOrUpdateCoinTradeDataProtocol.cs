@@ -1,7 +1,7 @@
 ﻿using HttpService;
 using SharedClass;
 
-namespace CoinAutoTrade.Packet;
+namespace CoinAutoTradeService;
 
 public class AddOrUpdateCoinTradeDataProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, CoinTradeDataRequest, ResponseBody>(server)
 {

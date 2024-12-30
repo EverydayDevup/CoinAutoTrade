@@ -1,8 +1,7 @@
 ﻿using System.Text.Json;
-using HttpService;
 using SharedClass;
 
-namespace CoinAutoTrade.Packet;
+namespace HttpService;
 
 public interface IHttpServiceProtocol
 {

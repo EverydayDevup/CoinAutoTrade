@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
-using CoinAutoTrade.Packet;
 using HttpService;
 using SharedClass;
 
-namespace CoinAutoTrade;
+namespace CoinAutoTradeService;
 
 public class CoinAutoTradeServer(string ip, int port) : HttpServiceServer(ip, port)
 {

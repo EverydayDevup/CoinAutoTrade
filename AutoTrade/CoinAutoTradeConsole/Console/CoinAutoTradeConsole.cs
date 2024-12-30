@@ -1,6 +1,6 @@
 ﻿using CoinAutoTrade;
 
-namespace CoinAutoTradeClient;
+namespace CoinAutoTradeConsole;
 
 public static partial class CoinAutoTradeConsole
 {

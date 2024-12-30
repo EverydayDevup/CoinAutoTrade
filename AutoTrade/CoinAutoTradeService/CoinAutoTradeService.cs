@@ -1,4 +1,4 @@
-﻿namespace CoinAutoTrade;
+﻿namespace CoinAutoTradeService;
 
 public static class CoinAutoTradeService
 {

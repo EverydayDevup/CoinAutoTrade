@@ -2,11 +2,11 @@
 using HttpService;
 using SharedClass;
 
-namespace CoinAutoTrade.Packet;
+namespace CoinAutoTradeService;
 
-public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServiceProtocol<HttpServiceServer, RequestBody, ResponseBody>(server)
+public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServiceProtocol<HttpServiceServer, StartAllCoinTradeDataRequest, ResponseBody>(server)
 {
-    protected override Tuple<int, ResponseBody?> MakeResponse(string id, RequestBody request)
+    protected override Tuple<int, ResponseBody?> MakeResponse(string id, StartAllCoinTradeDataRequest request)
     {
         if (server.DicProcess.TryGetValue(id, out var process))
             return new Tuple<int, ResponseBody?>((int)EResponseCode.Success, new ResponseBody());
@@ -15,7 +15,7 @@ public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServ
         var processStartInfo = new ProcessStartInfo
         {
             FileName = "CoinAutoTradeProcess.exe",
-            Arguments = $"{port}", // 전달할 인자
+            Arguments = $"{port} {request.MarketType} {request.ApiKey} {request.SecretKey} {request.TelegramApiKey} {request.TelegramChatId}", // 전달할 인자
             UseShellExecute = true, // 쉘 실행 비활성화
             CreateNoWindow = false // 콘솔 창 표시 안 함
         };
@@ -24,14 +24,9 @@ public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServ
         {
             process.StartInfo = processStartInfo;
             process.Start();
-        }
-
-        if (!process.HasExited)
-        {
-            
+            server.DicProcess[id] = process;
         }
         
-        server.DicProcess[id] = process;
         return new Tuple<int, ResponseBody?>((int)EResponseCode.Success, new ResponseBody()); 
     }
 }

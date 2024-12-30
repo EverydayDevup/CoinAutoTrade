@@ -2,21 +2,6 @@
 
 namespace SharedClass;
 
-public class CoinTradeDataRequest : RequestBody
-{
-    public CoinTradeData CoinTradeData { get; set; }
-}
-
-public class CoinTradeDataResponse : ResponseBody
-{
-    public CoinTradeData? CoinTradeData { get; set; }
-}
-
-public class CoinSymbolRequest : RequestBody
-{
-    public string Symbol { get; set; }
-}
-
 public class CoinTradeData
 {
     /// <summary>
@@ -27,6 +12,7 @@ public class CoinTradeData
     /// 거래소에서 사용하는 마켓 코드 ex) KRW-BTC
     /// </summary>
     public string MarketCode => $"KRW-{Symbol}";
+    public int State { get; set; } = 0;
     /// <summary>
     /// 한번에 투자할 금액
     /// </summary>
@@ -51,7 +37,23 @@ public class CoinTradeData
     /// 손절 후 추가 매수를 통해 다시 코인 구매 프로세스를 진행할지의 여부
     /// 해당 값이 0 이상인 경우 해당 값 만큼 손절 후 구매를 시도함
     /// </summary>
-    public double Rebalancing { get; set; }
+    public double RebalancingMaxCount { get; set; }
+    /// <summary>
+    /// 손절 후 추가 구매 횟수
+    /// </summary>
+    public double RebalancingCount { get; set; }
+    /// <summary>
+    /// 코인 구매 가격
+    /// </summary>
+    public double BuyPrice { get; set; }
+    /// <summary>
+    /// 코인 구매 횟수
+    /// </summary>
+    public double BuyCount{ get; set; }
+    /// <summary>
+    /// 코인 판매 가격
+    /// </summary>
+    public double SellPrice { get; set; }
     private StringBuilder LogStringBuilder { get; } = new();
 
     public override string ToString()
@@ -59,12 +61,17 @@ public class CoinTradeData
         LogStringBuilder.Clear();
         LogStringBuilder.AppendLine($"{nameof(Symbol)}: {Symbol}");
         LogStringBuilder.AppendLine($"{nameof(MarketCode)}: {MarketCode}");
+        LogStringBuilder.AppendLine($"{nameof(State)}: {State}");
         LogStringBuilder.AppendLine($"{nameof(InvestRoundAmount)}: {InvestRoundAmount}");
         LogStringBuilder.AppendLine($"{nameof(InitBuyPrice)}: {InitBuyPrice}");
         LogStringBuilder.AppendLine($"{nameof(MaxSellPrice)}: {MaxSellPrice}");
         LogStringBuilder.AppendLine($"{nameof(RoundBuyRate)}: {RoundBuyRate}");
         LogStringBuilder.AppendLine($"{nameof(RoundSellRate)}: {RoundSellRate}");
-        LogStringBuilder.AppendLine($"{nameof(Rebalancing)}: {Rebalancing}");
+        LogStringBuilder.AppendLine($"{nameof(RebalancingMaxCount)}: {RebalancingMaxCount}");
+        LogStringBuilder.AppendLine($"{nameof(RebalancingCount)}: {RebalancingCount}");
+        LogStringBuilder.AppendLine($"{nameof(BuyPrice)}: {BuyPrice}");
+        LogStringBuilder.AppendLine($"{nameof(BuyCount)}: {BuyCount}");
+        LogStringBuilder.AppendLine($"{nameof(SellPrice)}: {SellPrice}");
         
         return LogStringBuilder.ToString();
     }

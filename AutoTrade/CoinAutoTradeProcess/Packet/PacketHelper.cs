@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace AutoTrade.Packet;
+namespace CoinAutoTradeProcess;
 
 public static class PacketHelper
 {

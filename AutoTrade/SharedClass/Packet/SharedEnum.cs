@@ -1,5 +1,18 @@
 ﻿namespace SharedClass;
 
+public enum EMarketType
+{
+    Bithumb,
+    UpBit,
+}
+
+public enum ECoinTradeDataState
+{
+    Ready,
+    Progress,
+    Completed
+}
+
 public enum EPacketType
 {
     Login,

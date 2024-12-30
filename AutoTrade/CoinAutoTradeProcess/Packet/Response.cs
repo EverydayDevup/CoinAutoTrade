@@ -1,9 +1,8 @@
 ﻿using System.Net;
-using AutoTrade.Logic;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace AutoTrade.Packet;
+namespace CoinAutoTradeProcess;
 
 public interface IResponse
 {

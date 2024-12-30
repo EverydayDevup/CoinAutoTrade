@@ -1,10 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using AutoTrade.Logic;
-using AutoTrade.Packet;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace AutoTrade.Market;
+namespace CoinAutoTradeProcess;
 
 /// <summary>
 /// 거래소와 관련된 공통 로직을 처리하는 클래스

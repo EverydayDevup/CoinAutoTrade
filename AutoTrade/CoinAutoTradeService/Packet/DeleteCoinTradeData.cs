@@ -1,7 +1,7 @@
 ﻿using HttpService;
 using SharedClass;
 
-namespace CoinAutoTrade.Packet;
+namespace CoinAutoTradeService;
 
 public class DeleteCoinTradeData(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, CoinSymbolRequest, ResponseBody>(server)
 {

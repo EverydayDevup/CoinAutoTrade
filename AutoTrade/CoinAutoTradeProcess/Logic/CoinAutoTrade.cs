@@ -1,4 +1,11 @@
-﻿// using AutoTrade.Market;
+﻿namespace CoinAutoTradeProcess;
+
+public class CoinAutoTrade(IMarket market)
+{
+    private IMarket Market { get; } = market;
+    private const int Delay = 1000 / 50;
+}
+
 //
 // namespace AutoTrade.Logic;
 //

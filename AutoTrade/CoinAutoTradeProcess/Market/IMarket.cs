@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using AutoTrade.Packet.Common;
 
-namespace AutoTrade.Market;
+namespace CoinAutoTradeProcess;
 
 public interface IMarket
 {

@@ -1,4 +1,4 @@
-﻿namespace AutoTrade.Packet.Common;
+﻿namespace CoinAutoTradeProcess;
 
 public class MarketOrder(double price, double amount)
 {
