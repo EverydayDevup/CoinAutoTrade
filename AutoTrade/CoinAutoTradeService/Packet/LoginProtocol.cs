@@ -9,6 +9,7 @@ public class LoginProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<Htt
     protected override Tuple<int, LoginResponse?> MakeResponse(string id, RequestBody request)
     {
         var key = $"{DateTime.Now.Ticks}_{GenerateRandomString(16)}";
+        key = Crypto.GetSha256Hash(key);
         var res = new LoginResponse
         {
             Key = key

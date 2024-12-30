@@ -2,14 +2,10 @@
 
 namespace CoinAutoTradeProcess;
 
-public class CoinAutoTradeProcessServer : HttpServiceServer
+public class CoinAutoTradeProcessServer(string ip, int port) : HttpServiceServer(ip, port)
 {
-    public CoinAutoTradeProcessServer(string ip, int port) : base(ip, port) {}
-
-    public CoinAutoTradeProcessServer(int port) : base(port) {}
-    
     protected override void Init()
     {
-        base.Init();
+       
     }
 }

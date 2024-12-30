@@ -3,17 +3,31 @@
 /// <summary>
 /// http 서버의 url을 관리
 /// </summary>
-internal struct HttpServiceUrl
+internal struct HttpServiceUrl(string ip, int port)
 {
-    public string Url { get; private set; }
-    
-    public HttpServiceUrl(string ip, int port)
+    private string _url = string.Empty;
+
+    public string Url
     {
-        Url = $"http://{ip}:{port}/";
+        get
+        {
+            if (string.IsNullOrEmpty(_url))
+                _url = $"http://{ip}:{port}/";
+
+            return _url;
+        }
     }
 
-    public HttpServiceUrl(int port)
+    private Uri _uri;
+
+    public Uri Uri
     {
-        Url = $"http://*:{port}/";
+        get
+        {
+            if (_uri == null)
+                _uri = new Uri(Url);
+            
+            return _uri;
+        }
     }
 }

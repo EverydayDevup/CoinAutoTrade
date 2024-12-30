@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Aes = System.Security.Cryptography.Aes;
 
 namespace SharedClass;
 
@@ -11,12 +12,28 @@ public static class Crypto
     public const byte PasswordMaxLength = 16;
     public const byte PasswordMinLength = 8;
     
+    /// <summary>
+    /// 입력받은 패스워드길이와 관계없이 항상 16바이트 배열을 반환
+    /// </summary>
     private static byte[] GetPassword(string password)
     {
         var passwordBytes = Encoding.UTF8.GetBytes(password);
         return MD5.HashData(passwordBytes);
     }
 
+    public static string GetSha256Hash(string plainText)
+    {
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(plainText));
+        var sb = new StringBuilder();
+        foreach (var @byte in bytes)
+            sb.Append(@byte.ToString("x2"));
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// AES로 평문을 암호화
+    /// </summary>
     public static string Encrypt(string plainText, string password)
     {
         using var aes = Aes.Create();
@@ -34,6 +51,9 @@ public static class Crypto
         return Convert.ToBase64String(ms.ToArray());
     }
     
+    /// <summary>
+    /// AES로 복호화
+    /// </summary>
     public static string Decrypt(string cipherText, string password)
     {
         using var aes = Aes.Create();

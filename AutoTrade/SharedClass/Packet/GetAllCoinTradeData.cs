@@ -3,6 +3,7 @@
 public enum EMarketType
 {
     Bithumm,
+    UpBit,
 }
 
 public class GetAllCoinTradeDataResponse : ResponseBody

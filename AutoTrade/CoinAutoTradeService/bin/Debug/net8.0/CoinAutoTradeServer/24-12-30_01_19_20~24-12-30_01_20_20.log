@@ -1,0 +1,4 @@
+[2024-12-30 13:18:43] [CoinAutoTradeServer] Request : Type = 0 Id = UpBit_318fa32de3adff84a6728004896d84e07f355dab2fa8b26c36730e136c0b5976 Body = {}
+[2024-12-30 13:18:43] [CoinAutoTradeServer] Response : Type = 0 Code = 0 Body = {"Key":"3da962caa54ef29bdd4ee10094c689315a8ad0251bcf6e1501c7ef2d9b8f4734"}
+[2024-12-30 13:18:43] [CoinAutoTradeServer] Request : Type = 1 Id = UpBit_318fa32de3adff84a6728004896d84e07f355dab2fa8b26c36730e136c0b5976 Body = tyAlCdoSFKFeJ/lSJ8x9gg==
+[2024-12-30 13:18:43] [CoinAutoTradeServer] Response : Type = 1 Code = 0 Body = {}

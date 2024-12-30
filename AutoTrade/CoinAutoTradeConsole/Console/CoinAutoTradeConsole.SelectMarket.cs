@@ -13,20 +13,23 @@ public static partial class CoinAutoTradeConsole
         Delete,
     }
     
+    /// <summary>
+    /// 거래소 정보를 선택
+    /// </summary>
     private static async Task<CoinAutoTradeMarketConfig?> SelectCoinAutoTradeMarket()
     {
         var marketList = new List<EMarketType>();
         foreach (EMarketType type in Enum.GetValues(typeof(EMarketType)))
             marketList.Add(type);
+        
         var marketType = SelectMenu("Select market type : ", marketList);
-        
         var userId = GetText("Input your user ID : ");
-        
         var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(CoinAutoTradeConsole)}", $"{nameof(CoinAutoTradeMarketConfig)}");
 
         if (!Directory.Exists(directoryPath))
             Directory.CreateDirectory(directoryPath);
-        
+
+        userId = Crypto.GetSha256Hash(userId);
         var configUserKey = $"{marketType}_{userId}";
         var filePath = Path.Combine(directoryPath, $"{configUserKey}.json");
         
@@ -66,6 +69,8 @@ public static partial class CoinAutoTradeConsole
             MarketType = marketType,
             UserId = userId,
             IP = GetText("Input your IP address: "),
+            MarketApiKey = GetText("Input your API key: "),
+            MarketSecretKey = GetText("Input your Secret key: "),
             TelegramApiToken = GetText("Input your Telegram API token: "),
             TelegramChatId = GetLong("Input your Telegram Chat ID: ")
         };

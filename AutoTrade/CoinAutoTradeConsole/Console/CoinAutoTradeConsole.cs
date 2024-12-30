@@ -4,7 +4,7 @@ namespace CoinAutoTradeClient;
 
 public static partial class CoinAutoTradeConsole
 {
-    private static LoggerService.LoggerService LoggerService { get; set; } = new();
+    private static LoggerService.LoggerService LoggerService { get; } = new();
     private static CoinAutoTradeMarketConfig? CoinAutoTradeMarketConfig { get; set; }
     private static CoinAutoTradeClient? CoinAutoTradeClient { get; set; }
 
@@ -17,11 +17,11 @@ public static partial class CoinAutoTradeConsole
             LoggerService.ConsoleLog($"{nameof(SelectCoinAutoTradeMarket)} failed.");
             return;
         }
-
-        LoggerService = new LoggerService.LoggerService(CoinAutoTradeMarketConfig.TelegramApiToken,
-            CoinAutoTradeMarketConfig.TelegramChatId);
         
-        LoggerService.ConsoleLog($"Connect {nameof(CoinAutoTradeClient)} {CoinAutoTradeMarketConfig.MarketType}");
+        LoggerService.ConsoleLog($"Connect\n{nameof(CoinAutoTradeClient)} {CoinAutoTradeMarketConfig}");
+
+        LoggerService.SetTelegramInfo(nameof(CoinAutoTradeConsole), CoinAutoTradeMarketConfig.TelegramApiToken,
+            CoinAutoTradeMarketConfig.TelegramChatId);
         
         CoinAutoTradeClient = new CoinAutoTradeClient(CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.UserId, 
             CoinAutoTradeMarketConfig.IP, CoinAutoTradeService.Port, 
@@ -36,6 +36,7 @@ public static partial class CoinAutoTradeConsole
         }
         else
         {
+            LoggerService.ConsoleLog($"{nameof(CoinAutoTradeClient.RequestLoginAsync)} success.");
             await ProcessAsync();
         }
     }

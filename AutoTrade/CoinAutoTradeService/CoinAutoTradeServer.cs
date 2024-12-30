@@ -5,15 +5,12 @@ using SharedClass;
 
 namespace CoinAutoTrade;
 
-public class CoinAutoTradeServer : HttpServiceServer
+public class CoinAutoTradeServer(string ip, int port) : HttpServiceServer(ip, port)
 {
-    public CoinAutoTradeServer(string ip, int port) : base(ip, port) { }
-    public CoinAutoTradeServer(int port) : base(port) { }
     public Dictionary<string, Process> DicProcess { get; set; } = new();
 
     protected override void Init()
     {
-        base.Init();
         DicHttpServiceProtocols.Add((int)EPacketType.Alive, new AliveProtocol(this));
         DicHttpServiceProtocols.Add((int)EPacketType.Login, new LoginProtocol(this));
         DicHttpServiceProtocols.Add((int)EPacketType.GetAllCoinTradeData, new GetAllCoinTradeDataProtocol(this));

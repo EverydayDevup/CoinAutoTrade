@@ -8,31 +8,33 @@ namespace HttpService;
 /// <summary>
 /// http 서버에 요청을 보내기 위한 클라이언트
 /// </summary>
-public class HttpServiceClient
+public abstract class HttpServiceClient : IDisposable
 {
     private readonly HttpServiceUrl _httpServiceUrl;
     private readonly LoggerService.LoggerService _loggerService;
     private bool IsSending { get; set; } = false;
     private byte RetryCount { get; set; } = 0;
-    private byte MaxRetryCount { get; set; } = 0;
     protected string Key { get; set; } = string.Empty;
-    protected virtual string Id { get; set; }
+    protected string Id { get; init; } = string.Empty;
+    
+    private const byte MaxRetryCount = 3;
+    private readonly HttpClient _client;
+    private readonly CookieContainer _cookieContainer = new ();
+    private readonly HttpClientHandler _clientHandler = new ();
+    private bool _isDisposed = false;
 
     protected HttpServiceClient(string ip, int port, string telegramApiToken, long telegramChatId)
     {
-        _loggerService = new LoggerService.LoggerService(telegramApiToken, telegramChatId);
         _httpServiceUrl = new HttpServiceUrl(ip, port);
+        _loggerService = new LoggerService.LoggerService();
+        _loggerService.SetTelegramInfo(GetType().Name, telegramApiToken, telegramChatId);
+
+        _clientHandler.CookieContainer = _cookieContainer;
+        _client = new HttpClient(_clientHandler);
     }
 
-    protected HttpServiceClient(int port, string telegramApiToken, long telegramChatId)
+    protected async Task<T?> Request<T, TK>(int type, TK data, Action<int, int>? failAction = null) where T : ResponseBody where TK : RequestBody
     {
-        _loggerService = new LoggerService.LoggerService(telegramApiToken, telegramChatId);
-        _httpServiceUrl = new HttpServiceUrl(port);
-    }
-
-    public async Task<T?> Request<T, TK>(int type, TK data, Action<int, int>? failAction = null) where T : ResponseBody where TK : RequestBody
-    {
-        using var client = new HttpClient();
         try
         {
             while (IsSending)
@@ -48,6 +50,7 @@ public class HttpServiceClient
                                       $"{nameof(Id)} = {Id} " +
                                       $"{nameof(requestBody)} = {requestBody}");
             
+            // 로그인 패킷이 아니라면, 요청하는 데이터를 암호화
             if (type != (int)EPacketType.Login)
                 requestBody = Crypto.Encrypt(requestBody, Key);
             
@@ -55,15 +58,23 @@ public class HttpServiceClient
             var requestJson = JsonSerializer.Serialize(requestData);
             
             var content = new StringContent(requestJson, Encoding.UTF8, HttpServiceUtil.ContentType);
-            var response = await client.PostAsync(_httpServiceUrl.Url, content);
+            var response = await _client.PostAsync(_httpServiceUrl.Url, content);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                // 3번 재시도 후에도 에러가 났다면 실패처리
+                if (response.StatusCode == HttpStatusCode.MethodNotAllowed ||
+                    response.StatusCode == HttpStatusCode.BadRequest ||
+                    response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    OnError($"[Response] Error : {nameof(response.StatusCode)} : {response.StatusCode}", type, (int)EResponseCode.Unknown, failAction);
+                    return default;
+                }
+                
+                // MaxRetryCount에 값만큼 재시도 후에도 에러가 났다면 실패처리
                 do
                 {
                     RetryCount++;
-                    response = await client.PostAsync(_httpServiceUrl.Url, content);
+                    response = await _client.PostAsync(_httpServiceUrl.Url, content);
                     _loggerService.ConsoleLog($"[Response] Fail : {nameof(RetryCount)} : {RetryCount}" + 
                                               $"{nameof(response.StatusCode)} = {response.StatusCode}");
 
@@ -74,6 +85,7 @@ public class HttpServiceClient
             {
                 OnError($"[Response] Error : {nameof(RetryCount)} : {RetryCount} " +
                         $"{nameof(response.StatusCode)} = {response.StatusCode}", type, (int)EResponseCode.Unknown, failAction);
+                
                 return default;
             }
 
@@ -121,5 +133,21 @@ public class HttpServiceClient
         _loggerService.ConsoleError(message);
         await _loggerService.TelegramAsync(message);
         failAction?.Invoke(type, code);
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed)
+            return;
+
+        _isDisposed = true;
+        _client.Dispose();
+        
+        GC.SuppressFinalize(this);
+    }
+
+    ~HttpServiceClient()
+    {
+        Dispose();
     }
 }

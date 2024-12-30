@@ -1,5 +1,8 @@
 ﻿namespace LoggerService;
 
+/// <summary>
+/// 콘솔에 남기를 로그를 관리
+/// </summary>
 internal class LoggerServiceConsole
 {
     private enum ELogType : byte

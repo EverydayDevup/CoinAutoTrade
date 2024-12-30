@@ -6,6 +6,6 @@ public static class CoinAutoTradeService
     
     public static void Main()
     {
-        var server = new CoinAutoTradeServer(Port);
+        var coinAutoTradeServer = new CoinAutoTradeServer("*", Port);
     }
 }

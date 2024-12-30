@@ -6,7 +6,7 @@
 public class RequestData(int type, string id, string body)
 {
     public int Type { get; init; } = type;
-    public string Id { get; set; } = id;
+    public string Id { get; init; } = id; 
     public string? Body { get; init; } = body;
 }
 
@@ -17,7 +17,7 @@ public class ResponseData(int type)
 {
     public int Type { get; init; } = type;
     public int Code { get; init; } = 0;
-    public string? Body { get; init; } = string.Empty;
+    public string? Body { get; init; } = string.Empty; 
 }
 
 /// <summary>

@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTrade", "AutoTrade.csproj", "{0F529104-AF0C-464B-A1BD-27D811452A86}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{73DD9779-E5AB-4053-8F88-8A64F112DFAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinAutoTradeProcess", "CoinAutoTradeProcess\CoinAutoTradeProcess.csproj", "{80479664-4393-4F29-AA88-BC46612539DF}"
@@ -20,11 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0F529104-AF0C-464B-A1BD-27D811452A86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F529104-AF0C-464B-A1BD-27D811452A86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F529104-AF0C-464B-A1BD-27D811452A86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F529104-AF0C-464B-A1BD-27D811452A86}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F529104-AF0C-464B-A1BD-27D811452A86}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73DD9779-E5AB-4053-8F88-8A64F112DFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU

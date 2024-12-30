@@ -7,7 +7,7 @@ namespace LoggerService;
 /// </summary>
 public class LoggerService : IDisposable
 {
-    private readonly LoggerServiceTelegramLog? _telegramLog;
+    private LoggerServiceTelegramLog? _telegramLog;
     private readonly LoggerServiceConsole _loggerServiceConsole = new();
     private readonly Dictionary<string, LoggerServiceFileLog> _dicFileLogs = new();
     private readonly int _fileLogWriteTimeMinutes = 1;
@@ -18,11 +18,10 @@ public class LoggerService : IDisposable
         _telegramLog = null;
         Update();
     }
-
-    public LoggerService(string telegramApiToken, long telegramChatId)
+    public void SetTelegramInfo(string name, string telegramApiToken, long telegramChatId)
     {
-        _telegramLog = new LoggerServiceTelegramLog(telegramApiToken, telegramChatId);
-        Update();
+        _telegramLog = new LoggerServiceTelegramLog(name, telegramApiToken, telegramChatId);
+        _ = _telegramLog.SendMessage("Connect");
     }
 
     private async void Update()
@@ -30,6 +29,9 @@ public class LoggerService : IDisposable
         while (true)
         {
             await Task.Delay(_fileLogWriteTimeMinutes * 60 * 1000);
+
+            if (_dicFileLogs.Count <= 0) 
+                continue;
             
             foreach (var (_, fileLog) in _dicFileLogs)
                 fileLog.Save();

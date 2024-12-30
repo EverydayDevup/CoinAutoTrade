@@ -34,7 +34,14 @@ C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeS
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\CoinAutoTradeService.runtimeconfig.json
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\CoinAutoTradeService.dll
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\CoinAutoTradeService.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\IdentityModel.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\RestSharp.dll
+C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\Telegram.Bot.dll
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\CoinAutoTradeProcess.dll
 C:\Users\every\OneDrive\바탕 화면\Project\AutoTrade\AutoTrade\CoinAutoTradeService\bin\Debug\net8.0\HttpService.dll

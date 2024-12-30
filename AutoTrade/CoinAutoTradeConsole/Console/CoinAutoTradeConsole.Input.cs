@@ -4,6 +4,9 @@ namespace CoinAutoTradeClient;
 
 public static partial class CoinAutoTradeConsole
 {
+    /// <summary>
+    /// 메뉴 선택
+    /// </summary>
     private static T SelectMenu<T>(string menuMessage, List<T> menus) where T : Enum
     {
         var index = -1;
@@ -53,7 +56,7 @@ public static partial class CoinAutoTradeConsole
     }
     
     /// <summary>
-    /// 사용자의 문자열 입력을 가져옴
+    /// 사용자의 문자열 입력을 통해 정수 값을 가져옴
     /// </summary>
     private static long GetLong(string message)
     {
@@ -74,7 +77,7 @@ public static partial class CoinAutoTradeConsole
     }
     
     /// <summary>
-    /// 사용자의 문자열 입력을 가져옴
+    /// 사용자의 문자열 입력을 통해 소수점 값을 가져옴
     /// </summary>
     private static double GetDouble(string message)
     {
@@ -102,13 +105,12 @@ public static partial class CoinAutoTradeConsole
     {
         var password = string.Empty;
         var inputComplete = false;
-        ConsoleKeyInfo keyInfo;
-        
+
         LoggerService.ConsoleLog("Please enter your password : ");
 
         do
         {
-            keyInfo = Console.ReadKey(intercept: true); // 화면에 표시하지 않음
+            var keyInfo = Console.ReadKey(intercept: true);
             if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
             {
                 // 백스페이스 처리
@@ -128,7 +130,7 @@ public static partial class CoinAutoTradeConsole
             if (string.IsNullOrEmpty(password))
                 LoggerService.ConsoleLog("Invalid password.");
             else if (password.Length < Crypto.PasswordMinLength)
-                LoggerService.ConsoleLog($"The assword must be at least {Crypto.PasswordMinLength} characters long.");
+                LoggerService.ConsoleLog($"The password must be at least {Crypto.PasswordMinLength} characters long.");
             else if (password.Length > Crypto.PasswordMaxLength)
                 LoggerService.ConsoleLog($"The password must be a maximum of {Crypto.PasswordMaxLength} characters.");
             else

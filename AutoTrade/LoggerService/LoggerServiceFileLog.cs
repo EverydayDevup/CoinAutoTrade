@@ -2,6 +2,9 @@
 
 namespace LoggerService;
 
+/// <summary>
+/// 파일로 남기는 로그를 관리
+/// </summary>
 internal class LoggerServiceFileLog(string directoryPath, int writeTimeMinutes)
 {
     private readonly StringBuilder _stringBuilder = new();
