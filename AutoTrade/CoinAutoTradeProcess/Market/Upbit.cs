@@ -1,57 +1,98 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CoinAutoTradeProcess;
 
 public class Upbit(string accessKey, string secretKey) : Market(accessKey, secretKey), IMarket
 {
-    private IMarket _marketImplementation;
     public JwtPayload GenerateJwtPayload()
     {
-        return _marketImplementation.GenerateJwtPayload();
+        var payload = new JwtPayload
+        {
+            { "access_key", AccessKey },
+            { "nonce", Guid.NewGuid().ToString() },
+            { "timestamp", DateTimeOffset.Now.ToUnixTimeMilliseconds()}
+        };
+
+        return payload;
     }
 
     public JwtPayload GenerateJwtPayload(Dictionary<string, string> parameters)
     {
-        return _marketImplementation.GenerateJwtPayload(parameters);
+        var payload = new JwtPayload
+        {
+            { "access_key", AccessKey },
+            { "nonce", Guid.NewGuid().ToString() },
+            { "query_hash", JwtHelper.GenerateQuery(parameters) },
+            { "query_hash_alg", "SHA512" }
+        };
+
+        return payload;
     }
 
-    public Task<string[]?> RequestMarketCodes()
+    public async Task<MarketCodesResponse?> RequestMarketCodes()
     {
-        return _marketImplementation.RequestMarketCodes();
+        return await RequestGet<MarketCodesResponse>(
+            "https://api.upbit.com/v1/market/all?is_details=false");
     }
 
-    public Task<double> RequestTicker(string marketCode)
+    public async Task<MarketTickerResponse?> RequestTicker(string marketCode)
     {
-        return _marketImplementation.RequestTicker(marketCode);
+        return await RequestGet<MarketTickerResponse>(
+            $"https://api.upbit.com/v1/ticker?markets={marketCode}");
     }
 
-    public Task<MarketOrderBook?> RequestMarketOrderbook(string marketCode)
+    public async Task<MarketOrderBookResponse?> RequestMarketOrderBook(string marketCode)
     {
-        return _marketImplementation.RequestMarketOrderbook(marketCode);
+        return await RequestGet<MarketOrderBookResponse>(
+            $"https://api.upbit.com/v1/orderbook?level=0&markets={marketCode}");
     }
 
-    public Task<double> RequestBalance(string coinSymbol)
+    public async Task<MarketBalanceResponse?> RequestBalance(string symbol)
     {
-        return _marketImplementation.RequestBalance(coinSymbol);
+        var payload = GenerateJwtPayload();
+        return await RequestJwtGet<MarketBalanceResponse>("https://api.upbit.com/v1/accounts", payload);
     }
 
-    public Task<bool> RequestCheckOrder(string uuid)
+    public async Task<MarketOrderResponse?> RequestOrder(string uuid)
     {
-        return _marketImplementation.RequestCheckOrder(uuid);
+        var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
+        return await RequestJwtGet<MarketOrderResponse>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
     }
 
-    public Task<string?> RequestBuy(string marketCode, double volume, double price)
+    public async Task<MarketBuyResponse?> RequestBuy(string marketCode, double volume, double price)
     {
-        return _marketImplementation.RequestBuy(marketCode, volume, price);
+        var order = new Dictionary<string, string>
+        {
+            { "market", marketCode },
+            { "side", "bid" },
+            { "volume", volume.ToString(CultureInfo.InvariantCulture) },
+            { "price", price.ToString(CultureInfo.InvariantCulture) },
+            { "ord_type", "limit" }
+        };
+        
+        var payload = GenerateJwtPayload(order);
+        return await RequestJwtPost<MarketBuyResponse>($"https://api.upbit.com/v1/orders", payload, order);
     }
 
-    public Task<string?> RequestSell(string marketCode, double volume, double price)
+    public async Task<MarketSellResponse?> RequestSell(string marketCode, double volume, double price)
     {
-        return _marketImplementation.RequestSell(marketCode, volume, price);
+        var order = new Dictionary<string, string>
+        {
+            { "market", marketCode },
+            { "side", "ask" },
+            { "volume", volume.ToString(CultureInfo.InvariantCulture) },
+            { "price", price.ToString(CultureInfo.InvariantCulture) },
+            { "ord_type", "limit" }
+        };
+        
+        var payload = GenerateJwtPayload(order);
+        return await RequestJwtPost<MarketSellResponse>($"https://api.upbit.com/v1/orders", payload, order);
     }
 
-    public Task<bool> RequestCancelOrder(string uuid)
+    public async Task<MarketCancelJson?> RequestCancelOrder(string uuid)
     {
-        return _marketImplementation.RequestCancelOrder(uuid);
+        var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
+        return await RequestJwtDelete<MarketCancelJson>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
     }
 }

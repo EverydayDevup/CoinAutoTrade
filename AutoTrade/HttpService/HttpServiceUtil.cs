@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text;
 
 namespace HttpService;
 
@@ -6,6 +7,7 @@ public static class HttpServiceUtil
 {
     public const string HttpMethod = "POST";
     public const string ContentType = "application/json";
+    public static readonly int CoinAutoTradeServicePort = 50000;
     
     /// <summary>
     /// http 서버를 올릴 때 사용할 포트를 찾음

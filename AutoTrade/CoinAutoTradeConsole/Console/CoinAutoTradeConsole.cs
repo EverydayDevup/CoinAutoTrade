@@ -1,4 +1,4 @@
-﻿using CoinAutoTrade;
+﻿using HttpService;
 
 namespace CoinAutoTradeConsole;
 
@@ -24,7 +24,7 @@ public static partial class CoinAutoTradeConsole
             CoinAutoTradeMarketConfig.TelegramChatId);
         
         CoinAutoTradeClient = new CoinAutoTradeClient(CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.UserId, 
-            CoinAutoTradeMarketConfig.IP, CoinAutoTradeService.Port, 
+            CoinAutoTradeMarketConfig.IP, HttpServiceUtil.CoinAutoTradeServicePort, 
             CoinAutoTradeMarketConfig.TelegramApiToken, CoinAutoTradeMarketConfig.TelegramChatId);
 
         var login = await CoinAutoTradeClient.RequestLoginAsync();

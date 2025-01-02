@@ -15,33 +15,33 @@ public interface IMarket
     /// <summary>
     /// 마켓에서 지원하는 코인 정보를 정보가져옴
     /// </summary>
-    public Task<string[]?> RequestMarketCodes();
+    public Task<MarketCodesResponse?> RequestMarketCodes();
     /// <summary>
     /// 현재 코인의 호가를 가져옴
     /// </summary>
-    public Task<double> RequestTicker(string marketCode);
+    public Task<MarketTickerResponse?> RequestTicker(string marketCode);
     /// <summary>
     /// 현재 코인의 매도/매수 정보를 가져옴
     /// </summary>
-    public Task<MarketOrderBook?> RequestMarketOrderbook(string marketCode);
+    public Task<MarketOrderBookResponse?> RequestMarketOrderBook(string marketCode);
     /// <summary>
     /// 현재 계정에 보유 재화량을 가져옴
     /// </summary>
-    public Task<double> RequestBalance(string coinSymbol);
+    public Task<MarketBalanceResponse?> RequestBalance(string symbol);
     /// <summary>
     /// 주문 uuid가 존재하는지 확인
     /// </summary>
-    public Task<bool> RequestCheckOrder(string uuid);
+    public Task<MarketOrderResponse?> RequestOrder(string uuid);
     /// <summary>
     /// 코인 매수 주문 (지정가 주문)
     /// </summary>
-    public Task<string?> RequestBuy(string marketCode, double volume, double price);
+    public Task<MarketBuyResponse?> RequestBuy(string marketCode, double volume, double price);
     /// <summary>
     /// 코인 매도 주문 (시장가 매도)
     /// </summary>
-    public Task<string?> RequestSell(string marketCode, double volume, double price); 
+    public Task<MarketSellResponse?> RequestSell(string marketCode, double volume, double price); 
     /// <summary>
     /// 코인 주문 취소
     /// </summary>
-    public Task<bool> RequestCancelOrder(string uuid); 
+    public Task<MarketCancelJson?> RequestCancelOrder(string uuid); 
 }

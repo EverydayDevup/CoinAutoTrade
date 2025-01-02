@@ -15,9 +15,6 @@ public static class MarketFactory
 
     public static IMarket? Create(EMarketType marketType, string accessKey, string secretKey)
     {
-        if (DicMarketFactory.TryGetValue(marketType, out var func))
-            return func.Invoke(accessKey, secretKey);
-        
-        return null;
+        return DicMarketFactory.TryGetValue(marketType, out var func) ? func.Invoke(accessKey, secretKey) : null;
     }
 }

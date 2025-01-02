@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
-using AutoTrade.Packet.Bithumb;
 
 namespace CoinAutoTradeProcess;
 
@@ -32,42 +31,37 @@ public class Bithumb(string accessKey, string secretKey) : Market(accessKey, sec
         return payload;
     }
 
-    public async Task<string[]?> RequestMarketCodes()
+    public async Task<MarketCodesResponse?> RequestMarketCodes()
     {
-        return await RequestGet<string[], MarketCodesResponse>(
+        return await RequestGet<MarketCodesResponse>(
             "https://api.bithumb.com/v1/market/all?isDetails=false");
     }
 
-    public async Task<double> RequestTicker(string marketCode)
+    public async Task<MarketTickerResponse?> RequestTicker(string marketCode)
     {
-        return await RequestGet<double, TickerResponse>(
+        return await RequestGet<MarketTickerResponse>(
             $"https://api.bithumb.com/v1/ticker?markets={marketCode}");
     }
 
-    public async Task<MarketOrderBook?> RequestMarketOrderbook(string marketCode)
+    public async Task<MarketOrderBookResponse?> RequestMarketOrderBook(string marketCode)
     {
-        return await RequestGet<MarketOrderBook, MarketOrderBookResponse>(
+        return await RequestGet<MarketOrderBookResponse>(
             $"https://api.bithumb.com/v1/orderbook?markets={marketCode}");
     }
     
-    public async Task<double> RequestBalance(string coinSymbol)
+    public async Task<MarketBalanceResponse?> RequestBalance(string symbol)
     {
         var payload = GenerateJwtPayload();
-        var dicBalance = await RequestJwtGet<Dictionary<string, double>, MarketBalanceResponse>("https://api.bithumb.com/v1/accounts", payload);
-
-        if (dicBalance == null)
-            return 0;
-        
-        return dicBalance.GetValueOrDefault(coinSymbol);
+        return await RequestJwtGet<MarketBalanceResponse>("https://api.bithumb.com/v1/accounts", payload);
     }
     
-    public async Task<bool> RequestCheckOrder(string uuid)
+    public async Task<MarketOrderResponse?> RequestOrder(string uuid)
     {
         var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
-        return await RequestJwtGet<bool, MarketCheckOrderResponse>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
+        return await RequestJwtGet<MarketOrderResponse>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
     }
     
-    public async Task<string?> RequestBuy(string marketCode, double volume, double price)
+    public async Task<MarketBuyResponse?> RequestBuy(string marketCode, double volume, double price)
     {
         var order = new Dictionary<string, string>
         {
@@ -79,16 +73,10 @@ public class Bithumb(string accessKey, string secretKey) : Market(accessKey, sec
         };
         
         var payload = GenerateJwtPayload(order);
-        return await RequestJwtPost<string, MarketBuyResponse>($"https://api.bithumb.com/v1/orders", payload, order);
+        return await RequestJwtPost<MarketBuyResponse>($"https://api.bithumb.com/v1/orders", payload, order);
     }
     
-    public async Task<bool> RequestCancelOrder(string uuid)
-    {
-        var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
-        return await RequestJwtDelete<bool, MarketCancelOrderResponse>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
-    }
-
-    public async Task<string?> RequestSell(string marketCode, double volume, double price)
+    public async Task<MarketSellResponse?> RequestSell(string marketCode, double volume, double price)
     {
         var order = new Dictionary<string, string>
         {
@@ -100,6 +88,12 @@ public class Bithumb(string accessKey, string secretKey) : Market(accessKey, sec
         };
         
         var payload = GenerateJwtPayload(order);
-        return await RequestJwtPost<string, MarketSellResponse>($"https://api.bithumb.com/v1/orders", payload, order);
+        return await RequestJwtPost<MarketSellResponse>($"https://api.bithumb.com/v1/orders", payload, order);
+    }
+    
+    public async Task<MarketCancelJson?> RequestCancelOrder(string uuid)
+    {
+        var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
+        return await RequestJwtDelete<MarketCancelJson>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
     }
 }

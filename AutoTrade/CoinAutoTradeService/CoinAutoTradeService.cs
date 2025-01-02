@@ -1,11 +1,11 @@
-﻿namespace CoinAutoTradeService;
+﻿using HttpService;
+
+namespace CoinAutoTradeService;
 
 public static class CoinAutoTradeService
 {
-    public static readonly int Port = 50000;
-    
     public static void Main()
     {
-        var coinAutoTradeServer = new CoinAutoTradeServer("*", Port);
+        var coinAutoTradeServer = new CoinAutoTradeServer("*", HttpServiceUtil.CoinAutoTradeServicePort);
     }
 }
