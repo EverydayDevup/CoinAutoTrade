@@ -3,14 +3,16 @@ using SharedClass;
 
 namespace CoinAutoTradeService;
 
-public class DeleteCoinTradeData(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, CoinSymbolRequest, ResponseBody>(server)
+public class DeleteCoinTradeData(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, DeleteCoinTradeDataRequest, DeleteCoinTradeDataResponse>(server)
 {
-    protected override Tuple<int, ResponseBody?> MakeResponse(string id, CoinSymbolRequest request)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    protected override async Task<(EResponseCode, DeleteCoinTradeDataResponse?)> MakeResponseDataAsync(string id, DeleteCoinTradeDataRequest request)
     {
         var result = CoinTradeDataManager.DeleteCoinTradeData(id, request.Symbol);
         if (!result)
-            return new Tuple<int, ResponseBody?>((int)EResponseCode.DeleteCoinTradeDataFailed, null);
+            return (EResponseCode.DeleteCoinTradeDataFailed, null);
             
-        return new Tuple<int, ResponseBody?>((int)EResponseCode.Success, new ResponseBody());
+        return (EResponseCode.Success, new DeleteCoinTradeDataResponse());
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

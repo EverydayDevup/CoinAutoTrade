@@ -3,10 +3,12 @@ using SharedClass;
 
 namespace CoinAutoTradeService;
 
-public class AliveProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, ResponseBody>(server)
+public class AliveProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, AliveRequest, AliveResponse>(server)
 {
-    protected override Tuple<int, ResponseBody?> MakeResponse(string id, RequestBody request)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    protected override async Task<(EResponseCode, AliveResponse?)> MakeResponseDataAsync(string id, AliveRequest request)
     {
-        return new Tuple<int, ResponseBody?>((int)EResponseCode.Success, new ResponseBody());
+        return (EResponseCode.Success, new AliveResponse());
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

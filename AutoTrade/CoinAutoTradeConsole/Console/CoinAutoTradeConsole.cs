@@ -24,11 +24,11 @@ public static partial class CoinAutoTradeConsole
             CoinAutoTradeMarketConfig.TelegramChatId);
         
         CoinAutoTradeClient = new CoinAutoTradeClient(CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.UserId, 
-            CoinAutoTradeMarketConfig.IP, HttpServiceUtil.CoinAutoTradeServicePort, 
+            CoinAutoTradeMarketConfig.Ip, HttpServiceUtil.CoinAutoTradeServicePort, 
             CoinAutoTradeMarketConfig.TelegramApiToken, CoinAutoTradeMarketConfig.TelegramChatId);
 
         var login = await CoinAutoTradeClient.RequestLoginAsync();
-        if (!login)
+        if (login == null)
         {
             LoggerService.ConsoleLog($"{nameof(CoinAutoTradeClient.RequestLoginAsync)} error.");
             LoggerService.ConsoleLog("Please enter the key to end the process.");

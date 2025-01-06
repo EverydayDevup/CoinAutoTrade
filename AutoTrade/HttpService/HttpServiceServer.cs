@@ -31,19 +31,17 @@ public abstract class HttpServiceServer
     }
 
     private bool _isInit = false;
-    protected Dictionary<int, IHttpServiceProtocol> DicHttpServiceProtocols { get; } = new();
-    public bool IsRunning => _listener.IsListening;
+    protected Dictionary<EPacketType, IHttpServiceProtocol> DicHttpServiceProtocols { get; } = new();
 
     protected HttpServiceServer(string ip, int port)
     {
         _httpServiceUrl = new HttpServiceUrl(ip, port);
         _listener.Prefixes.Add(_httpServiceUrl.Url);
-        HttpServiceServerRun();
     }
 
     protected abstract void Init();
 
-    private void HttpServiceServerRun()
+    public async Task HttpServiceServerRun()
     {
         try
         {
@@ -58,8 +56,7 @@ public abstract class HttpServiceServer
 
             while (true)
             {
-                var context = _listener.GetContext();
-
+                var context = await _listener.GetContextAsync();
                 // 요청 처리
                 var request = context.Request;
                 
@@ -67,28 +64,27 @@ public abstract class HttpServiceServer
                 {
                     string requestBody;
                     using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
-                        requestBody = reader.ReadToEnd();
+                        requestBody = await reader.ReadToEndAsync();
 
                     // 요청 받은 데이터를 파싱해서, 어떤 응답을 보낼지 결정함
                     var requestData = JsonSerializer.Deserialize<RequestData>(requestBody);
                     if (requestData != null)
                     {
-                        var requestLogMessage =
-                            $"[{Name}] Request : {nameof(requestData.Type)} = {requestData.Type}" +
-                            $" {nameof(requestData.Id)} = {requestData.Id}" +
-                            $" {nameof(requestData.Body)} = {requestData.Body}";
+                        var requestLogMessage = $"[{Name}] Request : {requestData}";
                         
                         _loggerService.ConsoleLog(requestLogMessage);
                         _loggerService.FileLog(LogDirectoryPath, requestLogMessage);
                         
-                        var responseData = Parse(requestData);
+                        var responseData = await MakeResponseDataAsync(requestData);
                         var responseJson = JsonSerializer.Serialize(responseData);
 
                         if (requestData.Type == (int)EPacketType.Login)
                         {
                             _dicSessions.Remove(requestData.Id);
+                            
                             var sessionId = Guid.NewGuid().ToString();
                             _dicSessions.Add(requestData.Id, sessionId);
+                            
                             var cookie = new Cookie("SessionId", sessionId);
                             {
                                 cookie.Path = "/";
@@ -102,6 +98,7 @@ public abstract class HttpServiceServer
                             var sessionId = request.Cookies.Count > 0 ? request.Cookies["SessionId"]?.Value : null;
                             var valid = sessionId != null;
                             
+                            // 세션 비교를 해서 유효하지 않은 세션일 경우 에러 
                             if (!_dicSessions.TryGetValue(requestData.Id, out var id))
                                 valid = false;
 
@@ -126,14 +123,10 @@ public abstract class HttpServiceServer
                         context.Response.StatusCode = (int)HttpStatusCode.OK;
                         context.Response.ContentType = HttpServiceUtil.ContentType;
                         context.Response.ContentLength64 = buffer.Length;
-                        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                        await context.Response.OutputStream.WriteAsync(buffer);
                         context.Response.OutputStream.Close();
 
-                        var responseLogMessage =
-                            $"[{Name}] Response : {nameof(responseData.Type)} = {responseData.Type} " +
-                            $"{nameof(responseData.Code)} = {responseData.Code} " +
-                            $"{nameof(responseData.Body)} = {responseData.Body}";
-                        
+                        var responseLogMessage = $"[{Name}] Response : {responseData}";
                         _loggerService.ConsoleLog(responseLogMessage);
                         _loggerService.FileLog(LogDirectoryPath, responseLogMessage);
                     }
@@ -173,34 +166,38 @@ public abstract class HttpServiceServer
         }
     }
 
-    private ResponseData Parse(RequestData requestData)
+    private async Task<ResponseData> MakeResponseDataAsync(RequestData requestData)
     {
         var requestBody = requestData.Body;
-        if (requestBody != null && requestData.Type != (int)EPacketType.Login)
+        if (requestData.Type != (int)EPacketType.Login)
         {
             if (_dicKeys.TryGetValue(requestData.Id, out var key))
                 requestBody = Crypto.Decrypt(requestBody, key);
         }
                 
-        var (code, body) = GenerateResponseData(requestData.Type, requestData.Id, requestBody);
+        var (responseCode, responseBody) = await MakeResponseDataAsync(requestData.Type, requestData.Id, requestBody);
         
         var response = new ResponseData(requestData.Type)
         {
-            Code = code,
-            Body = body
+            Code = responseCode,
+            Body = responseBody
         };
         
         return response;
     }
 
-    private Tuple<int, string?> GenerateResponseData(int type, string id, string? requestBody)
+    private async Task<(EResponseCode, string?)> MakeResponseDataAsync(EPacketType type, string id, string? requestBody)
     {
         if (DicHttpServiceProtocols.TryGetValue(type, out var func))
-            return func.MakeResponse(id, requestBody);
+            return await func.MakeResponseDataAsync(id, requestBody);
 
-        return new Tuple<int, string?>((int)EResponseCode.Unknown, null);
+        return (EResponseCode.MakeResponseDataFailed, null);
     }
-    
+
+    public string? GetKey(string id)
+    {
+        return _dicKeys.GetValueOrDefault(id);
+    }
     public void SetKey(string id, string key)
     {
         _dicKeys.Remove(id);

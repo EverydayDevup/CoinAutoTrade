@@ -65,15 +65,15 @@ public static partial class CoinAutoTradeConsole
     private static async Task<CoinAutoTradeMarketConfig?> CreateUserDataAutoTradeConfigAsync(EMarketType marketType, string userId, string filePath)
     {
         var coinAutoTradeConfig = new CoinAutoTradeMarketConfig
-        {
-            MarketType = marketType,
-            UserId = userId,
-            IP = GetText("Input your IP address: "),
-            MarketApiKey = GetText("Input your API key: "),
-            MarketSecretKey = GetText("Input your Secret key: "),
-            TelegramApiToken = GetText("Input your Telegram API token: "),
-            TelegramChatId = GetLong("Input your Telegram Chat ID: ")
-        };
+        (
+            GetText("Input your IP address: "),
+            userId,
+            marketType,
+            GetText("Input your API key: "),
+            GetText("Input your Secret key: "),
+            GetText("Input your Telegram API token: "),
+           GetLong("Input your Telegram Chat ID: ")
+        );
 
         var password = GetPassword();
         var encryptJson = Crypto.Encrypt(JsonConvert.SerializeObject(coinAutoTradeConfig), password);

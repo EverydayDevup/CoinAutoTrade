@@ -4,8 +4,9 @@ namespace CoinAutoTradeService;
 
 public static class CoinAutoTradeService
 {
-    public static void Main()
+    public static async Task Main()
     {
         var coinAutoTradeServer = new CoinAutoTradeServer("*", HttpServiceUtil.CoinAutoTradeServicePort);
+        await coinAutoTradeServer.HttpServiceServerRun();
     }
 }

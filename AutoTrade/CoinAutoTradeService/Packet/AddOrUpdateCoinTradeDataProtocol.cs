@@ -3,14 +3,17 @@ using SharedClass;
 
 namespace CoinAutoTradeService;
 
-public class AddOrUpdateCoinTradeDataProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, CoinTradeDataRequest, ResponseBody>(server)
+public class AddOrUpdateCoinTradeDataProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, AddOrUpdateCoinTradeDataRequest, AddOrUpdateCoinTradeDataResponse>(server)
 {
-    protected override Tuple<int, ResponseBody?> MakeResponse(string id, CoinTradeDataRequest request)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    protected override async Task<(EResponseCode, AddOrUpdateCoinTradeDataResponse?)> MakeResponseDataAsync(string id, AddOrUpdateCoinTradeDataRequest request)
     {
-        var result = CoinTradeDataManager.AddCoinTradeData(id, request.CoinTradeData);
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        
+        var result = CoinTradeDataManager.AddOrUpdateCoinTradeData(id, request.CoinTradeData);
         if (!result)
-            return new Tuple<int, ResponseBody?>((int)EResponseCode.AddCoinTradeDataFailed, null);
-            
-        return new Tuple<int, ResponseBody?>((int)EResponseCode.Success, new ResponseBody());
+            return (EResponseCode.AddCoinTradeDataFailed, null);
+        
+        return (EResponseCode.Success, new AddOrUpdateCoinTradeDataResponse());
     }
 }

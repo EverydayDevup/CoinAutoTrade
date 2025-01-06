@@ -43,5 +43,5 @@ public interface IMarket
     /// <summary>
     /// 코인 주문 취소
     /// </summary>
-    public Task<MarketCancelJson?> RequestCancelOrder(string uuid); 
+    public Task<MarketCancelResponse?> RequestCancelOrder(string uuid); 
 }

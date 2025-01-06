@@ -10,7 +10,6 @@ internal class LoggerServiceTelegramLog(string name, string apiToken, long chatI
 {
     private TelegramBotClient BotClient { get; } = new (apiToken);
     private ChatId ChatId { get; } = new (chatId);
-
     private string Name { get; } = name;
     
     public async Task<Message> SendMessage(string message)

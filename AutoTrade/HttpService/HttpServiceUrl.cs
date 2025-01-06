@@ -3,7 +3,7 @@
 /// <summary>
 /// http 서버의 url을 관리
 /// </summary>
-internal struct HttpServiceUrl(string ip, int port)
+public struct HttpServiceUrl(string ip, int port)
 {
     private string _url = string.Empty;
 

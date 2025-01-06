@@ -1,13 +1,13 @@
 ﻿using System.Net;
-using System.Text;
 
 namespace HttpService;
 
 public static class HttpServiceUtil
 {
-    public const string HttpMethod = "POST";
-    public const string ContentType = "application/json";
+    public static readonly string HttpMethod = "POST";
+    public static readonly string ContentType = "application/json";
     public static readonly int CoinAutoTradeServicePort = 50000;
+    public static readonly string LocalHost = "127.0.0.1";
     
     /// <summary>
     /// http 서버를 올릴 때 사용할 포트를 찾음
@@ -27,7 +27,7 @@ public static class HttpServiceUtil
             try
             {
                 using var listener = new HttpListener();
-                listener.Prefixes.Add($"http://localhost:{port}/");
+                listener.Prefixes.Add($"http://{LocalHost}:{port}/");
                 listener.Start();
                 listener.Stop(); 
                 return true;

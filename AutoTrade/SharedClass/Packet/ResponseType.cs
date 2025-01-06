@@ -1,16 +1,20 @@
 ﻿namespace SharedClass;
 
-public class LoginResponse : ResponseBody
+public class AliveResponse : ResponseBody;
+public class LoginResponse(string symmetricKey) : ResponseBody
 {
-    public string SymmetricKey { get; init; } = string.Empty;
+    public string SymmetricKey { get; } = symmetricKey;
 }
-
-public class GetAllCoinTradeDataResponse : ResponseBody
+public class GetAllCoinTradeDataResponse(List<CoinTradeData>? coinTradeDataList) : ResponseBody
 {
-    public List<CoinTradeData>? CoinTradeDataList { get; init; }
+    public List<CoinTradeData>? CoinTradeDataList { get; } = coinTradeDataList;
 }
-
-public class CoinTradeDataResponse : ResponseBody
+public class DeleteAllCoinTradeDataResponse : ResponseBody;
+public class AddOrUpdateCoinTradeDataResponse : ResponseBody;
+public class GetCoinTradeDataResponse(CoinTradeData? coinTradeData) : ResponseBody
 {
-    public CoinTradeData? CoinTradeData { get; set; }
+    public CoinTradeData? CoinTradeData { get; } = coinTradeData;
 }
+public class DeleteCoinTradeDataResponse : ResponseBody;
+public class StartAllCoinTradeDataResponse : ResponseBody;
+public class InnerStartAllCoinAutoTradeResponse: ResponseBody;

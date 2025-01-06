@@ -1,20 +1,33 @@
 ﻿namespace SharedClass;
 
-public class CoinTradeDataRequest : RequestBody
+public class AliveRequest : RequestBody;
+public class LoginRequest : RequestBody;
+public class GetAllCoinTradeDataRequest : RequestBody;
+public class DeleteAllCoinTradeDataRequest : RequestBody;
+public class AddOrUpdateCoinTradeDataRequest(CoinTradeData coinTradeData) : RequestBody
 {
-    public CoinTradeData? CoinTradeData { get; init; }
+    public CoinTradeData CoinTradeData { get; } = coinTradeData;
+}
+public class GetCoinTradeDataRequest(string symbol) : RequestBody
+{
+    public string Symbol { get; } = symbol;
+}
+public class DeleteCoinTradeDataRequest(string symbol) : RequestBody
+{
+    public string Symbol { get; } = symbol;
 }
 
-public class CoinSymbolRequest : RequestBody
+
+public class StartAllCoinTradeDataRequest(EMarketType marketType, string? apiKey, string? secretKey, string? telegramApiKey, long telegramChatId) : RequestBody
 {
-    public string Symbol { get; init; } = string.Empty;
+    public EMarketType MarketType { get; } = marketType;
+    public string? ApiKey { get;  } = apiKey;
+    public string? SecretKey { get;  } = secretKey;
+    public string? TelegramApiKey { get; } = telegramApiKey;
+    public long TelegramChatId { get; } = telegramChatId;
 }
 
-public class StartAllCoinTradeDataRequest : RequestBody
+public class InnerStartAllCoinAutoTradeRequest(List<CoinTradeData> coinTradeDataList) : RequestBody
 {
-    public int MarketType { get; init; }
-    public string? ApiKey { get; init; } = string.Empty;
-    public string? SecretKey { get; init; } = string.Empty;
-    public string TelegramApiKey { get; init; } = string.Empty;
-    public long TelegramChatId { get; init; }
+    public List<CoinTradeData>? CoinAutoTradeDataList { get; } = coinTradeDataList;
 }

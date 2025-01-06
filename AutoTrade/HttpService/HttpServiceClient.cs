@@ -10,30 +10,40 @@ namespace HttpService;
 /// </summary>
 public abstract class HttpServiceClient : IDisposable
 {
-    private readonly HttpServiceUrl _httpServiceUrl;
-    private readonly LoggerService.LoggerService _loggerService;
-    private bool IsSending { get; set; } = false;
-    private byte RetryCount { get; set; } = 0;
     protected string Key { get; set; } = string.Empty;
-    protected string Id { get; init; } = string.Empty;
+    protected string Id { get; init; }
+    private bool IsSending { get; set; }
+    private byte RetryCount { get; set; }
     
     private const byte MaxRetryCount = 3;
+    
     private readonly HttpClient _client;
     private readonly CookieContainer _cookieContainer = new ();
     private readonly HttpClientHandler _clientHandler = new ();
+    
+    private readonly HttpServiceUrl _httpServiceUrl;
+    private readonly LoggerService.LoggerService _loggerService;
     private bool _isDisposed = false;
 
-    protected HttpServiceClient(string ip, int port, string telegramApiToken, long telegramChatId)
+    protected HttpServiceClient(string id, string ip, int port, string? telegramApiToken, long telegramChatId)
     {
+        Id = id;
         _httpServiceUrl = new HttpServiceUrl(ip, port);
         _loggerService = new LoggerService.LoggerService();
-        _loggerService.SetTelegramInfo(GetType().Name, telegramApiToken, telegramChatId);
+        
+        if (!string.IsNullOrEmpty(telegramApiToken))
+            _loggerService.SetTelegramInfo(GetType().Name, telegramApiToken, telegramChatId);
 
         _clientHandler.CookieContainer = _cookieContainer;
         _client = new HttpClient(_clientHandler);
     }
 
-    protected async Task<T?> Request<T, TK>(int type, TK data, Action<int, int>? failAction = null) where T : ResponseBody where TK : RequestBody
+    private static bool IsCrypto(EPacketType type)
+    {
+        return type != (int)EPacketType.Login;
+    }
+
+    protected async Task<TK?> RequestAsync<T, TK>(EPacketType type, T data, Action<EPacketType, EResponseCode>? failAction = null) where T : RequestBody where TK : ResponseBody 
     {
         try
         {
@@ -46,12 +56,12 @@ public abstract class HttpServiceClient : IDisposable
             var requestBody = JsonSerializer.Serialize(data);
             
             _loggerService.ConsoleLog($"[Request] : " +
-                                      $"{nameof(type)} = {type} " +
+                                      $"Type = {type} " +
                                       $"{nameof(Id)} = {Id} " +
-                                      $"{nameof(requestBody)} = {requestBody}");
+                                      $"Body = {requestBody}");
             
             // 로그인 패킷이 아니라면, 요청하는 데이터를 암호화
-            if (type != (int)EPacketType.Login)
+            if (IsCrypto(type))
                 requestBody = Crypto.Encrypt(requestBody, Key);
             
             var requestData = new RequestData(type, Id, requestBody);
@@ -66,7 +76,7 @@ public abstract class HttpServiceClient : IDisposable
                     response.StatusCode == HttpStatusCode.BadRequest ||
                     response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    OnError($"[Response] Error : {nameof(response.StatusCode)} : {response.StatusCode}", type, (int)EResponseCode.Unknown, failAction);
+                    OnError($"[Response] Error : {nameof(ResponseData)} : {response}", type, EResponseCode.HttpStatusCodeError, failAction);
                     return default;
                 }
                 
@@ -84,7 +94,7 @@ public abstract class HttpServiceClient : IDisposable
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 OnError($"[Response] Error : {nameof(RetryCount)} : {RetryCount} " +
-                        $"{nameof(response.StatusCode)} = {response.StatusCode}", type, (int)EResponseCode.Unknown, failAction);
+                        $"{nameof(response.StatusCode)} = {response.StatusCode}", type, EResponseCode.HttpRequestRetryOver, failAction);
                 
                 return default;
             }
@@ -92,7 +102,7 @@ public abstract class HttpServiceClient : IDisposable
             // 응답 읽기
             var responseJson = await response.Content.ReadAsStringAsync();
             
-            if (type != (int)EPacketType.Login)
+            if (IsCrypto(type))
                 responseJson = Crypto.Decrypt(responseJson, Key);
             
             var responseData = JsonSerializer.Deserialize<ResponseData>(responseJson);
@@ -100,38 +110,36 @@ public abstract class HttpServiceClient : IDisposable
             if (responseData != null && !string.IsNullOrEmpty(responseData.Body))
             {
                 _loggerService.ConsoleLog($"[Response] : " +
-                                          $"{nameof(responseData.Type)} = {responseData.Type} " +
-                                          $"{nameof(responseData.Code)} = {responseData.Code} " +
-                                          $"{nameof(responseData.Body)} = {responseData.Body} ");
+                                          $"Type = {(EPacketType)responseData.Type} " +
+                                          $"Code = {responseData.Code} " +
+                                          $"Body = {responseData.Body} ");
                 
-                IsSending = false;
-                return responseData.Code != (int)EResponseCode.Success ? default : JsonSerializer.Deserialize<T>(responseData.Body);
+                if (responseData.Code == (int)EResponseCode.Success)
+                {
+                    IsSending = false;
+                    return JsonSerializer.Deserialize<TK>(responseData.Body);
+                }
             }
 
             if (responseData == null)
-            {
-                OnError($"[Response] Error : {nameof(responseData)} is null", type, (int)EResponseCode.Unknown, failAction);
-            }
+                OnError($"[Response] Error : {nameof(responseData)} is null", type, EResponseCode.SerializedFailedResponseData, failAction);
             else
-            {
-                OnError($"[Response] Error : {nameof(responseData.Code)} = {responseData.Code}", type, responseData.Code, failAction);
-            }
+                OnError($"[Response] Error : {nameof(responseData.Code)} = {responseData.Code}", type, (EResponseCode)responseData.Code, failAction);
             
-            IsSending = false;
             return default;
         }
         catch (Exception ex)
         {
-            OnError($"{nameof(HttpServiceClient)} : {ex.Message}", type, (int)EResponseCode.Unknown, failAction);
+            OnError($"{nameof(HttpServiceClient)} : {ex.Message}", type, EResponseCode.HttpRequestException, failAction);
             return default;
         }
     }
 
-    private async void OnError(string message, int type, int code, Action<int, int>? failAction = null)
+    private async void OnError(string message, EPacketType type, EResponseCode code, Action<EPacketType, EResponseCode>? failAction = null)
     {
         IsSending = false;
         _loggerService.ConsoleError(message);
-        await _loggerService.TelegramAsync(message);
+        await _loggerService.TelegramLogAsync(message);
         failAction?.Invoke(type, code);
     }
 

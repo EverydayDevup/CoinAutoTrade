@@ -90,9 +90,9 @@ public class Upbit(string accessKey, string secretKey) : Market(accessKey, secre
         return await RequestJwtPost<MarketSellResponse>($"https://api.upbit.com/v1/orders", payload, order);
     }
 
-    public async Task<MarketCancelJson?> RequestCancelOrder(string uuid)
+    public async Task<MarketCancelResponse?> RequestCancelOrder(string uuid)
     {
         var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
-        return await RequestJwtDelete<MarketCancelJson>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
+        return await RequestJwtDelete<MarketCancelResponse>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
     }
 }

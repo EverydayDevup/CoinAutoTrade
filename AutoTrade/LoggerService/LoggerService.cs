@@ -20,6 +20,9 @@ public class LoggerService : IDisposable
     }
     public void SetTelegramInfo(string name, string telegramApiToken, long telegramChatId)
     {
+        if (string.IsNullOrWhiteSpace(telegramApiToken))
+            return;
+        
         _telegramLog = new LoggerServiceTelegramLog(name, telegramApiToken, telegramChatId);
         _ = _telegramLog.SendMessage("Connect");
     }
@@ -42,7 +45,7 @@ public class LoggerService : IDisposable
     /// <summary>
     /// 텔레그램에 로그를 남김
     /// </summary>
-    public async Task TelegramAsync(string message)
+    public async Task TelegramLogAsync(string message)
     {
         if (_telegramLog == null)
             return;

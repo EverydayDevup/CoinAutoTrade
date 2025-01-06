@@ -3,15 +3,13 @@ using SharedClass;
 
 namespace CoinAutoTradeService;
 
-public class GetAllCoinTradeDataProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<HttpServiceServer, RequestBody, GetAllCoinTradeDataResponse>(server)
+public class GetAllCoinTradeDataProtocol(CoinAutoTradeServer server)
+    : HttpServiceProtocol<HttpServiceServer, GetAllCoinTradeDataRequest, GetAllCoinTradeDataResponse>(server)
 {
-    protected override Tuple<int, GetAllCoinTradeDataResponse?> MakeResponse(string id, RequestBody request)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    protected override async Task<(EResponseCode, GetAllCoinTradeDataResponse?)> MakeResponseDataAsync(string id, GetAllCoinTradeDataRequest request)
     {
-        var res = new GetAllCoinTradeDataResponse
-        {
-            CoinTradeDataList = CoinTradeDataManager.GetAllCoinTradeData(id)
-        };
-
-        return new Tuple<int, GetAllCoinTradeDataResponse?>((int)EResponseCode.Success, res);
+        return (EResponseCode.Success, new GetAllCoinTradeDataResponse(CoinTradeDataManager.GetAllCoinTradeData(id)));
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

@@ -41,7 +41,7 @@ public static partial class CoinAutoTradeConsole
         }
     }
 
-    private static List<ECoinTradeDataState>? _states = null;
+    private static List<ECoinTradeDataState>? _states ;
 
     private static List<ECoinTradeDataState> States
     {
@@ -55,6 +55,23 @@ public static partial class CoinAutoTradeConsole
             }
 
             return _states;
+        }
+    }
+    
+    private static List<ECoinTradeType>? _tradeTypes = null;
+
+    private static List<ECoinTradeType> TradeTypes
+    {
+        get
+        {
+            if (_tradeTypes == null)
+            {
+                _tradeTypes = new List<ECoinTradeType>();
+                foreach (ECoinTradeType type in Enum.GetValues(typeof(ECoinTradeType)))
+                    _tradeTypes.Add(type);
+            }
+
+            return _tradeTypes;
         }
     }
     
@@ -84,9 +101,9 @@ public static partial class CoinAutoTradeConsole
 
             LoggerService.ConsoleLog($"====================== {Mode} =========================");
             var alive = await CoinAutoTradeClient.RequestAliveAsync();
-            if (!alive)
+            if (alive == null)
             {
-                LoggerService.ConsoleLog($"Server Process {nameof(alive)} : {alive}");
+                LoggerService.ConsoleLog($"Server Process {nameof(alive)} : {alive != null}");
                 return;
             }
 
@@ -116,6 +133,7 @@ public static partial class CoinAutoTradeConsole
         }
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     private static async Task<bool> SelectMenuAsync()
     {
         if (CoinAutoTradeClient == null)
@@ -124,6 +142,7 @@ public static partial class CoinAutoTradeConsole
         Mode = SelectMenu("Select Mode : ", Modes);
         return true;
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
     private static async Task<bool> GetAllCoinTradeDataAsync()
     {
@@ -131,22 +150,20 @@ public static partial class CoinAutoTradeConsole
             return false;
         
         var res = await CoinAutoTradeClient.RequestGetAllCoinTradeDataAsync();
-        if (res == null || res.CoinTradeDataList == null) 
-            return false;
         
-        if (res.CoinTradeDataList.Count <= 0)
+        if (res?.CoinTradeDataList is not { Count: > 0 })
             LoggerService.ConsoleLog($"{nameof(res.CoinTradeDataList)} is empty");
         else
         {
             var coinTradeDataList = res.CoinTradeDataList;
-            if (coinTradeDataList != null)
+            if (coinTradeDataList == null) 
+                return true;
+            
+            for (var i = 0; i < coinTradeDataList.Count; i++)
             {
-                for (var i = 0; i < coinTradeDataList.Count; i++)
-                {
-                    LoggerService.ConsoleLog($"====== {i} ========");
-                    LoggerService.ConsoleLog(coinTradeDataList[i].ToString());
-                    LoggerService.ConsoleLog($"===================");
-                }
+                LoggerService.ConsoleLog($"====== {i} ========");
+                LoggerService.ConsoleLog($"{coinTradeDataList[i]}");
+                LoggerService.ConsoleLog($"===================");
             }
         }
         
@@ -167,10 +184,8 @@ public static partial class CoinAutoTradeConsole
         if (CoinAutoTradeClient == null)
             return false;
 
-        var coinTradeData = new CoinTradeData();
-        MakeCoinTradeData(coinTradeData);
-        
-        var res = await CoinAutoTradeClient.RequestAddCoinTradeDataAsync(coinTradeData);
+        var coinTradeData = MakeCoinTradeData();
+        var res = await CoinAutoTradeClient.RequestAddOrUpdateCoinTradeDataAsync(coinTradeData);
         return res != null;
     }
     
@@ -181,12 +196,12 @@ public static partial class CoinAutoTradeConsole
 
         var symbol = GetText("Input symbol");
         symbol = symbol.ToUpper();
-        var res = await CoinAutoTradeClient.RequestGetCoinTradeDataAsync(symbol);
         
-        if (res == null || res.CoinTradeData == null)
-            LoggerService.ConsoleLog($"not found {nameof(symbol)} : {symbol}");
-        else
-            LoggerService.ConsoleLog($"{res.CoinTradeData}");
+        var res = await CoinAutoTradeClient.RequestGetCoinTradeDataAsync(symbol);
+
+        LoggerService.ConsoleLog(res?.CoinTradeData == null
+            ? $"not found {nameof(symbol)} : {symbol}"
+            : $"{res.CoinTradeData}");
 
         return true;
     }
@@ -198,6 +213,7 @@ public static partial class CoinAutoTradeConsole
 
         var symbol = GetText("Input symbol");
         symbol = symbol.ToUpper();
+        
         var res = await CoinAutoTradeClient.RequestDeleteCoinTradeDataAsync(symbol);
         
         if (res != null)
@@ -206,14 +222,16 @@ public static partial class CoinAutoTradeConsole
         return true;
     }
 
-    private static void MakeCoinTradeData(CoinTradeData coinTradeData)
+    private static CoinTradeData MakeCoinTradeData()
     {
+        var coinTradeData = new CoinTradeData();
         var confirm = false;
         do
         {
             coinTradeData.Symbol = GetText($"Input coin symbol :");
             coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
             coinTradeData.State = (int)SelectMenu($"Input state : ", States);
+            coinTradeData.State = (int)SelectMenu($"Input trade type : ", TradeTypes);
             coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount : ");
             coinTradeData.InitBuyPrice = GetDouble($"Input init buy price [-1 is immediate] : ");
             coinTradeData.MaxSellPrice = GetDouble($"Input max sell price [-1 is infinity] : ");
@@ -237,6 +255,8 @@ public static partial class CoinAutoTradeConsole
             }
             
         } while (!confirm);
+
+        return coinTradeData;
     }
     
     private static async Task<bool> StartAllCoinAutoTradeAsync()
@@ -244,12 +264,10 @@ public static partial class CoinAutoTradeConsole
         if (CoinAutoTradeClient == null || CoinAutoTradeMarketConfig == null)
             return false;
 
-        var res = await CoinAutoTradeClient.RequestStartAllCoinTradeDataAsync(CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.MarketApiKey, CoinAutoTradeMarketConfig.MarketSecretKey,
+        var res = await CoinAutoTradeClient.RequestStartAllCoinTradeDataAsync
+        (CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.MarketApiKey, CoinAutoTradeMarketConfig.MarketSecretKey,
             CoinAutoTradeMarketConfig.TelegramApiToken, CoinAutoTradeMarketConfig.TelegramChatId);
         
-        if (res == null)
-            return false;
-
-        return true;
+        return res != null;
     }
 }

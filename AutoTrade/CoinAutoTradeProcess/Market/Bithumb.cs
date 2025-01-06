@@ -91,9 +91,9 @@ public class Bithumb(string accessKey, string secretKey) : Market(accessKey, sec
         return await RequestJwtPost<MarketSellResponse>($"https://api.bithumb.com/v1/orders", payload, order);
     }
     
-    public async Task<MarketCancelJson?> RequestCancelOrder(string uuid)
+    public async Task<MarketCancelResponse?> RequestCancelOrder(string uuid)
     {
         var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
-        return await RequestJwtDelete<MarketCancelJson>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
+        return await RequestJwtDelete<MarketCancelResponse>($"https://api.bithumb.com/v1/order?uuid={uuid}", payload);
     }
 }

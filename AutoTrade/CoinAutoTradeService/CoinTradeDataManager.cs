@@ -14,16 +14,10 @@ public static class CoinTradeDataManager
         
         return Path.Combine(directoryPath, $"{id}.json");
     }
-    
-    private static void SaveAllCoinTradeData(string id, List<CoinTradeData> allCoinTradeData)
-    {
-        var filePath = GetAllCoinTradeDataFilePath(id);
-        File.WriteAllText(filePath, JsonConvert.SerializeObject(allCoinTradeData));
-    }
 
     public static List<CoinTradeData>? GetAllCoinTradeData(string id)
     {
-        List<CoinTradeData>? allCoinTradeData = new();
+        List<CoinTradeData>? allCoinTradeData = null;
         
         var filePath = GetAllCoinTradeDataFilePath(id);
         if (File.Exists(filePath))
@@ -48,11 +42,17 @@ public static class CoinTradeDataManager
         }
     }
     
-    public static bool AddCoinTradeData(string id, CoinTradeData coinTradeData)
+    private static void SaveAllCoinTradeData(string id, List<CoinTradeData> allCoinTradeData)
+    {
+        var filePath = GetAllCoinTradeDataFilePath(id);
+        File.WriteAllText(filePath, JsonConvert.SerializeObject(allCoinTradeData));
+    }
+    
+    public static bool AddOrUpdateCoinTradeData(string id, CoinTradeData coinTradeData)
     {
         try
         {
-            var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
+            var allCoinTradeData = GetAllCoinTradeData(id) ?? [];
             var find = allCoinTradeData.Find((data) => data.Symbol == coinTradeData.Symbol);
             if (find != null)
                 allCoinTradeData.Remove(find);
@@ -91,7 +91,7 @@ public static class CoinTradeDataManager
     
     public static CoinTradeData? GetCoinTradeData(string id, string symbol)
     {
-        var allCoinTradeData = GetAllCoinTradeData(id) ?? new();
+        var allCoinTradeData = GetAllCoinTradeData(id) ?? [];
         return allCoinTradeData.Find((data) => data.Symbol == symbol);
     }
 }

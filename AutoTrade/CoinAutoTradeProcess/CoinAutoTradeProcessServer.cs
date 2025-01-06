@@ -1,20 +1,23 @@
-﻿using HttpService;
+﻿using System.Diagnostics;
+using CoinAutoTradeProcess.Protocol;
+using HttpService;
 using SharedClass;
 
 namespace CoinAutoTradeProcess;
 
 public class CoinAutoTradeProcessServer(EMarketType marketType, string marketApiKey, string marketSecretKey, string ip, int port) : HttpServiceServer(ip, port)
 {
-    private EMarketType MarketType { get; set; } = marketType;
-    private string MarketApiKey { get; set; } = marketApiKey;
-    private string MarketSecretKey { get; set; } = marketSecretKey;
+    private EMarketType MarketType { get; } = marketType;
+    private string MarketApiKey { get; } = marketApiKey;
+    private string MarketSecretKey { get; } = marketSecretKey;
     public CoinAutoTrade? CoinAutoTrade { get; private set; }
-    private IMarket? _market;
+    public IMarket? Market { get; private set; }
     
     protected override void Init()
     {
-       _market = MarketFactory.Create(MarketType, MarketApiKey, MarketSecretKey);
-       if (_market != null)
-           CoinAutoTrade = new CoinAutoTrade(_market);
+        Market = MarketFactory.Create(MarketType, MarketApiKey, MarketSecretKey);
+        CoinAutoTrade = new CoinAutoTrade(Market);
+        
+        DicHttpServiceProtocols.Add(EPacketType.InnerStartAllCoinAutoTrade, new InnerStartAllCoinAutoTradeProtocol(this));
     }
 }

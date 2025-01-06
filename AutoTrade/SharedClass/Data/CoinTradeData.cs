@@ -12,7 +12,14 @@ public class CoinTradeData
     /// 거래소에서 사용하는 마켓 코드 ex) KRW-BTC
     /// </summary>
     public string MarketCode => $"KRW-{Symbol}";
-    public int State { get; set; } = 0;
+    /// <summary>
+    /// 코인의 현재 거래 상태
+    /// </summary>
+    public int State { get; set; }
+    /// <summary>
+    /// 코인 거래 타입
+    /// </summary>
+    public int TradeType { get; set; }
     /// <summary>
     /// 한번에 투자할 금액
     /// </summary>
@@ -62,6 +69,7 @@ public class CoinTradeData
         LogStringBuilder.AppendLine($"{nameof(Symbol)}: {Symbol}");
         LogStringBuilder.AppendLine($"{nameof(MarketCode)}: {MarketCode}");
         LogStringBuilder.AppendLine($"{nameof(State)}: {State}");
+        LogStringBuilder.AppendLine($"{nameof(TradeType)}: {TradeType}");
         LogStringBuilder.AppendLine($"{nameof(InvestRoundAmount)}: {InvestRoundAmount}");
         LogStringBuilder.AppendLine($"{nameof(InitBuyPrice)}: {InitBuyPrice}");
         LogStringBuilder.AppendLine($"{nameof(MaxSellPrice)}: {MaxSellPrice}");

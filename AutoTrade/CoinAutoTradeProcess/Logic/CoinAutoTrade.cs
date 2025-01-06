@@ -1,9 +1,20 @@
-﻿namespace CoinAutoTradeProcess;
+﻿using SharedClass;
 
-public class CoinAutoTrade(IMarket market)
+namespace CoinAutoTradeProcess;
+
+public class CoinAutoTrade(IMarket? market)
 {
-    private IMarket Market { get; } = market;
+    private IMarket? Market { get; } = market;
     private const int Delay = 1000 / 50;
+
+    private List<CoinTradeData>? _coinTradeDataList;
+    
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public async Task RunAsync(List<CoinTradeData> coinTradeDataList)
+    {
+        _coinTradeDataList = coinTradeDataList;
+    }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }
 
 //

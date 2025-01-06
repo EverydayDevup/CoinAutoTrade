@@ -3,87 +3,61 @@ using SharedClass;
 
 namespace CoinAutoTradeConsole;
 
-public sealed class CoinAutoTradeClient : HttpServiceClient
+public sealed class CoinAutoTradeClient(EMarketType marketType, string id, string ip, int port, string telegramApiToken, long telegramChatId)
+    : HttpServiceClient($"{marketType}_{id}", ip, port, telegramApiToken, telegramChatId)
 {
-    public CoinAutoTradeClient(EMarketType marketType, string id, string ip, int port, string telegramApiToken,
-        long telegramChatId) : base(ip, port, telegramApiToken, telegramChatId)
+    public async Task<LoginResponse?> RequestLoginAsync()
     {
-        Id = $"{marketType}_{id}";
-    }
-     
-    public async Task<bool> RequestLoginAsync()
-    {
-        var res = await Request<LoginResponse, RequestBody>((int)EPacketType.Login, new RequestBody());
-        if (res == null)
-            return false;
+        var res = await RequestAsync<LoginRequest, LoginResponse>
+            (EPacketType.Login, new LoginRequest());
         
+        if (res == null)
+            return null;
+
         Key = res.SymmetricKey;
-        return true;
+        return res;
     }
     
-    public async Task<bool> RequestAliveAsync()
+    public async Task<AliveResponse?> RequestAliveAsync()
     {
-        var res = await Request<ResponseBody, RequestBody>((int)EPacketType.Alive, new RequestBody());
-        return res != null;
+        return await RequestAsync<AliveRequest, AliveResponse>
+            (EPacketType.Alive, new AliveRequest());
     }
     
     public async Task<GetAllCoinTradeDataResponse?> RequestGetAllCoinTradeDataAsync()
     {
-        var res = await Request<GetAllCoinTradeDataResponse, RequestBody>((int)EPacketType.GetAllCoinTradeData, new RequestBody());
-        return res;
+        return await RequestAsync<GetAllCoinTradeDataRequest, GetAllCoinTradeDataResponse>
+            (EPacketType.GetAllCoinTradeData, new GetAllCoinTradeDataRequest());
     }
     
-    public async Task<ResponseBody?> RequestAddCoinTradeDataAsync(CoinTradeData coinTradeData)
+    public async Task<DeleteAllCoinTradeDataResponse?> RequestDeleteAllCoinTradeDataAsync()
     {
-        var req = new CoinTradeDataRequest
-        {
-            CoinTradeData = coinTradeData
-        };
-        
-        var res = await Request<ResponseBody, CoinTradeDataRequest>((int)EPacketType.AddOrUpdateCoinTradeData, req);
-        return res;
+        return await RequestAsync<DeleteAllCoinTradeDataRequest, DeleteAllCoinTradeDataResponse>
+            (EPacketType.DeleteAllCoinTradeData, new DeleteAllCoinTradeDataRequest());
+    }
+
+    public async Task<AddOrUpdateCoinTradeDataResponse?> RequestAddOrUpdateCoinTradeDataAsync(CoinTradeData coinTradeData)
+    {
+        return await RequestAsync<AddOrUpdateCoinTradeDataRequest, AddOrUpdateCoinTradeDataResponse>
+            (EPacketType.AddOrUpdateCoinTradeData, new AddOrUpdateCoinTradeDataRequest(coinTradeData));
     }
     
-    public async Task<ResponseBody?> RequestDeleteAllCoinTradeDataAsync()
+    public async Task<GetCoinTradeDataResponse?> RequestGetCoinTradeDataAsync(string symbol)
     {
-        var res = await Request<ResponseBody, RequestBody>((int)EPacketType.DeleteAllCoinTradeData, new RequestBody());
-        return res;
-    }
-    
-    public async Task<CoinTradeDataResponse?> RequestGetCoinTradeDataAsync(string symbol)
-    {
-        var req = new CoinSymbolRequest
-        {
-            Symbol = symbol
-        };
-        
-        var res = await Request<CoinTradeDataResponse, CoinSymbolRequest>((int)EPacketType.GetCoinTradeData, req);
-        return res;
+        return await RequestAsync<GetCoinTradeDataRequest, GetCoinTradeDataResponse>
+            (EPacketType.GetCoinTradeData, new GetCoinTradeDataRequest(symbol));
     }
     
     public async Task<ResponseBody?> RequestDeleteCoinTradeDataAsync(string symbol)
     {
-        var req = new CoinSymbolRequest
-        {
-            Symbol = symbol
-        };
-        
-        var res = await Request<ResponseBody, CoinSymbolRequest>((int)EPacketType.DeleteCoinTradeData, req);
-        return res;
+        return await RequestAsync<DeleteCoinTradeDataRequest, DeleteCoinTradeDataResponse>
+            (EPacketType.DeleteCoinTradeData, new DeleteCoinTradeDataRequest(symbol));
     }
     
-    public async Task<ResponseBody?> RequestStartAllCoinTradeDataAsync(EMarketType marketType, string apiKey, string secretKey, string telegramApiToken, long telegramChatId)
+    public async Task<StartAllCoinTradeDataResponse?> RequestStartAllCoinTradeDataAsync(EMarketType marketType, string? apiKey, 
+        string? secretKey, string? telegramApiToken, long telegramChatId)
     {
-        var req = new StartAllCoinTradeDataRequest()
-        {
-            MarketType = (int)marketType,
-            ApiKey = apiKey,
-            SecretKey = secretKey,
-            TelegramApiKey = telegramApiToken,
-            TelegramChatId = telegramChatId
-        };
-
-        var res = await Request<ResponseBody, StartAllCoinTradeDataRequest>((int)EPacketType.StartAllCoinAutoTrade, req);
-        return res;
+        var req = new StartAllCoinTradeDataRequest(marketType, apiKey, secretKey, telegramApiToken,telegramChatId);
+        return await RequestAsync<StartAllCoinTradeDataRequest, StartAllCoinTradeDataResponse>(EPacketType.StartAllCoinAutoTrade, req);
     }
 }
