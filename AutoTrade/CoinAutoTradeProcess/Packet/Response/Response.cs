@@ -25,7 +25,7 @@ public class Error
 /// <typeparam name="T"> string -> json으로 변경할 클래스</typeparam>
 public abstract class Response<T> : IResponse where T : class
 {
-    public bool IsSuccess => Error != null;
+    public bool IsSuccess => Error == null;
     public Error? Error { get; private set; }
     public T? Result { get; private set; }
     

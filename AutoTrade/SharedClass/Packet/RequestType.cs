@@ -27,7 +27,13 @@ public class StartAllCoinTradeDataRequest(EMarketType marketType, string? apiKey
     public long TelegramChatId { get; } = telegramChatId;
 }
 
-public class InnerStartAllCoinAutoTradeRequest(List<CoinTradeData> coinTradeDataList) : RequestBody
+
+public class InnerStartAllCoinAutoTradeRequest(List<CoinTradeData>? coinTradeDataList) : RequestBody
 {
-    public List<CoinTradeData>? CoinAutoTradeDataList { get; } = coinTradeDataList;
+    public List<CoinTradeData>? CoinTradeDataList { get; } = coinTradeDataList;
+}
+
+public class InnerAddOrUpdateCoinTradeDataRequest(CoinTradeData coinTradeData) : RequestBody
+{
+    public CoinTradeData CoinTradeData { get; } = coinTradeData;
 }

@@ -1,4 +1,6 @@
 ﻿using HttpService;
+using Newtonsoft.Json;
+using SharedClass;
 
 namespace CoinAutoTradeConsole;
 

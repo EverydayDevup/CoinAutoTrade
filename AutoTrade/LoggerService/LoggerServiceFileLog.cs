@@ -32,9 +32,27 @@ internal class LoggerServiceFileLog(string directoryPath, int writeTimeMinutes)
             
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
+            
+            var files = Directory.GetFiles(directoryPath);
+            var deleteTimeTicks = DateTime.Now.AddMinutes(-60 * 24);
+            for (var i = files.Length - 1; i >= 0; i--)
+            {
+                var fileName = Path.GetFileNameWithoutExtension(files[i]);
+                var nameSplit = fileName.Split('@');
+                if (nameSplit.Length <= 1)
+                    continue;
+                
+                var createTimeTicks = new DateTime(long.Parse(nameSplit[1]));
+                if (createTimeTicks < deleteTimeTicks)
+                    File.Delete(files[i]);
+            }
+            
+            var logMessage = _stringBuilder.ToString();
+            if (string.IsNullOrEmpty(logMessage))
+                return;
         
-            var filePath = Path.Combine(directoryPath, $"{_nextWriteTime.AddMinutes(-writeTimeMinutes):yy-MM-dd_hh_mm_ss}~{_nextWriteTime:yy-MM-dd_hh_mm_ss}.log");
-            File.WriteAllText(filePath, _stringBuilder.ToString());
+            var filePath = Path.Combine(directoryPath, $"{_nextWriteTime.AddMinutes(-writeTimeMinutes):yy-MM-dd_HH_mm_ss}~{_nextWriteTime:yy-MM-dd_HH_mm_ss}@{_nextWriteTime.Ticks}.log");
+            File.WriteAllText(filePath, logMessage);
 
             _stringBuilder.Clear();
             _nextWriteTime = DateTime.Now.AddMinutes(writeTimeMinutes);

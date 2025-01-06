@@ -28,7 +28,7 @@ public class MarketOrderJson
 
     public EMarketOrderState GetState()
     {
-        return Side?.ToUpper() switch
+        return State?.ToUpper() switch
         {
             "WAIT" => EMarketOrderState.Wait,
             "WATCH" => EMarketOrderState.Watch,

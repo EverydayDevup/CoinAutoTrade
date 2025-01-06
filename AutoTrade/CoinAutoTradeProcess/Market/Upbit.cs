@@ -60,7 +60,7 @@ public class Upbit(string accessKey, string secretKey) : Market(accessKey, secre
         return await RequestJwtGet<MarketOrderResponse>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
     }
 
-    public async Task<MarketBuyResponse?> RequestBuy(string marketCode, double volume, double price)
+    public async Task<MarketOrderResponse?> RequestBuy(string marketCode, double volume, double price)
     {
         var order = new Dictionary<string, string>
         {
@@ -72,10 +72,10 @@ public class Upbit(string accessKey, string secretKey) : Market(accessKey, secre
         };
         
         var payload = GenerateJwtPayload(order);
-        return await RequestJwtPost<MarketBuyResponse>($"https://api.upbit.com/v1/orders", payload, order);
+        return await RequestJwtPost<MarketOrderResponse>($"https://api.upbit.com/v1/orders", payload, order);
     }
 
-    public async Task<MarketSellResponse?> RequestSell(string marketCode, double volume, double price)
+    public async Task<MarketOrderResponse?> RequestSell(string marketCode, double volume, double price)
     {
         var order = new Dictionary<string, string>
         {
@@ -87,12 +87,12 @@ public class Upbit(string accessKey, string secretKey) : Market(accessKey, secre
         };
         
         var payload = GenerateJwtPayload(order);
-        return await RequestJwtPost<MarketSellResponse>($"https://api.upbit.com/v1/orders", payload, order);
+        return await RequestJwtPost<MarketOrderResponse>($"https://api.upbit.com/v1/orders", payload, order);
     }
 
-    public async Task<MarketCancelResponse?> RequestCancelOrder(string uuid)
+    public async Task<MarketOrderResponse?> RequestCancelOrder(string uuid)
     {
         var payload = GenerateJwtPayload(new Dictionary<string, string>{{"uuid", uuid}});
-        return await RequestJwtDelete<MarketCancelResponse>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
+        return await RequestJwtDelete<MarketOrderResponse>($"https://api.upbit.com/v1/order?uuid={uuid}", payload);
     }
 }

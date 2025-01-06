@@ -35,13 +35,13 @@ public interface IMarket
     /// <summary>
     /// 코인 매수 주문 (지정가 주문)
     /// </summary>
-    public Task<MarketBuyResponse?> RequestBuy(string marketCode, double volume, double price);
+    public Task<MarketOrderResponse?> RequestBuy(string marketCode, double volume, double price);
     /// <summary>
     /// 코인 매도 주문 (시장가 매도)
     /// </summary>
-    public Task<MarketSellResponse?> RequestSell(string marketCode, double volume, double price); 
+    public Task<MarketOrderResponse?> RequestSell(string marketCode, double volume, double price); 
     /// <summary>
     /// 코인 주문 취소
     /// </summary>
-    public Task<MarketCancelResponse?> RequestCancelOrder(string uuid); 
+    public Task<MarketOrderResponse?> RequestCancelOrder(string uuid); 
 }

@@ -31,8 +31,9 @@ public static class CoinAutoTradeProcess
         
         if (!int.TryParse(args[6], out var parentProcessId))
             return;
-        
-        LoggerService.ConsoleLog($"{nameof(parentProcessId)} : {parentProcessId}");
+
+        var id = args[7];
+        var symmetricKey = args[8];
         
         ThreadPool.QueueUserWorkItem((state) =>
         {
@@ -49,7 +50,14 @@ public static class CoinAutoTradeProcess
         });
         
         LoggerService.SetTelegramInfo($"{(EMarketType)market}_{nameof(CoinAutoTradeProcessServer)}", telegramApiKey, telegramChatId);
-        var coinAutoTradeProcessServer = new CoinAutoTradeProcessServer(marketType, marketApiKey, marketSecretKey, HttpServiceUtil.LocalHost, port);
+        var coinAutoTradeProcessClient = new CoinAutoTradeProcessClient(marketType, id, HttpServiceUtil.LocalHost,
+            HttpServiceUtil.CoinAutoTradeServicePort, telegramApiKey, telegramChatId);
+        coinAutoTradeProcessClient.Key = symmetricKey;
+        
+        var coinAutoTradeProcessServer = new CoinAutoTradeProcessServer(coinAutoTradeProcessClient, marketType, marketApiKey, marketSecretKey, HttpServiceUtil.LocalHost, port);
+        coinAutoTradeProcessServer.SetKey(id, symmetricKey);
         await coinAutoTradeProcessServer.HttpServiceServerRun();
+
+        Console.ReadLine();
     }
 }

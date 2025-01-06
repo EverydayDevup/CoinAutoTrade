@@ -10,7 +10,7 @@ namespace HttpService;
 /// </summary>
 public abstract class HttpServiceClient : IDisposable
 {
-    protected string Key { get; set; } = string.Empty;
+    public string Key { get; set; } = string.Empty;
     protected string Id { get; init; }
     private bool IsSending { get; set; }
     private byte RetryCount { get; set; }
@@ -22,17 +22,18 @@ public abstract class HttpServiceClient : IDisposable
     private readonly HttpClientHandler _clientHandler = new ();
     
     private readonly HttpServiceUrl _httpServiceUrl;
-    private readonly LoggerService.LoggerService _loggerService;
     private bool _isDisposed = false;
 
+    public LoggerService.LoggerService LoggerService { get; private set; }
+    
     protected HttpServiceClient(string id, string ip, int port, string? telegramApiToken, long telegramChatId)
     {
         Id = id;
         _httpServiceUrl = new HttpServiceUrl(ip, port);
-        _loggerService = new LoggerService.LoggerService();
+        LoggerService = new LoggerService.LoggerService();
         
         if (!string.IsNullOrEmpty(telegramApiToken))
-            _loggerService.SetTelegramInfo(GetType().Name, telegramApiToken, telegramChatId);
+            LoggerService.SetTelegramInfo(GetType().Name, telegramApiToken, telegramChatId);
 
         _clientHandler.CookieContainer = _cookieContainer;
         _client = new HttpClient(_clientHandler);
@@ -55,7 +56,7 @@ public abstract class HttpServiceClient : IDisposable
 
             var requestBody = JsonSerializer.Serialize(data);
             
-            _loggerService.ConsoleLog($"[Request] : " +
+            LoggerService.ConsoleLog($"[Request] : " +
                                       $"Type = {type} " +
                                       $"{nameof(Id)} = {Id} " +
                                       $"Body = {requestBody}");
@@ -85,7 +86,7 @@ public abstract class HttpServiceClient : IDisposable
                 {
                     RetryCount++;
                     response = await _client.PostAsync(_httpServiceUrl.Url, content);
-                    _loggerService.ConsoleLog($"[Response] Fail : {nameof(RetryCount)} : {RetryCount}" + 
+                    LoggerService.ConsoleLog($"[Response] Fail : {nameof(RetryCount)} : {RetryCount}" + 
                                               $"{nameof(response.StatusCode)} = {response.StatusCode}");
 
                 } while (response.StatusCode != HttpStatusCode.OK && RetryCount < MaxRetryCount);
@@ -109,7 +110,7 @@ public abstract class HttpServiceClient : IDisposable
             
             if (responseData != null && !string.IsNullOrEmpty(responseData.Body))
             {
-                _loggerService.ConsoleLog($"[Response] : " +
+                LoggerService.ConsoleLog($"[Response] : " +
                                           $"Type = {(EPacketType)responseData.Type} " +
                                           $"Code = {responseData.Code} " +
                                           $"Body = {responseData.Body} ");
@@ -138,8 +139,8 @@ public abstract class HttpServiceClient : IDisposable
     private async void OnError(string message, EPacketType type, EResponseCode code, Action<EPacketType, EResponseCode>? failAction = null)
     {
         IsSending = false;
-        _loggerService.ConsoleError(message);
-        await _loggerService.TelegramLogAsync(message);
+        LoggerService.ConsoleError(message);
+        await LoggerService.TelegramLogAsync(message);
         failAction?.Invoke(type, code);
     }
 

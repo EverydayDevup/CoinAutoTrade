@@ -2,53 +2,252 @@
 
 namespace CoinAutoTradeProcess;
 
-public class CoinAutoTrade(IMarket? market)
+public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 {
     private IMarket? Market { get; } = market;
-    private const int Delay = 1000 / 50;
+    private const int Delay = 200;
+    private bool IsRunning { get; set; }
 
     private List<CoinTradeData>? _coinTradeDataList;
-    
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    public async Task RunAsync(List<CoinTradeData> coinTradeDataList)
+    private CoinAutoTradeProcessClient Client { get; } = client;
+    private string CoinAutoTradeLogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), nameof(CoinAutoTrade), Client.MarketType.ToString());
+
+    public void Reload(List<CoinTradeData> coinTradeDataList)
     {
         _coinTradeDataList = coinTradeDataList;
+        
+        if (!IsRunning)
+            Run();
     }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
+    private async void Run()
+    {
+        IsRunning = true;
+        while (IsRunning)
+        {
+            if (_coinTradeDataList == null)
+                return;
+
+            var coinTradeDataList = new List<CoinTradeData>();
+            coinTradeDataList.AddRange(_coinTradeDataList);
+            
+            foreach (var coinTradeData in coinTradeDataList)
+                await TradeAsync(coinTradeData);
+            
+            await Task.Delay(Delay);
+        }
+    }
+
+    private async Task TradeAsync(CoinTradeData coinTradeData)
+    {
+        switch (coinTradeData.State)
+        {
+            case ECoinTradeState.Ready:
+                await ReadyTradeAsync(coinTradeData);
+                break;
+            case ECoinTradeState.Progress:
+                await ProgressTradeAsync(coinTradeData);
+                break;
+            case ECoinTradeState.Completed:
+            case ECoinTradeState.Stop:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private async Task ReadyTradeAsync(CoinTradeData coinTradeData)
+    {
+        if (Market == null)
+            return;
+
+        var isRefresh = false;
+        
+        switch (coinTradeData.TradeType)
+        {
+            case ECoinTradeType.AutoTrade:
+                coinTradeData.State = ECoinTradeState.Progress;
+                isRefresh = true;
+                break;
+            case ECoinTradeType.NewCoin:
+                var marketCodeResponse = await Market.RequestMarketCodes();
+                if (marketCodeResponse != null)
+                {
+                    if (marketCodeResponse.IsExist(coinTradeData.MarketCode))
+                    {
+                        coinTradeData.State = ECoinTradeState.Progress;
+                        isRefresh = true;
+                    }
+                }
+                break;
+            case ECoinTradeType.Pumping:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        if (isRefresh)
+        {
+           await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("ready to progress", coinTradeData);
+        }
+
+        await ProgressTradeAsync(coinTradeData);
+    }
+
+    private async Task ProgressTradeAsync(CoinTradeData coinTradeData)
+    {
+        if (Market == null)
+            return;
+        
+        // 첫 구매 시
+        if (coinTradeData.BuyCount == 0)
+        {
+            var isRefresh = false;
+            
+            // 초기 구매 가격이 설정된 경우 해당 가격으로 값을 설정
+            if (coinTradeData.InitBuyPrice > 0)
+            {
+                isRefresh = true;
+                coinTradeData.BuyPrice = coinTradeData.InitBuyPrice;
+                coinTradeData.InitBuyPrice = -1;
+            }
+
+            // 초기 판매 가격이 설정된 경우 해당 가격으로 판매 가격을 설정함
+            if (coinTradeData.MaxSellPrice > 0)
+            {
+                isRefresh = true;
+                coinTradeData.SellPrice = coinTradeData.MaxSellPrice;
+                coinTradeData.MaxSellPrice = -1;
+            }
+
+            if (isRefresh)
+            {
+                await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("init price setting", coinTradeData);
+            }
+        }
+        
+        var marketTickerResponse = await Market.RequestTicker(coinTradeData.MarketCode);
+        var marketTickerJson = marketTickerResponse?.GetMarketTickerJson(coinTradeData.MarketCode);
+        if (marketTickerJson == null)
+            return;
+
+        var ticker = marketTickerJson.Price;
+        var message =  $"{coinTradeData.MarketCode} {nameof(ticker)} = {ticker}" +
+            $" {nameof(coinTradeData.BuyPrice)} = {coinTradeData.BuyPrice}" +
+            $" {nameof(coinTradeData.SellPrice)} = {coinTradeData.SellPrice}";
+        
+        Client.LoggerService.ConsoleLog(message);
+        Client.LoggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+        
+        if (ticker >= coinTradeData.BuyPrice)
+            await BuyTradeAsync(coinTradeData);
+        else if (ticker <= coinTradeData.SellPrice)
+            await SellTradeAsync(coinTradeData);
+    }
+
+    private async Task BuyTradeAsync(CoinTradeData coinTradeData)
+    {
+        if (Market == null)
+            return;
+
+        MarketBalanceJson? marketBalanceJson = null;
+        var investAmount = coinTradeData.InvestRoundAmount;
+        double buyPrice;
+
+        var loggerService = Client.LoggerService;
+        var message = $"{coinTradeData.MarketCode} {nameof(BuyTradeAsync)}";
+        loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+        loggerService.ConsoleLog(message);
+        
+        do
+        {
+            var balanceResponse = await Market.RequestBalance("KRW");
+            marketBalanceJson = balanceResponse?.GetMarketBalance("KRW");
+            if (marketBalanceJson == null)
+            {
+                message = $"{marketBalanceJson} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+
+            var orderBookResponse = await Market.RequestMarketOrderBook(coinTradeData.MarketCode);
+            var orderBooks = orderBookResponse?.GetAskOrderBooks(coinTradeData.MarketCode);
+            if (orderBooks is not { Count: > 0 })
+            {
+                message = $"{orderBooks} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+
+            var (price, size) = orderBooks[0];
+            if (size <= 0)
+            {
+                if (orderBooks.Count < 2)
+                {
+                    message = $"{orderBooks} {nameof(size)} is 0";
+                    loggerService.ConsoleLog(message);
+                    loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                    return;
+                }
+                
+                (price, _) = orderBooks[1];
+            }
+            
+            buyPrice = price;
+            
+            var volume = investAmount / price;
+            var buyResponse = await Market.RequestBuy(coinTradeData.MarketCode, volume, price);
+            var uuid = buyResponse?.Result?.Uuid;
+            if (string.IsNullOrEmpty(uuid))
+            {
+                message = $"{nameof(buyResponse)} {uuid} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+
+            await Task.Delay(Delay);
+            
+            var orderResponse = await Market.RequestOrder(uuid);
+            var orderJson = orderResponse?.Result;
+            if (orderJson == null)
+            {
+                message = $"{orderJson} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+
+            investAmount -= orderJson.GetExecutedVolume() * price;
+
+            if (orderJson.GetState() != EMarketOrderState.Done)
+            {
+                await Market.RequestCancelOrder(uuid);
+                await Task.Delay(Delay);
+            }
+
+            message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} price = {price} amount = {orderJson.GetExecutedVolume()}";
+            await loggerService.TelegramLogAsync(message);
+            loggerService.ConsoleLog(message);
+            loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
+            
+        } while (investAmount >= CoinTradeData.MinInvestAmount && investAmount < marketBalanceJson.Balance);
+
+        coinTradeData.BuyPrice = buyPrice * (1 + coinTradeData.RoundBuyRate);
+        coinTradeData.SellPrice = buyPrice * (1 - coinTradeData.RoundSellRate);
+        coinTradeData.BuyCount++;
+        
+        await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Buy", coinTradeData);
+    }
+
+    private async Task SellTradeAsync(CoinTradeData coinTradeData)
+    {
+        
+    }
 }
 
-//
-// namespace AutoTrade.Logic;
-//
-// public static class CoinTrade
-// {
-//     private static Dictionary<string, CoinTradeProcess> dicCoinTradeProcess = new();
-//     private const int Delay = 1000 / 50;
-//     
-//     public static async Task Trade(IMarket market,List<CoinConfig> coinConfigList)
-//     {
-//         foreach (var coinConfig in coinConfigList)
-//         {
-//             if (!dicCoinTradeProcess.ContainsKey(coinConfig.MarketCode))
-//                 dicCoinTradeProcess.Add(coinConfig.MarketCode, new CoinTradeProcess(market, coinConfig));
-//         }
-//
-//         var isTrade = false;
-//         do
-//         {
-//             isTrade = false;
-//             
-//             foreach (var (_, process) in dicCoinTradeProcess)
-//             {
-//                 await process.TradeAsync();
-//                 // 하나라도 true이면 trade는 계속됨
-//                 isTrade |= process.IsTrade;
-//                 await Task.Delay(Delay);
-//             }
-//             
-//         } while (isTrade);
-//     }
-// }
 //
 // public class CoinTradeProcess
 // {

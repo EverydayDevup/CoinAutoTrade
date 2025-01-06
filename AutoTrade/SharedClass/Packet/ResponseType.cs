@@ -18,3 +18,4 @@ public class GetCoinTradeDataResponse(CoinTradeData? coinTradeData) : ResponseBo
 public class DeleteCoinTradeDataResponse : ResponseBody;
 public class StartAllCoinTradeDataResponse : ResponseBody;
 public class InnerStartAllCoinAutoTradeResponse: ResponseBody;
+public class InnerAddOrUpdateCoinTradeDataResponse : ResponseBody;

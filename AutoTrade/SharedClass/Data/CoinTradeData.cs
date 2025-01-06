@@ -15,11 +15,11 @@ public class CoinTradeData
     /// <summary>
     /// 코인의 현재 거래 상태
     /// </summary>
-    public int State { get; set; }
+    public ECoinTradeState State { get; set; }
     /// <summary>
     /// 코인 거래 타입
     /// </summary>
-    public int TradeType { get; set; }
+    public ECoinTradeType TradeType { get; set; }
     /// <summary>
     /// 한번에 투자할 금액
     /// </summary>
@@ -63,6 +63,8 @@ public class CoinTradeData
     public double SellPrice { get; set; }
     private StringBuilder LogStringBuilder { get; } = new();
 
+    public const double MinInvestAmount = 6000;
+
     public override string ToString()
     {
         LogStringBuilder.Clear();
@@ -88,6 +90,9 @@ public class CoinTradeData
     {
         if (string.IsNullOrEmpty(Symbol))
             return $"not found {nameof(Symbol)}";
+
+        if (InvestRoundAmount < MinInvestAmount)
+            return $"{nameof(InvestRoundAmount)} cannot be less than {MinInvestAmount}";
 
         if (RoundBuyRate <= 0)
             return $"{nameof(RoundBuyRate)} is bigger than 0";

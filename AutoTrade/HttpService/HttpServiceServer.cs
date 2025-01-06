@@ -95,22 +95,30 @@ public abstract class HttpServiceServer
                         }
                         else
                         {
-                            var sessionId = request.Cookies.Count > 0 ? request.Cookies["SessionId"]?.Value : null;
-                            var valid = sessionId != null;
-                            
-                            // 세션 비교를 해서 유효하지 않은 세션일 경우 에러 
-                            if (!_dicSessions.TryGetValue(requestData.Id, out var id))
-                                valid = false;
-
-                            if (id != sessionId)
-                                valid = false;
-
-                            if (!valid)
+                            if ((int)requestData.Type < (int)EPacketType.InnerStartAllCoinAutoTrade)
                             {
-                                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                                context.Response.OutputStream.Close();
+                                var sessionId = request.Cookies.Count > 0 ? request.Cookies["SessionId"]?.Value : null;
+                                var valid = sessionId != null;
+                            
+                                // 세션 비교를 해서 유효하지 않은 세션일 경우 에러 
+                                if (!_dicSessions.TryGetValue(requestData.Id, out var id))
+                                    valid = false;
+
+                                if (id != sessionId)
+                                    valid = false;
+
+                                if (!valid)
+                                {
+                                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                                    context.Response.OutputStream.Close();
                                 
-                                _loggerService.ConsoleError("invalid session id");
+                                    _loggerService.ConsoleError("invalid session id");
+                                }
+                                else
+                                {
+                                    if (_dicKeys.TryGetValue(requestData.Id, out var key))
+                                        responseJson = Crypto.Encrypt(responseJson, key);
+                                }
                             }
                             else
                             {

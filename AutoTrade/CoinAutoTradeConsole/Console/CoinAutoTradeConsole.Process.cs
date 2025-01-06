@@ -41,16 +41,16 @@ public static partial class CoinAutoTradeConsole
         }
     }
 
-    private static List<ECoinTradeDataState>? _states ;
+    private static List<ECoinTradeState>? _states ;
 
-    private static List<ECoinTradeDataState> States
+    private static List<ECoinTradeState> States
     {
         get
         {
             if (_states == null)
             {
-                _states = new List<ECoinTradeDataState>();
-                foreach (ECoinTradeDataState state in Enum.GetValues(typeof(ECoinTradeDataState)))
+                _states = new List<ECoinTradeState>();
+                foreach (ECoinTradeState state in Enum.GetValues(typeof(ECoinTradeState)))
                     _states.Add(state);
             }
 
@@ -230,8 +230,8 @@ public static partial class CoinAutoTradeConsole
         {
             coinTradeData.Symbol = GetText($"Input coin symbol :");
             coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
-            coinTradeData.State = (int)SelectMenu($"Input state : ", States);
-            coinTradeData.State = (int)SelectMenu($"Input trade type : ", TradeTypes);
+            coinTradeData.State = SelectMenu($"Input state : ", States);
+            coinTradeData.TradeType = SelectMenu($"Input trade type : ", TradeTypes);
             coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount : ");
             coinTradeData.InitBuyPrice = GetDouble($"Input init buy price [-1 is immediate] : ");
             coinTradeData.MaxSellPrice = GetDouble($"Input max sell price [-1 is infinity] : ");

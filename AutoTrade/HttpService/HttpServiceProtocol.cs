@@ -20,7 +20,7 @@ public abstract class HttpServiceProtocol<T1, T2, T3>(T1 server) : IHttpServiceP
         var request = JsonSerializer.Deserialize<T2>(requestBody);
         if (request == null)
             return (EResponseCode.SerializedFailedRequestBody, null);
-
+        
         var (code, responseBody) = await MakeResponseDataAsync(id, request);
         return (code, JsonSerializer.Serialize(responseBody));
     }
