@@ -10,10 +10,10 @@ namespace HttpService;
 /// </summary>
 public abstract class HttpServiceClient : IDisposable
 {
-    public string Key { get; set; } = string.Empty;
-    protected string Id { get; init; }
-    private bool IsSending { get; set; }
-    private byte RetryCount { get; set; }
+    public string SymmetricKey { get; set; } = string.Empty; // 대치킹 암복호화에 사용하는 키
+    protected string Id { get; init; } // 모든 통신의 키 값 
+    private bool IsSending { get; set; } // 패킷 전송 중 여부, 모든 패킷은 한번에 하나씩 순차적으로 처리됨
+    private byte RetryCount { get; set; } // 패킷 전송 실패 시 재전송 횟수 최대 MaxRetryCount 만큼 시도 후 실패 시 에러를 반환
     
     private const byte MaxRetryCount = 3;
     
@@ -22,9 +22,8 @@ public abstract class HttpServiceClient : IDisposable
     private readonly HttpClientHandler _clientHandler = new ();
     
     private readonly HttpServiceUrl _httpServiceUrl;
-    private bool _isDisposed = false;
-
-    public LoggerService.LoggerService LoggerService { get; private set; }
+    private bool _isDisposed;
+    public LoggerService.LoggerService LoggerService { get; }
     
     protected HttpServiceClient(string id, string ip, int port, string? telegramApiToken, long telegramChatId)
     {
@@ -61,14 +60,12 @@ public abstract class HttpServiceClient : IDisposable
                                       $"{nameof(Id)} = {Id} " +
                                       $"Body = {requestBody}");
             
-            // 로그인 패킷이 아니라면, 요청하는 데이터를 암호화
+            // 패킷 암호화
             if (IsCrypto(type))
-                requestBody = Crypto.Encrypt(requestBody, Key);
+                requestBody = Crypto.Encrypt(requestBody, SymmetricKey);
             
             var requestData = new RequestData(type, Id, requestBody);
-            var requestJson = JsonSerializer.Serialize(requestData);
-            
-            var content = new StringContent(requestJson, Encoding.UTF8, HttpServiceUtil.ContentType);
+            var content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, HttpServiceUtil.ContentType);
             var response = await _client.PostAsync(_httpServiceUrl.Url, content);
 
             if (response.StatusCode != HttpStatusCode.OK)
@@ -81,7 +78,7 @@ public abstract class HttpServiceClient : IDisposable
                     return default;
                 }
                 
-                // MaxRetryCount에 값만큼 재시도 후에도 에러가 났다면 실패처리
+                // 정의되지 않은 에러가 발생한 경우 패킷 재전송 시도 
                 do
                 {
                     RetryCount++;
@@ -92,6 +89,7 @@ public abstract class HttpServiceClient : IDisposable
                 } while (response.StatusCode != HttpStatusCode.OK && RetryCount < MaxRetryCount);
             }
 
+            // 최종 재시도 후에도 에러가 발생한 경우
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 OnError($"[Response] Error : {nameof(RetryCount)} : {RetryCount} " +
@@ -103,15 +101,16 @@ public abstract class HttpServiceClient : IDisposable
             // 응답 읽기
             var responseJson = await response.Content.ReadAsStringAsync();
             
+            // 패킷 복호화
             if (IsCrypto(type))
-                responseJson = Crypto.Decrypt(responseJson, Key);
+                responseJson = Crypto.Decrypt(responseJson, SymmetricKey);
             
             var responseData = JsonSerializer.Deserialize<ResponseData>(responseJson);
             
             if (responseData != null && !string.IsNullOrEmpty(responseData.Body))
             {
                 LoggerService.ConsoleLog($"[Response] : " +
-                                          $"Type = {(EPacketType)responseData.Type} " +
+                                          $"Type = {responseData.Type} " +
                                           $"Code = {responseData.Code} " +
                                           $"Body = {responseData.Body} ");
                 
@@ -125,7 +124,7 @@ public abstract class HttpServiceClient : IDisposable
             if (responseData == null)
                 OnError($"[Response] Error : {nameof(responseData)} is null", type, EResponseCode.SerializedFailedResponseData, failAction);
             else
-                OnError($"[Response] Error : {nameof(responseData.Code)} = {responseData.Code}", type, (EResponseCode)responseData.Code, failAction);
+                OnError($"[Response] Error : {nameof(responseData.Code)} = {responseData.Code}", type, responseData.Code, failAction);
             
             return default;
         }

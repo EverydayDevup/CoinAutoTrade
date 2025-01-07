@@ -14,8 +14,8 @@ public abstract class HttpServiceServer
     private readonly HttpListener _listener = new ();
     private readonly LoggerService.LoggerService _loggerService = new();
 
-    private readonly Dictionary<string, string> _dicKeys = new();
-    private readonly Dictionary<string, string> _dicSessions = new();
+    private readonly Dictionary<string, string> _dicSymmetricKeys = new(); // Proxy 서버가 서비스되고 있는 중에는 Id 별로 대칭키를 유지함
+    private readonly Dictionary<string, string> _dicSessions = new(); // 클라이언트가 중복으로 접속하는 것을 막기 위한 세션 발급
     
     private string _name = string.Empty;
     private string Name
@@ -29,13 +29,14 @@ public abstract class HttpServiceServer
         }
     }
 
-    private bool _isInit = false;
+    private bool _isInit;
+    
+    // 각 프로토콜에서 요청에 따른 응답을 어떻게 처리할지 인터페이스를 통해 처리함
     protected Dictionary<EPacketType, IHttpServiceProtocol> DicHttpServiceProtocols { get; } = new();
 
     protected HttpServiceServer(string ip, int port)
     {
         _httpServiceUrl = new HttpServiceUrl(ip, port);
-        Console.WriteLine("http : " + _httpServiceUrl.Url);
         _listener.Prefixes.Add(_httpServiceUrl.Url);
     }
 
@@ -75,9 +76,7 @@ public abstract class HttpServiceServer
                         _loggerService.ConsoleLog(requestLogMessage);
                         _loggerService.FileLog(Name, requestLogMessage);
                         
-                        var responseData = await MakeResponseDataAsync(requestData);
-                        var responseJson = JsonSerializer.Serialize(responseData);
-
+                        // 로그인을 새로하면 세션을 새로 발급
                         if (requestData.Type == (int)EPacketType.Login)
                         {
                             _dicSessions.Remove(requestData.Id);
@@ -93,40 +92,38 @@ public abstract class HttpServiceServer
                             
                             context.Response.AppendCookie(cookie);
                         }
-                        else
+                       
+                        // 내부 통신이 아니라면 세션을 검증함
+                        if ((int)requestData.Type < (int)EPacketType.InnerStartAllCoinAutoTrade)
                         {
-                            if ((int)requestData.Type < (int)EPacketType.InnerStartAllCoinAutoTrade)
-                            {
-                                var sessionId = request.Cookies.Count > 0 ? request.Cookies["SessionId"]?.Value : null;
-                                var valid = sessionId != null;
+                            var sessionId = request.Cookies.Count > 0 ? request.Cookies["SessionId"]?.Value : null;
+                            var valid = sessionId != null;
                             
-                                // 세션 비교를 해서 유효하지 않은 세션일 경우 에러 
-                                if (!_dicSessions.TryGetValue(requestData.Id, out var id))
-                                    valid = false;
+                            // 세션 비교를 해서 유효하지 않은 세션일 경우 에러 
+                            if (!_dicSessions.TryGetValue(requestData.Id, out var id))
+                                valid = false;
 
-                                if (id != sessionId)
-                                    valid = false;
+                            if (id != sessionId)
+                                valid = false;
 
-                                if (!valid)
-                                {
-                                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                                    context.Response.OutputStream.Close();
-                                
-                                    _loggerService.ConsoleError("invalid session id");
-                                }
-                                else
-                                {
-                                    if (_dicKeys.TryGetValue(requestData.Id, out var key))
-                                        responseJson = Crypto.Encrypt(responseJson, key);
-                                }
-                            }
-                            else
+                            if (!valid)
                             {
-                                if (_dicKeys.TryGetValue(requestData.Id, out var key))
-                                    responseJson = Crypto.Encrypt(responseJson, key);
+                                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                                context.Response.OutputStream.Close();
+
+                                var sessionErrorLogMessage = "invalid session id";
+                                _loggerService.ConsoleError(sessionErrorLogMessage);
+                                _loggerService.FileLog(Name, sessionErrorLogMessage);
+                                continue;
                             }
                         }
-
+                        
+                        var responseData = await MakeResponseDataAsync(requestData);
+                        var responseJson = JsonSerializer.Serialize(responseData);
+                       
+                        if (_dicSymmetricKeys.TryGetValue(requestData.Id, out var key))
+                            responseJson = Crypto.Encrypt(responseJson, key);
+                      
                         var buffer = Encoding.UTF8.GetBytes(responseJson);
                         context.Response.StatusCode = (int)HttpStatusCode.OK;
                         context.Response.ContentType = HttpServiceUtil.ContentType;
@@ -149,6 +146,7 @@ public abstract class HttpServiceServer
                         _loggerService.FileLog(Name, requestErrorLogMessage);
                     }
                 }
+                // 요청 데이터가 정의되지 않은 경우
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
@@ -179,7 +177,7 @@ public abstract class HttpServiceServer
         var requestBody = requestData.Body;
         if (requestData.Type != (int)EPacketType.Login)
         {
-            if (_dicKeys.TryGetValue(requestData.Id, out var key))
+            if (_dicSymmetricKeys.TryGetValue(requestData.Id, out var key))
                 requestBody = Crypto.Decrypt(requestBody, key);
         }
                 
@@ -204,11 +202,12 @@ public abstract class HttpServiceServer
 
     public string? GetKey(string id)
     {
-        return _dicKeys.GetValueOrDefault(id);
+        return _dicSymmetricKeys.GetValueOrDefault(id);
     }
+    
     public void SetKey(string id, string key)
     {
-        _dicKeys.Remove(id);
-        _dicKeys.TryAdd(id, key);
+        _dicSymmetricKeys.Remove(id);
+        _dicSymmetricKeys.TryAdd(id, key);
     }
 }

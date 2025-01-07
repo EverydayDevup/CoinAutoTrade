@@ -8,6 +8,9 @@ public interface IHttpServiceProtocol
     public Task<(EResponseCode, string?)> MakeResponseDataAsync(string id, string? requestBody);
 }
 
+/// <summary>
+/// 모든 패킷은 HttpServiceProtocol을 상속 받아서 요청에 따른 응답 처리를 함
+/// </summary>
 public abstract class HttpServiceProtocol<T1, T2, T3>(T1 server) : IHttpServiceProtocol where T1 : HttpServiceServer where T2 : RequestBody where T3 : ResponseBody
 {
     protected T1 Server { get; init; } = server;

@@ -52,7 +52,7 @@ public static class CoinAutoTradeProcess
         LoggerService.SetTelegramInfo($"{(EMarketType)market}_{nameof(CoinAutoTradeProcessServer)}", telegramApiKey, telegramChatId);
         var coinAutoTradeProcessClient = new CoinAutoTradeProcessClient(marketType, id, HttpServiceUtil.LocalHost,
             HttpServiceUtil.CoinAutoTradeServicePort, telegramApiKey, telegramChatId);
-        coinAutoTradeProcessClient.Key = symmetricKey;
+        coinAutoTradeProcessClient.SymmetricKey = symmetricKey;
         
         var coinAutoTradeProcessServer = new CoinAutoTradeProcessServer(coinAutoTradeProcessClient, marketType, marketApiKey, marketSecretKey, HttpServiceUtil.LocalHost, port);
         coinAutoTradeProcessServer.SetKey(id, symmetricKey);

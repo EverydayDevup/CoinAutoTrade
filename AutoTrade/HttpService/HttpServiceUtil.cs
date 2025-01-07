@@ -4,10 +4,10 @@ namespace HttpService;
 
 public static class HttpServiceUtil
 {
-    public static readonly string HttpMethod = "POST";
-    public static readonly string ContentType = "application/json";
-    public static readonly int CoinAutoTradeServicePort = 50000;
-    public static readonly string LocalHost = "127.0.0.1";
+    public const string HttpMethod = "POST";
+    public const string ContentType = "application/json";
+    public const int CoinAutoTradeServicePort = 50000;
+    public const string LocalHost = "127.0.0.1";
     
     /// <summary>
     /// http 서버를 올릴 때 사용할 포트를 찾음

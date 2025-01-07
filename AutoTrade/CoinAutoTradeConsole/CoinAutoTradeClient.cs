@@ -14,7 +14,7 @@ public sealed class CoinAutoTradeClient(EMarketType marketType, string id, strin
         if (res == null)
             return null;
 
-        Key = res.SymmetricKey;
+        SymmetricKey = res.SymmetricKey;
         return res;
     }
     

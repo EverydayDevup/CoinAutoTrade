@@ -31,7 +31,7 @@ public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServ
             };
 
             value.Item1 = new CoinAutoTradeClient(id,HttpServiceUtil.LocalHost, port, request.TelegramApiKey, request.TelegramChatId);
-            value.Item1.Key = symmetricKey;
+            value.Item1.SymmetricKey = symmetricKey;
 
             value.Item2 = new Process();
             value.Item2.StartInfo = processStartInfo;
