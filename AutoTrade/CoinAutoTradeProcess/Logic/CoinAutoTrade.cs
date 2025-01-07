@@ -367,7 +367,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         }
         else
         {
-            coinTradeData.State = ECoinTradeState.Completed;
+            coinTradeData.State = ECoinTradeState.Stop;
         }
         
         await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Sell", coinTradeData);
