@@ -20,7 +20,7 @@ public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServ
 
         if (!server.DicProcess.TryGetValue(id, out value))
         {
-            var port = HttpServiceUtil.GetAvailablePort(50000, 60000);
+            var port = HttpServiceUtil.GetAvailablePort(HttpServiceUtil.CoinAutoTradeServicePort + 1, HttpServiceUtil.CoinAutoTradeServicePort + 100000);
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = "CoinAutoTradeProcess.exe",
