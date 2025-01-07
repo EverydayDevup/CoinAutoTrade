@@ -12,7 +12,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
     private CoinAutoTradeProcessClient Client { get; } = client;
     private string CoinAutoTradeLogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), nameof(CoinAutoTrade), Client.MarketType.ToString());
 
-    public void Reload(List<CoinTradeData> coinTradeDataList)
+    public void Reload(List<CoinTradeData>? coinTradeDataList)
     {
         _coinTradeDataList = coinTradeDataList;
         
@@ -25,6 +25,8 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         IsRunning = true;
         while (IsRunning)
         {
+            Client.LoggerService.ConsoleLog("Waiting for data to load...");
+            
             if (_coinTradeDataList == null || _coinTradeDataList.Count == 0)
             {
                 await Task.Delay(Delay);
@@ -262,8 +264,8 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         if (Market == null)
             return;
 
-        var marketBalanceResponse= await Market.RequestBalance(coinTradeData.MarketCode);
-        var balance = marketBalanceResponse?.GetMarketBalance(coinTradeData.MarketCode)?.Balance;
+        var marketBalanceResponse= await Market.RequestBalance(coinTradeData.Symbol);
+        var balance = marketBalanceResponse?.GetMarketBalance(coinTradeData.Symbol)?.Balance;
 
         if (balance == null)
             return;
@@ -365,6 +367,10 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             coinTradeData.BuyPrice = sellPrice * (1 - coinTradeData.RoundSellRate * CoinTradeData.RebalancingRate);
             coinTradeData.SellPrice = sellPrice * (1 - coinTradeData.RoundSellRate);
             coinTradeData.RebalancingCount++;
+        }
+        else
+        {
+            coinTradeData.State = ECoinTradeState.Completed;
         }
         
         await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Sell", coinTradeData);

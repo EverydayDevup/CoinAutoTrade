@@ -10,11 +10,11 @@ public class AddOrUpdateCoinTradeDataRequest(CoinTradeData coinTradeData) : Requ
 }
 public class GetCoinTradeDataRequest(string symbol) : RequestBody
 {
-    public string Symbol { get; } = symbol;
+    public string Symbol { get; } = symbol.ToUpper();
 }
 public class DeleteCoinTradeDataRequest(string symbol) : RequestBody
 {
-    public string Symbol { get; } = symbol;
+    public string Symbol { get; } = symbol.ToUpper();
 }
 
 

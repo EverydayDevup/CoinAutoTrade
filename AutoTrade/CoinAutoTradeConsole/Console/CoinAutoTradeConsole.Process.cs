@@ -9,19 +9,18 @@ public static partial class CoinAutoTradeConsole
         None,
         SelectMenu, // 메뉴 선택
         GetAllCoinTradeData, // 모든 코인 트레이드 정보 가져오기
-        AddOrUpdateCoinTradeData, // 특정 코인 트레이드 정보 추가하기
         DeleteAllCoinTradeData, // 모든 코인 트레이드 정보 삭제하기
         GetCoinTradeData, // 특정 코인 트레이드 정보 가져오기
+        AddOrUpdateCoinTradeData, // 특정 코인 트레이드 정보 추가하기
         DeleteCoinTradeData, // 특정 코인 트레이드 정보 삭제하기
         StartAllCoinAutoTrade, // 모든 코인 트레이드 시작
         StopAllCoinAutoTrade, // 모든 코인 트레이드 중단
-        RestartCoinAutoTradeData, // 특정 코인 트레이드 정보 삭제
         Exit, // 콘솔 종료
     }
 
     private static ECoinAutoTradeMode Mode { get; set; } = ECoinAutoTradeMode.None;
 
-    private static List<ECoinAutoTradeMode>? _modes = null;
+    private static List<ECoinAutoTradeMode>? _modes;
 
     private static List<ECoinAutoTradeMode> Modes
     {
@@ -32,7 +31,7 @@ public static partial class CoinAutoTradeConsole
                 _modes = new List<ECoinAutoTradeMode>();
                 foreach (ECoinAutoTradeMode mode in Enum.GetValues(typeof(ECoinAutoTradeMode)))
                 {
-                    if (mode != ECoinAutoTradeMode.None)
+                    if (mode != ECoinAutoTradeMode.None && mode != ECoinAutoTradeMode.SelectMenu)
                         _modes.Add(mode);
                 }
             }
@@ -49,7 +48,7 @@ public static partial class CoinAutoTradeConsole
         {
             if (_states == null)
             {
-                _states = new List<ECoinTradeState>();
+                _states = [];
                 foreach (ECoinTradeState state in Enum.GetValues(typeof(ECoinTradeState)))
                     _states.Add(state);
             }
@@ -58,7 +57,7 @@ public static partial class CoinAutoTradeConsole
         }
     }
     
-    private static List<ECoinTradeType>? _tradeTypes = null;
+    private static List<ECoinTradeType>? _tradeTypes;
 
     private static List<ECoinTradeType> TradeTypes
     {
@@ -66,7 +65,7 @@ public static partial class CoinAutoTradeConsole
         {
             if (_tradeTypes == null)
             {
-                _tradeTypes = new List<ECoinTradeType>();
+                _tradeTypes = [];
                 foreach (ECoinTradeType type in Enum.GetValues(typeof(ECoinTradeType)))
                     _tradeTypes.Add(type);
             }
@@ -184,7 +183,10 @@ public static partial class CoinAutoTradeConsole
         if (CoinAutoTradeClient == null)
             return false;
 
-        var coinTradeData = MakeCoinTradeData();
+        var coinTradeData = await MakeCoinTradeData();
+        if (coinTradeData == null)
+            return false;
+        
         var res = await CoinAutoTradeClient.RequestAddOrUpdateCoinTradeDataAsync(coinTradeData);
         return res != null;
     }
@@ -222,26 +224,32 @@ public static partial class CoinAutoTradeConsole
         return true;
     }
 
-    private static CoinTradeData MakeCoinTradeData()
+    private static async Task<CoinTradeData?> MakeCoinTradeData()
     {
-        var coinTradeData = new CoinTradeData();
+        if (CoinAutoTradeClient == null)
+            return null;
+        
+        CoinTradeData? coinTradeData;
         var confirm = false;
         do
         {
-            coinTradeData.Symbol = GetText($"Input coin symbol :");
-            coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
-            coinTradeData.State = SelectMenu($"Input state : ", States);
-            coinTradeData.TradeType = SelectMenu($"Input trade type : ", TradeTypes);
-            coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount : ");
-            coinTradeData.InitBuyPrice = GetDouble($"Input init buy price [-1 is immediate] : ");
-            coinTradeData.MaxSellPrice = GetDouble($"Input max sell price [-1 is infinity] : ");
-            coinTradeData.RoundBuyRate = GetDouble($"Input round buy rate [buy price * (1 + round buy rate)] : ");
-            coinTradeData.RoundSellRate = GetDouble($"Input round sell rate [buy price * (1 - round buy rate)] : ");
-            coinTradeData.RebalancingMaxCount = GetDouble($"Input rebanlancing max count : ");
-            coinTradeData.RebalancingCount = GetDouble($"Input rebanlancing count : ");
-            coinTradeData.BuyPrice = GetDouble($"Input buy price : ");
-            coinTradeData.BuyCount = GetDouble($"Input buy count : ");
-            coinTradeData.SellPrice = GetDouble($"Input sell price : ");
+            var symbol = GetText($"Input coin symbol:");
+            
+            var res = await CoinAutoTradeClient.RequestGetCoinTradeDataAsync(symbol);
+            coinTradeData = res?.CoinTradeData ?? new CoinTradeData();
+            coinTradeData.Symbol = symbol.ToUpper();
+            coinTradeData.State = SelectMenu($"Input state ({coinTradeData.State}): ", States);
+            coinTradeData.TradeType = SelectMenu($"Input trade type ({coinTradeData.TradeType}) : ", TradeTypes);
+            coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount ({coinTradeData.InvestRoundAmount}): ");
+            coinTradeData.InitBuyPrice = GetDouble($"Input init buy price [-1 is immediate] ({coinTradeData.InitBuyPrice}): ");
+            coinTradeData.MaxSellPrice = GetDouble($"Input max sell price [-1 is infinity] ({coinTradeData.MaxSellPrice}): ");
+            coinTradeData.RoundBuyRate = GetDouble($"Input round buy rate [buy price * (1 + round buy rate)] ({coinTradeData.RoundBuyRate}): ");
+            coinTradeData.RoundSellRate = GetDouble($"Input round sell rate [buy price * (1 - round buy rate)] ({coinTradeData.RoundSellRate}): ");
+            coinTradeData.RebalancingMaxCount = GetDouble($"Input rebanlancing max count ({coinTradeData.RebalancingMaxCount}): ");
+            coinTradeData.RebalancingCount = GetDouble($"Input rebanlancing count ({coinTradeData.RebalancingCount}): ");
+            coinTradeData.BuyPrice = GetDouble($"Input buy price ({coinTradeData.BuyPrice}): ");
+            coinTradeData.BuyCount = GetDouble($"Input buy count ({coinTradeData.BuyCount}): ");
+            coinTradeData.SellPrice = GetDouble($"Input sell price ({coinTradeData.SellPrice}): ");
             LoggerService.ConsoleLog($"{nameof(coinTradeData)} : {coinTradeData}");
 
             var validMessage = coinTradeData.GetValidMessage();

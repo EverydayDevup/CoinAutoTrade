@@ -59,7 +59,6 @@ public enum EResponseCode
 #region INBOUND_ERROR
     InnerStartAllCoinAutoTradeFailedNotFoundTradeData = 3000, // 코인 매매를 실행하려 했지만, 코인 거래 정보가 없는 경우 
     InnerStartAllCoinAutoTradeFailedNotFoundProcess, // 코인 매매를 실행하려 했지만, 코인 거래 프로세스가 없는 경우 
-    InnerStartAllCoinAutoTradeFailedInitCoinAutoTradeError, // 코인 매매를 실행할려고 했지만 자동 매매 알고리즘에 에러가 발생한 경우
     InnerStartAllCoinAutoTradeFailedNotFoundSymmetricKeyError, // 코인 매매를 실행할려고 했지만, 대칭키가 없는 경우
     InnerAddCoinTradeDataFailed, // 내부 통신에서 코인 정보 업데이트 시 에러가 발생한 경우
 

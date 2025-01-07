@@ -8,10 +8,7 @@ public class InnerStartAllCoinAutoTradeProtocol(CoinAutoTradeProcessServer serve
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     protected override async Task<(EResponseCode, InnerStartAllCoinAutoTradeResponse?)> MakeResponseDataAsync(string id, InnerStartAllCoinAutoTradeRequest request)
     {
-        if (server.CoinAutoTrade == null || request.CoinTradeDataList == null)
-            return (EResponseCode.InnerStartAllCoinAutoTradeFailedInitCoinAutoTradeError, null);
-
-        server.CoinAutoTrade.Reload(request.CoinTradeDataList);
+        server.CoinAutoTrade?.Reload(request.CoinTradeDataList);
         return (EResponseCode.Success, new InnerStartAllCoinAutoTradeResponse());
     }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
