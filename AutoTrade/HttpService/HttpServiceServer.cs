@@ -13,7 +13,6 @@ public abstract class HttpServiceServer
     private readonly HttpServiceUrl _httpServiceUrl;
     private readonly HttpListener _listener = new ();
     private readonly LoggerService.LoggerService _loggerService = new();
-    private string LogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), Name);
 
     private readonly Dictionary<string, string> _dicKeys = new();
     private readonly Dictionary<string, string> _dicSessions = new();
@@ -74,7 +73,7 @@ public abstract class HttpServiceServer
                         var requestLogMessage = $"[{Name}] Request : {requestData}";
                         
                         _loggerService.ConsoleLog(requestLogMessage);
-                        _loggerService.FileLog(LogDirectoryPath, requestLogMessage);
+                        _loggerService.FileLog(Name, requestLogMessage);
                         
                         var responseData = await MakeResponseDataAsync(requestData);
                         var responseJson = JsonSerializer.Serialize(responseData);
@@ -137,7 +136,7 @@ public abstract class HttpServiceServer
 
                         var responseLogMessage = $"[{Name}] Response : {responseData}";
                         _loggerService.ConsoleLog(responseLogMessage);
-                        _loggerService.FileLog(LogDirectoryPath, responseLogMessage);
+                        _loggerService.FileLog(Name, responseLogMessage);
                     }
                     else
                     {
@@ -147,7 +146,7 @@ public abstract class HttpServiceServer
                             $"{Name} Request : {HttpStatusCode.BadRequest} {nameof(requestBody)} : {requestBody}";
                         
                         _loggerService.ConsoleError(requestErrorLogMessage);
-                        _loggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
+                        _loggerService.FileLog(Name, requestErrorLogMessage);
                     }
                 }
                 else
@@ -159,7 +158,7 @@ public abstract class HttpServiceServer
                         $"{Name} Request : {HttpStatusCode.MethodNotAllowed} {nameof(request.HttpMethod)} : {request.HttpMethod}";
                     
                     _loggerService.ConsoleError(requestErrorLogMessage);
-                    _loggerService.FileLog(LogDirectoryPath, requestErrorLogMessage);
+                    _loggerService.FileLog(Name, requestErrorLogMessage);
                 }
             }
         }
@@ -167,7 +166,7 @@ public abstract class HttpServiceServer
         {
             var exceptionLogMessage = $"{nameof(HttpServiceServerRun)} Exception : {ex}";
             _loggerService.ConsoleError(exceptionLogMessage);
-            _loggerService.FileLog(LogDirectoryPath, exceptionLogMessage);
+            _loggerService.FileLog(Name, exceptionLogMessage);
         }
         finally
         {

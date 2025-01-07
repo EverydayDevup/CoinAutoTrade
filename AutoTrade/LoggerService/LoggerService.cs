@@ -58,6 +58,8 @@ public class LoggerService : IDisposable
     /// </summary>
     public void FileLog(string directoryPath, string message)
     {
+        directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", directoryPath);
+        
         if (!_dicFileLogs.TryGetValue(directoryPath, out var file))
         {
             file = new LoggerServiceFileLog(directoryPath, _fileLogWriteTimeMinutes);

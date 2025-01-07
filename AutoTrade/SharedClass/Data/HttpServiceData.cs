@@ -33,15 +33,9 @@ public class ResponseData(EPacketType type)
 /// <summary>
 /// 서버에 요청하는 데이터 
 /// </summary>
-public abstract class RequestBody
-{
-    
-}
+public abstract class RequestBody { }
 
 /// <summary>
 /// 서버에서 받은 응답 데이터
 /// </summary>
-public abstract class ResponseBody
-{
-    
-}
+public abstract class ResponseBody { }

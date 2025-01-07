@@ -9,31 +9,29 @@ public enum EMarketType : byte
 public enum ECoinTradeType : byte
 {
     AutoTrade, // 일반적인 자동 매매
-    Pumping, // 펌핑으로 추가된 코인
     NewCoin, // 신규 상장 코인
 }
 
 public enum ECoinTradeState : byte
 {
-    Ready,
-    Progress,
-    Completed,
-    Stop
+    Ready, // 자동 매매를 준비하는 상태 (TradeType = NewCoin 경우 거래소에 코인이 등록되기 전까지 Ready 상태)
+    Progress, // 자동 매매가 진행 중인 상태
+    Stop // 자동 매매가 중단 되거나, 손절된 경우 
 }
 
 public enum EPacketType
 {
-    Login,
-    Alive, // 서버 상태 체크 
-    GetAllCoinTradeData, // 코인 트레이드 정보
-    DeleteAllCoinTradeData,
-    AddOrUpdateCoinTradeData,
-    GetCoinTradeData,
-    DeleteCoinTradeData,
-    StartAllCoinAutoTrade,
+    Login, // Proxy 서버 로그인
+    Alive, // Proxy 서버 상태 체크 
+    GetAllCoinTradeData, // 코인 전체 트레이드 정보
+    DeleteAllCoinTradeData, // 코인 전체 트레이드 정보 삭제
+    AddOrUpdateCoinTradeData, // 특정 코인 트레이드 정보 추가 또는 업데이트
+    GetCoinTradeData, // 특정 코인 트레이드 정보 가져오기
+    DeleteCoinTradeData, // 특정 코인 트레이드 정보 삭제 
+    StartAllCoinAutoTrade, // 거래소 자동 매매 프로세스 시작
     
-    InnerStartAllCoinAutoTrade = 1000,
-    InnerAddOrUpdateCoinTradeData
+    InnerStartAllCoinAutoTrade = 1000, // Proxy -> 개벌 거래소 프로세스에게 시작 명령 
+    InnerAddOrUpdateCoinTradeData // 개별 거래소 프로세스 -> Proxy 정보 업데이트 
 }
 
 public enum EResponseCode

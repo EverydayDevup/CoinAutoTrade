@@ -1,5 +1,5 @@
 ﻿namespace SharedClass;
-
+/// 요청 패킷 타입
 public class AliveRequest : RequestBody;
 public class LoginRequest : RequestBody;
 public class GetAllCoinTradeDataRequest : RequestBody;
@@ -16,7 +16,6 @@ public class DeleteCoinTradeDataRequest(string symbol) : RequestBody
 {
     public string Symbol { get; } = symbol.ToUpper();
 }
-
 
 public class StartAllCoinTradeDataRequest(EMarketType marketType, string? apiKey, string? secretKey, string? telegramApiKey, long telegramChatId) : RequestBody
 {

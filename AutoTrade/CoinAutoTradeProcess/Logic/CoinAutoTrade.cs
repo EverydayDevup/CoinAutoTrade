@@ -10,7 +10,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 
     private List<CoinTradeData>? _coinTradeDataList;
     private CoinAutoTradeProcessClient Client { get; } = client;
-    private string CoinAutoTradeLogDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), nameof(CoinAutoTrade), Client.MarketType.ToString());
+    private string CoinAutoTradeLogDirectoryPath => Path.Combine(nameof(CoinAutoTrade), Client.MarketType.ToString());
 
     public void Reload(List<CoinTradeData>? coinTradeDataList)
     {
@@ -54,7 +54,6 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             case ECoinTradeState.Progress:
                 await ProgressTradeAsync(coinTradeData);
                 break;
-            case ECoinTradeState.Completed:
             case ECoinTradeState.Stop:
                 break;
             default:
@@ -85,8 +84,6 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
                         isRefresh = true;
                     }
                 }
-                break;
-            case ECoinTradeType.Pumping:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

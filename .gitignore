@@ -1,3 +1,8 @@
 bin/
 obj/
 .idea
+Publish/CoinAutoTrade/
+Publish/CoinAutoTradeConsole/
+Publish/CoinAutoTradeProcessServer/
+Publish/CoinAutoTradeServer/
+Publish/CoinTradeData/

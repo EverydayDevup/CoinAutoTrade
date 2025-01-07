@@ -1,5 +1,5 @@
 ﻿namespace SharedClass;
-
+// 응답 패킷 타입
 public class AliveResponse : ResponseBody;
 public class LoginResponse(string symmetricKey) : ResponseBody
 {
