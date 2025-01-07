@@ -2,6 +2,9 @@
 
 namespace CoinAutoTradeConsole;
 
+/// <summary>
+/// 콘솔창에 입력되는 메시지를 처리
+/// </summary>
 public static partial class CoinAutoTradeConsole
 {
     /// <summary>

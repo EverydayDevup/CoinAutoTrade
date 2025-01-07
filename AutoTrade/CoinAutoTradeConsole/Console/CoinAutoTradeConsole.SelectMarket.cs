@@ -24,7 +24,7 @@ public static partial class CoinAutoTradeConsole
         
         var marketType = SelectMenu("Select market type : ", marketList);
         var userId = GetText("Input your user ID : ");
-        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(CoinAutoTradeConsole)}", $"{nameof(CoinAutoTradeMarketConfig)}");
+        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(CoinAutoTradeMarketConfig)}");
 
         if (!Directory.Exists(directoryPath))
             Directory.CreateDirectory(directoryPath);
@@ -33,7 +33,7 @@ public static partial class CoinAutoTradeConsole
         var configUserKey = $"{marketType}_{userId}";
         var filePath = Path.Combine(directoryPath, $"{configUserKey}.json");
         
-        List<ELoadCoinAutoTradeConfigMenu> menuList = new();
+        List<ELoadCoinAutoTradeConfigMenu> menuList = [];
         
         if (File.Exists(filePath))
         {

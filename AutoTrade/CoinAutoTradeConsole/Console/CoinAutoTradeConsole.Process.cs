@@ -28,10 +28,10 @@ public static partial class CoinAutoTradeConsole
         {
             if (_modes == null)
             {
-                _modes = new List<ECoinAutoTradeMode>();
+                _modes = [];
                 foreach (ECoinAutoTradeMode mode in Enum.GetValues(typeof(ECoinAutoTradeMode)))
                 {
-                    if (mode != ECoinAutoTradeMode.None && mode != ECoinAutoTradeMode.SelectMenu)
+                    if (mode != ECoinAutoTradeMode.None)
                         _modes.Add(mode);
                 }
             }
@@ -40,7 +40,7 @@ public static partial class CoinAutoTradeConsole
         }
     }
 
-    private static List<ECoinTradeState>? _states ;
+    private static List<ECoinTradeState>? _states;
 
     private static List<ECoinTradeState> States
     {
@@ -117,6 +117,7 @@ public static partial class CoinAutoTradeConsole
             
             var mode = Mode;
             LoggerService.ConsoleLog($"{nameof(Mode)} : {Mode}");
+            
             var result = await modeFunc.Invoke();
             if (!result)
                 LoggerService.ConsoleLog($"{nameof(Mode)} : {Mode} Failed");
@@ -237,7 +238,8 @@ public static partial class CoinAutoTradeConsole
             
             var res = await CoinAutoTradeClient.RequestGetCoinTradeDataAsync(symbol);
             coinTradeData = res?.CoinTradeData ?? new CoinTradeData();
-            coinTradeData.Symbol = symbol.ToUpper();
+
+            coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
             coinTradeData.State = SelectMenu($"Input state ({coinTradeData.State}): ", States);
             coinTradeData.TradeType = SelectMenu($"Input trade type ({coinTradeData.TradeType}) : ", TradeTypes);
             coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount ({coinTradeData.InvestRoundAmount}): ");

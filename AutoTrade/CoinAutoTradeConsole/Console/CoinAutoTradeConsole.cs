@@ -1,9 +1,8 @@
 ﻿using HttpService;
-using Newtonsoft.Json;
-using SharedClass;
 
 namespace CoinAutoTradeConsole;
 
+// 콘솔 메뉴를 통해 자동 매매 관련 사용자의 입출력을 처리하는 클래스
 public static partial class CoinAutoTradeConsole
 {
     private static LoggerService.LoggerService LoggerService { get; } = new();
