@@ -64,6 +64,7 @@ public class CoinTradeData
     private StringBuilder LogStringBuilder { get; } = new();
 
     public const double MinInvestAmount = 6000;
+    public const double RebalancingRate = 0.5;
 
     public override string ToString()
     {

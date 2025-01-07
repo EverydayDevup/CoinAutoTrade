@@ -5,7 +5,7 @@ namespace CoinAutoTradeProcess;
 public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 {
     private IMarket? Market { get; } = market;
-    private const int Delay = 200;
+    private const int Delay = 50;
     private bool IsRunning { get; set; }
 
     private List<CoinTradeData>? _coinTradeDataList;
@@ -25,16 +25,20 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         IsRunning = true;
         while (IsRunning)
         {
-            if (_coinTradeDataList == null)
-                return;
+            if (_coinTradeDataList == null || _coinTradeDataList.Count == 0)
+            {
+                await Task.Delay(Delay);
+                continue;
+            }
 
             var coinTradeDataList = new List<CoinTradeData>();
             coinTradeDataList.AddRange(_coinTradeDataList);
-            
+
             foreach (var coinTradeData in coinTradeDataList)
+            {
                 await TradeAsync(coinTradeData);
-            
-            await Task.Delay(Delay);
+                await Task.Delay(Delay);
+            }
         }
     }
 
@@ -150,7 +154,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         if (Market == null)
             return;
 
-        MarketBalanceJson? marketBalanceJson = null;
+        MarketBalanceJson? marketBalanceJson;
         var investAmount = coinTradeData.InvestRoundAmount;
         double buyPrice;
 
@@ -220,12 +224,23 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
                 return;
             }
 
-            investAmount -= orderJson.GetExecutedVolume() * price;
-
             if (orderJson.GetState() != EMarketOrderState.Done)
             {
-                await Market.RequestCancelOrder(uuid);
-                await Task.Delay(Delay);
+                var cancelOrderResponse = await Market.RequestCancelOrder(uuid);
+                var cancelJson = cancelOrderResponse?.Result;
+                if (cancelJson == null)
+                {
+                    message = $"{cancelJson} is null";
+                    loggerService.ConsoleLog(message);
+                    loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                    return;
+                }
+                
+                investAmount -= cancelJson.GetExecutedVolume() * price;
+            }
+            else
+            {
+                investAmount -= orderJson.GetExecutedVolume() * price;
             }
 
             message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} price = {price} amount = {orderJson.GetExecutedVolume()}";
@@ -244,205 +259,114 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 
     private async Task SellTradeAsync(CoinTradeData coinTradeData)
     {
+        if (Market == null)
+            return;
+
+        var marketBalanceResponse= await Market.RequestBalance(coinTradeData.MarketCode);
+        var balance = marketBalanceResponse?.GetMarketBalance(coinTradeData.MarketCode)?.Balance;
+
+        if (balance == null)
+            return;
         
+        var loggerService = Client.LoggerService;
+        var message = $"{coinTradeData.MarketCode} {nameof(SellTradeAsync)}";
+        loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+        loggerService.ConsoleLog(message);
+        
+        double sellPrice;
+        
+        do
+        {
+            var orderBookResponse = await Market.RequestMarketOrderBook(coinTradeData.MarketCode);
+            var orderBooks = orderBookResponse?.GetBidOrderBooks(coinTradeData.MarketCode);
+            if (orderBooks is not { Count: > 0 })
+            {
+                message = $"{orderBooks} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+            
+            var (price, size) = orderBooks[0];
+            if (size <= 0 || price * size < CoinTradeData.MinInvestAmount)
+            {
+                if (orderBooks.Count < 2)
+                {
+                    message = $"{orderBooks} {nameof(size)} is 0";
+                    loggerService.ConsoleLog(message);
+                    loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                    return;
+                }
+                
+                (price, size) = orderBooks[1];
+            }
+
+            var volume = Math.Min(size, balance.GetValueOrDefault());
+            if (volume <= 0)
+            {
+                message = $"{volume} is zero";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+
+            sellPrice = price;
+            
+            var sellResponse = await Market.RequestSell(coinTradeData.MarketCode, volume, price);
+            var uuid = sellResponse?.Result?.Uuid;
+            if (string.IsNullOrEmpty(uuid))
+            {
+                message = $"{nameof(sellResponse)} {uuid} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+
+            await Task.Delay(Delay);
+                
+            var orderResponse = await Market.RequestOrder(uuid);
+            var orderJson = orderResponse?.Result;
+            if (orderJson == null)
+            {
+                message = $"{orderJson} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                return;
+            }
+                
+            if (orderJson.GetState() != EMarketOrderState.Done)
+            {
+                var cancelOrderResponse = await Market.RequestCancelOrder(uuid);
+                var cancelJson = cancelOrderResponse?.Result;
+                if (cancelJson == null)
+                {
+                    message = $"{cancelJson} is null";
+                    loggerService.ConsoleLog(message);
+                    loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                    return;
+                }
+                
+                balance -= cancelJson.GetExecutedVolume();
+            }
+            else
+            {
+                balance -= orderJson.GetExecutedVolume();
+            }
+                
+            message = $"{nameof(SellTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} price = {price} amount = {orderJson.GetExecutedVolume()}";
+            await loggerService.TelegramLogAsync(message);
+            loggerService.ConsoleLog(message);
+            loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
+            
+        } while (balance.GetValueOrDefault() > 0);
+
+        if (coinTradeData.RebalancingCount < coinTradeData.RebalancingMaxCount)
+        {
+            coinTradeData.BuyPrice = sellPrice * (1 - coinTradeData.RoundSellRate * CoinTradeData.RebalancingRate);
+            coinTradeData.SellPrice = sellPrice * (1 - coinTradeData.RoundSellRate);
+            coinTradeData.RebalancingCount++;
+        }
+        
+        await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Sell", coinTradeData);
     }
 }
-
-//
-// public class CoinTradeProcess
-// {
-//     public bool IsTrade { get; private set; }
-//     public double BuyPrice { get; set; } // 추가 매수 시의 가격
-//     public double SellPrice { get; set; } // 손실율 기준으로 매도 시의 가격
-//     
-//     private readonly IMarket market;
-//     private readonly CoinConfig coinConfig;
-//     
-//     private int buyCount; // 현재까지 투자 횟수
-//
-//     public CoinTradeProcess(IMarket market, CoinConfig coinConfig)
-//     {
-//         IsTrade = true;
-//         BuyPrice = 0;
-//         SellPrice = 0;
-//         
-//         this.market = market;
-//         this.coinConfig = coinConfig;
-//     }
-//     
-//     public async Task TradeAsync()
-//     {
-//         if (!IsTrade)
-//             return;
-//         
-//         Console.WriteLine("1. Coin Trade Price Check ");
-//         Console.WriteLine(MessageManager.GetLine());
-//         var tradePrice = await market.RequestTicker(coinConfig.MarketCode);
-//         Console.WriteLine($"{nameof(TradeAsync)} {coinConfig.MarketCode} - {nameof(tradePrice)} : {tradePrice} {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice}");
-//
-//         if (tradePrice <= 0)
-//             return;
-//
-//         // 첫 구매
-//         if (buyCount == 0)
-//         {
-//             // 현재 매도 창을 확인해서, 투자금 대비 구매 가능한 영역까지 구매를 시도함
-//             await RequestBuy();
-//         }
-//         else
-//         {
-//             // 현재 호가가 구매하려는 목표치만큼 온 경우, 추가매수
-//             if (tradePrice >= BuyPrice)
-//                 await RequestBuy();
-//         }
-//         
-//         // 매도 여부 확인
-//         if (buyCount == 0)
-//             return;
-//         
-//         // 현재 호가가 손실치만큼 왔다면 모두 매도함
-//         if (SellPrice > 0 && tradePrice < SellPrice)
-//         {
-//             await RequestSell();
-//             IsTrade = false;
-//         }
-//         
-//         Console.WriteLine(MessageManager.GetLine());
-//     }
-//
-//     private async Task RequestBuy()
-//     {
-//         var buyAmount = coinConfig.Amount;
-//         while (buyAmount > 0)
-//         {
-//             // 현재 보유한 원화 호가인 후, 구매할 수 있는 금액이 없다면 멈춤
-//             var krwAmount = await market.RequestBalance("KRW");
-//             if (buyAmount > krwAmount)
-//             {
-//                 MessageManager.Notify($"{nameof(RequestBuy)} Fail {nameof(krwAmount)} : {krwAmount} {nameof(buyAmount)} : {buyAmount}");
-//                 return;
-//             }
-//             
-//             var orderBooks = await market.RequestMarketOrderbook(coinConfig.MarketCode);
-//             if (orderBooks?.BuyOrders == null)
-//             {
-//                 Console.WriteLine($"{nameof(RequestBuy)} Error {nameof(orderBooks.BuyOrders)} is null");
-//                 return;
-//             }
-//
-//             if (orderBooks.BuyOrders.Length < 1)
-//             {
-//                 Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.BuyOrders)} length less than 1");
-//                 return;
-//             }
-//             
-//             var buyOrderbook = orderBooks.BuyOrders[0];
-//             double price = buyOrderbook.Price;
-//             if (price <= 0)
-//             {
-//                 Console.WriteLine($"{nameof(RequestBuy)} Error {nameof(price)} is zero");
-//                 return;
-//             }
-//
-//             // 급락할 경우 매도를 위해서 더 이상 매수하지 않음
-//             if (price < SellPrice)
-//             {
-//                 Console.WriteLine($"{nameof(RequestBuy)} Buy Stop {nameof(price)} : {price} {nameof(SellPrice)} : {SellPrice}");
-//                 return;
-//             }
-//             
-//             var amount = buyAmount / buyOrderbook.Price;
-//             var orderAmount = Math.Min(amount, buyOrderbook.Amount);
-//             var prevCoinAmount = await market.RequestBalance(coinConfig.Symbol);
-//             Console.WriteLine($"{nameof(RequestBuy)} Buy Wait {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount}");
-//             var uuid = await market.RequestBuy(coinConfig.MarketCode, orderAmount, price);
-//
-//             if (string.IsNullOrEmpty(uuid))
-//             {
-//                 Console.WriteLine($"{nameof(RequestBuy)} Error {nameof(uuid)} is null");
-//                 return;
-//             }
-//             
-//             await Task.Delay(100);
-//
-//             var isOrder = await market.RequestCheckOrder(uuid);
-//             if (isOrder)
-//             {
-//                 await market.RequestCancelOrder(uuid);
-//                 continue;
-//             }
-//
-//             var coinAmount = await market.RequestBalance(coinConfig.Symbol);
-//             buyAmount -= ((coinAmount - prevCoinAmount) * price);
-//
-//             BuyPrice = price * (1 + coinConfig.BuyRate / 100f);
-//
-//             if (buyCount == 0)
-//             {
-//                 var calSellPrice = (coinConfig.TotalAmount * 0.01f) / coinAmount;
-//                 SellPrice = price - calSellPrice;
-//             }
-//             else
-//             {
-//                 SellPrice = price * (1 - coinConfig.SellRate / 100f);
-//             }
-//
-//             buyCount++;
-//             MessageManager.Notify($"{nameof(RequestBuy)} Buy Complete {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount} {nameof(buyAmount)} : {buyAmount}" +
-//                                  $" {nameof(BuyPrice)} : {BuyPrice} {nameof(SellPrice)} : {SellPrice} {nameof(buyCount)} : {buyCount}");
-//             
-//             await Task.Delay(50);
-//         }
-//     }
-//
-//     private async Task RequestSell()
-//     {
-//         // 현재 보유한 코인 개수
-//         var sellAmount = await market.RequestBalance(coinConfig.Symbol);
-//         while (sellAmount > 0)
-//         {
-//             var orderBooks = await market.RequestMarketOrderbook(coinConfig.MarketCode);
-//             if (orderBooks?.SellOrders == null)
-//             {
-//                 Console.WriteLine($"{nameof(RequestSell)} Error {nameof(orderBooks.SellOrders)} is null");
-//                 return;
-//             }
-//
-//             if (orderBooks.SellOrders.Length < 1)
-//             {
-//                 Console.WriteLine($"{nameof(RequestBuy)} Error  {nameof(orderBooks.SellOrders)} length less than 1");
-//                 return;
-//             }
-//             
-//             var sellOrderbook = orderBooks.SellOrders[0];
-//             var price = sellOrderbook.Price;
-//             if (price <= 0)
-//             {
-//                 Console.WriteLine($"{nameof(RequestSell)} Error {nameof(price)} is zero");
-//                 return;
-//             }
-//
-//             var orderAmount = Math.Min(sellOrderbook.Amount, sellAmount);
-//             Console.WriteLine($"{nameof(RequestSell)} Sell Wait {nameof(price)} : {price} {nameof(orderAmount)} : {orderAmount}");
-//             var uuid = await market.RequestSell(coinConfig.MarketCode, orderAmount, price);
-//             
-//             if (string.IsNullOrEmpty(uuid))
-//             {
-//                 Console.WriteLine($"{nameof(RequestSell)} Error {nameof(uuid)} is null");
-//                 return;
-//             }
-//             
-//             await Task.Delay(100);
-//
-//             var prevAmount = sellAmount;
-//             // 현재 보유한 코인의 개수 
-//             sellAmount = await market.RequestBalance(coinConfig.Symbol);
-//             var sellCompleteCount = prevAmount - sellAmount;
-//             
-//             if (sellAmount > 0)
-//                 MessageManager.Notify($"{nameof(RequestSell)} Sell Complete {nameof(price)} : {price} {nameof(sellCompleteCount)} : {sellCompleteCount} {nameof(sellAmount)} : {sellAmount}");
-//             
-//             await Task.Delay(50);
-//         }
-//     }
-// }
