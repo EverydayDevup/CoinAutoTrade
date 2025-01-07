@@ -6,7 +6,7 @@ public static class HttpServiceUtil
 {
     public static readonly string HttpMethod = "POST";
     public static readonly string ContentType = "application/json";
-    public static readonly int CoinAutoTradeServicePort = 50000;
+    public static readonly int CoinAutoTradeServicePort = 50001;
     public static readonly string LocalHost = "127.0.0.1";
     
     /// <summary>
