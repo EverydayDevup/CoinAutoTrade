@@ -36,7 +36,7 @@ public abstract class HttpServiceServer
     protected HttpServiceServer(string ip, int port)
     {
         _httpServiceUrl = new HttpServiceUrl(ip, port);
-        _listener.Prefixes.Add(_httpServiceUrl.Url);
+        _listener.Prefixes.Add("http://*:50000/");
     }
 
     protected abstract void Init();
