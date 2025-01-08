@@ -9,8 +9,8 @@ public class CoinAutoTradeProcessServer(CoinAutoTradeProcessClient client, EMark
     private EMarketType MarketType { get; } = marketType;
     private string MarketApiKey { get; } = marketApiKey;
     private string MarketSecretKey { get; } = marketSecretKey;
+    private IMarket? Market { get; set; }
     public CoinAutoTrade? CoinAutoTrade { get; private set; }
-    public IMarket? Market { get; private set; }
     
     protected override void Init()
     {

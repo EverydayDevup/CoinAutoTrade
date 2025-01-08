@@ -35,6 +35,7 @@ public static class CoinAutoTradeProcess
         var id = args[7];
         var symmetricKey = args[8];
         
+        // 코인 트레이스 서버가 종료된 경우, 거래소 프로세스도 같이 종료될 수 있도록 처리
         ThreadPool.QueueUserWorkItem((state) =>
         {
             try

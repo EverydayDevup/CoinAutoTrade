@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using SharedClass;
 
 namespace HttpService;
 
@@ -37,5 +38,9 @@ public static class HttpServiceUtil
                 return false;
             }
         }
+    }
+    public static bool IsCrypto(EPacketType type)
+    {
+        return type != (int)EPacketType.Login;
     }
 }

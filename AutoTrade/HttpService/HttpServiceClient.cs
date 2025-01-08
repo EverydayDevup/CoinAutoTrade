@@ -38,11 +38,6 @@ public abstract class HttpServiceClient : IDisposable
         _client = new HttpClient(_clientHandler);
     }
 
-    private static bool IsCrypto(EPacketType type)
-    {
-        return type != (int)EPacketType.Login;
-    }
-
     protected async Task<TK?> RequestAsync<T, TK>(EPacketType type, T data, Action<EPacketType, EResponseCode>? failAction = null) where T : RequestBody where TK : ResponseBody 
     {
         try
@@ -61,7 +56,7 @@ public abstract class HttpServiceClient : IDisposable
                                       $"Body = {requestBody}");
             
             // 패킷 암호화
-            if (IsCrypto(type))
+            if (HttpServiceUtil.IsCrypto(type))
                 requestBody = Crypto.Encrypt(requestBody, SymmetricKey);
             
             var requestData = new RequestData(type, Id, requestBody);
@@ -102,7 +97,7 @@ public abstract class HttpServiceClient : IDisposable
             var responseJson = await response.Content.ReadAsStringAsync();
             
             // 패킷 복호화
-            if (IsCrypto(type))
+            if (HttpServiceUtil.IsCrypto(type))
                 responseJson = Crypto.Decrypt(responseJson, SymmetricKey);
             
             var responseData = JsonSerializer.Deserialize<ResponseData>(responseJson);

@@ -5,7 +5,7 @@ namespace SharedClass;
 /// <summary>
 /// 코인 거래와 관련된 정보를 관리하는 클래스 
 /// </summary>
-public class CoinTradeData
+public record CoinTradeData
 {
     /// <summary>
     /// 코인 심볼 ex) BTC
@@ -66,7 +66,7 @@ public class CoinTradeData
     public double SellPrice { get; set; }
     private StringBuilder LogStringBuilder { get; } = new();
 
-    public const double MinInvestAmount = 5000;
+    public const double MinInvestAmount = 5000.0;
     public const double TotalInvestAmount = MinInvestAmount * 1.005f; // 거래 수수료 포함 거래 시 필요한 원화
     public const double RebalancingRate = 0.5; // 손절 후 재 매수 시의 가격 기준 (현재 손절가 * (1 - Rebalancing Rate)
 

@@ -76,8 +76,9 @@ public abstract class HttpServiceServer
                         _loggerService.ConsoleLog(requestLogMessage);
                         _loggerService.FileLog(Name, requestLogMessage);
                         
+                        var packetType = requestData.Type;
                         // 로그인을 새로하면 세션을 새로 발급
-                        if (requestData.Type == (int)EPacketType.Login)
+                        if (packetType == EPacketType.Login)
                         {
                             _dicSessions.Remove(requestData.Id);
                             
@@ -92,9 +93,8 @@ public abstract class HttpServiceServer
                             
                             context.Response.AppendCookie(cookie);
                         }
-                       
                         // 내부 통신이 아니라면 세션을 검증함
-                        if ((int)requestData.Type < (int)EPacketType.InnerStartAllCoinAutoTrade)
+                        else if ((int)packetType < (int)EPacketType.InnerStartAllCoinAutoTrade)
                         {
                             var sessionId = request.Cookies.Count > 0 ? request.Cookies["SessionId"]?.Value : null;
                             var valid = sessionId != null;
@@ -121,7 +121,7 @@ public abstract class HttpServiceServer
                         var responseData = await MakeResponseDataAsync(requestData);
                         var responseJson = JsonSerializer.Serialize(responseData);
                        
-                        if (_dicSymmetricKeys.TryGetValue(requestData.Id, out var key))
+                        if (HttpServiceUtil.IsCrypto(packetType) && _dicSymmetricKeys.TryGetValue(requestData.Id, out var key))
                             responseJson = Crypto.Encrypt(responseJson, key);
                       
                         var buffer = Encoding.UTF8.GetBytes(responseJson);
