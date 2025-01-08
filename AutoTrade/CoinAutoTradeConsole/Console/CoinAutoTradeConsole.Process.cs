@@ -86,6 +86,7 @@ public static partial class CoinAutoTradeConsole
         DicProcess.Add(ECoinAutoTradeMode.GetCoinTradeData, GetCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.DeleteCoinTradeData, DeleteCoinTradeDataAsync);
         DicProcess.Add(ECoinAutoTradeMode.StartAllCoinAutoTrade, StartAllCoinAutoTradeAsync);
+        DicProcess.Add(ECoinAutoTradeMode.StopAllCoinAutoTrade, StopAllCoinAutoTradeAsync);
     }
     
     private static async Task ProcessAsync()
@@ -278,6 +279,15 @@ public static partial class CoinAutoTradeConsole
         (CoinAutoTradeMarketConfig.MarketType, CoinAutoTradeMarketConfig.MarketApiKey, CoinAutoTradeMarketConfig.MarketSecretKey,
             CoinAutoTradeMarketConfig.TelegramApiToken, CoinAutoTradeMarketConfig.TelegramChatId);
         
+        return res != null;
+    }
+    
+    private static async Task<bool> StopAllCoinAutoTradeAsync()
+    {
+        if (CoinAutoTradeClient == null || CoinAutoTradeMarketConfig == null)
+            return false;
+
+        var res = await CoinAutoTradeClient.RequestStopAllCoinTradeDataAsync();
         return res != null;
     }
 }

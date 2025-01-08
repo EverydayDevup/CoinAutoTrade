@@ -11,13 +11,12 @@ public class AddOrUpdateCoinTradeDataProtocol(CoinAutoTradeServer server) : Http
         var result = CoinTradeDataManager.AddOrUpdateCoinTradeData(id, request.CoinTradeData);
         if (!result)
             return (EResponseCode.AddCoinTradeDataFailed, null);
-        
-        if (!server.DicProcess.TryGetValue(id, out var value))
+
+        if (!server.TryGetTradeClient(id, out var tradeClient))
             return (EResponseCode.Success, new AddOrUpdateCoinTradeDataResponse());
         
-        var (client, _) = value;
-        result = await client.InnerRequestStartAllCoinAutoTradeAsync(CoinTradeDataManager.GetAllCoinTradeData(id));
-        return !result ? (EResponseCode.DeleteAllCoinTradeDataFailed, null) : (EResponseCode.Success, new AddOrUpdateCoinTradeDataResponse());
+        result = await tradeClient!.InnerRequestStartAllCoinAutoTradeAsync(CoinTradeDataManager.GetAllCoinTradeData(id));
+        return !result ? (EResponseCode.AddCoinTradeDataFailed, null) : (EResponseCode.Success, new AddOrUpdateCoinTradeDataResponse());
     }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

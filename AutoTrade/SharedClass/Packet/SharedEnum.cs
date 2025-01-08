@@ -16,7 +16,8 @@ public enum ECoinTradeState : byte
 {
     Ready, // 자동 매매를 준비하는 상태 (TradeType = NewCoin 경우 거래소에 코인이 등록되기 전까지 Ready 상태)
     Progress, // 자동 매매가 진행 중인 상태
-    Stop // 자동 매매가 중단 되거나, 손절된 경우 
+    Stop, // 자동 매매가 중단 되거나, 손절된 경우 
+    Rebalancing,
 }
 
 public enum EPacketType
@@ -29,6 +30,7 @@ public enum EPacketType
     GetCoinTradeData, // 특정 코인 트레이드 정보 가져오기
     DeleteCoinTradeData, // 특정 코인 트레이드 정보 삭제 
     StartAllCoinAutoTrade, // 거래소 자동 매매 프로세스 시작
+    StopAllCoinAutoTrade, // 거래소 자동 매매 프로세스 종료
     
     InnerStartAllCoinAutoTrade = 1000, // Proxy -> 개벌 거래소 프로세스에게 시작 명령 
     InnerAddOrUpdateCoinTradeData // 개별 거래소 프로세스 -> Proxy 정보 업데이트 

@@ -11,7 +11,7 @@ public class StartAllCoinAutoTradeProtocol(CoinAutoTradeServer server): HttpServ
         var symmetricKey = server.GetKey(id);
         if (string.IsNullOrEmpty(symmetricKey))
             return (EResponseCode.InnerStartAllCoinAutoTradeFailedNotFoundSymmetricKeyError, null);
-        
+
         if (server.DicProcess.TryGetValue(id, out var value))
         {
             if (value.Item2.HasExited)

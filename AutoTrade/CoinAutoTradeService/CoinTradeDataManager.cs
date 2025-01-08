@@ -3,6 +3,9 @@ using SharedClass;
 
 namespace CoinAutoTradeService;
 
+/// <summary>
+/// 데이터를 관리하는 클래스, 향후 DB로 변경 예정
+/// </summary>
 public static class CoinTradeDataManager
 {
     private static string GetAllCoinTradeDataFilePath(string id)
@@ -32,7 +35,7 @@ public static class CoinTradeDataManager
         try
         {
             if (File.Exists(filePath))
-                File.Delete(filePath);
+                SaveAllCoinTradeData(id, []);
 
             return true;
         }

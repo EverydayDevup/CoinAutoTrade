@@ -11,12 +11,11 @@ public class DeleteAllCoinTradeDataProtocol(CoinAutoTradeServer server) : HttpSe
         var result = CoinTradeDataManager.DeleteAllCoinTradeData(id);
         if (!result)
             return (EResponseCode.DeleteAllCoinTradeDataFailed, null);
-            
-        if (!server.DicProcess.TryGetValue(id, out var value))
+        
+        if (!server.TryGetTradeClient(id, out var tradeClient))
             return (EResponseCode.Success, new DeleteAllCoinTradeDataResponse());
         
-        var (client, _) = value;
-        result = await client.InnerRequestStartAllCoinAutoTradeAsync([]);
+        result = await tradeClient!.InnerRequestStartAllCoinAutoTradeAsync(CoinTradeDataManager.GetAllCoinTradeData(id));
         return !result ? (EResponseCode.DeleteAllCoinTradeDataFailed, null) : (EResponseCode.Success, new DeleteAllCoinTradeDataResponse());
     }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

@@ -48,7 +48,7 @@ public sealed class CoinAutoTradeClient(EMarketType marketType, string id, strin
             (EPacketType.GetCoinTradeData, new GetCoinTradeDataRequest(symbol));
     }
     
-    public async Task<ResponseBody?> RequestDeleteCoinTradeDataAsync(string symbol)
+    public async Task<DeleteCoinTradeDataResponse?> RequestDeleteCoinTradeDataAsync(string symbol)
     {
         return await RequestAsync<DeleteCoinTradeDataRequest, DeleteCoinTradeDataResponse>
             (EPacketType.DeleteCoinTradeData, new DeleteCoinTradeDataRequest(symbol));
@@ -59,5 +59,11 @@ public sealed class CoinAutoTradeClient(EMarketType marketType, string id, strin
     {
         var req = new StartAllCoinTradeDataRequest(marketType, apiKey, secretKey, telegramApiToken,telegramChatId);
         return await RequestAsync<StartAllCoinTradeDataRequest, StartAllCoinTradeDataResponse>(EPacketType.StartAllCoinAutoTrade, req);
+    }
+    
+    public async Task<StopAllCoinTradeDataResponse?> RequestStopAllCoinTradeDataAsync()
+    {
+        return await RequestAsync<StopAllCoinTradeDataRequest, StopAllCoinTradeDataResponse>
+            (EPacketType.StopAllCoinAutoTrade, new StopAllCoinTradeDataRequest());
     }
 }
