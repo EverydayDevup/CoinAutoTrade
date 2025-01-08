@@ -8,7 +8,7 @@ public class AliveProtocol(CoinAutoTradeServer server) : HttpServiceProtocol<Htt
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     protected override async Task<(EResponseCode, AliveResponse?)> MakeResponseDataAsync(string id, AliveRequest request)
     {
-        return (EResponseCode.Success, new AliveResponse());
+        return (EResponseCode.Success, new AliveResponse(server.TryGetTradeClient(id, out _)));
     }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

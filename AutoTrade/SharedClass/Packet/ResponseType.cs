@@ -1,6 +1,9 @@
 ﻿namespace SharedClass;
 // 응답 패킷 타입
-public class AliveResponse : ResponseBody;
+public class AliveResponse(bool isTradeProcess) : ResponseBody
+{
+    public bool IsTradeProcess { get; set; } = isTradeProcess;
+}
 public class LoginResponse(string symmetricKey) : ResponseBody
 {
     public string SymmetricKey { get; } = symmetricKey;

@@ -106,6 +106,8 @@ public static partial class CoinAutoTradeConsole
                 LoggerService.ConsoleLog($"Server Process {nameof(alive)} : {alive != null}");
                 return;
             }
+            
+            LoggerService.ConsoleLog($"Trade Server Process Exist = {alive.IsTradeProcess}");
 
             if (Mode == ECoinAutoTradeMode.Exit)
                 return;
