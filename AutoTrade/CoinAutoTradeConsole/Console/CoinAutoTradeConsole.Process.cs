@@ -240,7 +240,7 @@ public static partial class CoinAutoTradeConsole
             var res = await CoinAutoTradeClient.RequestGetCoinTradeDataAsync(symbol);
             coinTradeData = res?.CoinTradeData ?? new CoinTradeData();
 
-            coinTradeData.Symbol = coinTradeData.Symbol.ToUpper();
+            coinTradeData.Symbol = symbol.ToUpper();
             coinTradeData.State = SelectMenu($"Input state ({coinTradeData.State}): ", States);
             coinTradeData.TradeType = SelectMenu($"Input trade type ({coinTradeData.TradeType}) : ", TradeTypes);
             coinTradeData.InvestRoundAmount = GetDouble($"Input invest round amount ({coinTradeData.InvestRoundAmount}): ");
