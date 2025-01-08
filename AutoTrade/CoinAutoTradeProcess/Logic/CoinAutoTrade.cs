@@ -5,7 +5,7 @@ namespace CoinAutoTradeProcess;
 public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 {
     private IMarket? Market { get; } = market;
-    private const int Delay = 50;
+    private const int Delay = 10;
     private bool IsRunning { get; set; }
 
     private List<CoinTradeData>? _coinTradeDataList;
