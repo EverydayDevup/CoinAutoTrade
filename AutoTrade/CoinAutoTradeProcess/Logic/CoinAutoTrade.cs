@@ -5,7 +5,7 @@ namespace CoinAutoTradeProcess;
 public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 {
     private IMarket? Market { get; } = market;
-    private const int Delay = 10;
+    private const int Delay = 5;
     private bool IsRunning { get; set; }
 
     private List<CoinTradeData>? _coinTradeDataList;
@@ -259,25 +259,31 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
                     loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
                     return;
                 }
-                
-                investAmount -= cancelJson.GetExecutedVolume() * buyPrice;
-            }
-            else
-            {
-                investAmount -= orderJson.GetExecutedVolume() * buyPrice;
             }
             
+            var preKrwBalance = krwBalance;
             krwBalance = await GetBalanceAsync("KRW");
+            
+            investAmount -= Math.Min(0, preKrwBalance - krwBalance);
             var coinBalance = await GetBalanceAsync(coinTradeData.Symbol);
 
             message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} " +
                       $"{nameof(buyPrice)} = {buyPrice} amount = {orderJson.GetExecutedVolume()} krw = {krwBalance} {coinTradeData.Symbol} = {coinBalance}";
             
-            await loggerService.TelegramLogAsync(message);
             loggerService.ConsoleLog(message);
             loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
-        } 
+            await loggerService.TelegramLogAsync(message);
+        }
 
+        if (buyPrice <= 0)
+        {
+            message = $"{nameof(buyPrice)} is zero / {nameof(investAmount)} = {investAmount} {nameof(krwBalance)} = {krwBalance}";
+            loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
+            coinTradeData.State = ECoinTradeState.Stop;
+            await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Buy Error", coinTradeData);
+            return;
+        }
+        
         coinTradeData.BuyPrice = buyPrice * (1 + coinTradeData.RoundBuyRate);
         coinTradeData.SellPrice = buyPrice * (1 - coinTradeData.RoundSellRate);
         coinTradeData.BuyCount++;
@@ -395,9 +401,18 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             message = $"{nameof(SellTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} price = {price} amount = {orderJson.GetExecutedVolume()} " +
                       $"krw = {krwBalance} {coinTradeData.Symbol} = {coinBalance}";
             
-            await loggerService.TelegramLogAsync(message);
             loggerService.ConsoleLog(message);
             loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
+            await loggerService.TelegramLogAsync(message);
+        }
+        
+        if (sellPrice <= 0)
+        {
+            message = $"{nameof(sellPrice)} is zero / {nameof(coinBalance)} = {coinBalance}";
+            loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
+            coinTradeData.State = ECoinTradeState.Stop;
+            await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Sell Error", coinTradeData);
+            return;
         }
 
         if (coinTradeData.RebalancingCount < coinTradeData.RebalancingMaxCount)
