@@ -6,6 +6,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 {
     private IMarket? Market { get; } = market;
     private const int Delay = 5;
+    private const int RequestOrderTryCount = 3;
     private bool IsRunning { get; set; }
 
     private List<CoinTradeData>? _coinTradeDataList;
@@ -194,8 +195,8 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         if (Market == null)
             return;
 
-        var investAmount = coinTradeData.InvestRoundAmount;
         double buyPrice = 0;
+        double investAmount = 0;
 
         var loggerService = Client.LoggerService;
         var message = $"{coinTradeData.MarketCode} {nameof(BuyTradeAsync)}";
@@ -204,10 +205,10 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 
         // 현재 원화 보유량을 가져옴
         var krwBalance = await GetBalanceAsync("KRW");
-        if (krwBalance < CoinTradeData.TotalInvestAmount)
+        if (krwBalance < CoinTradeData.TotalInvestAmount || krwBalance < coinTradeData.InvestRoundAmount)
             return;
-            
-        while (investAmount >= CoinTradeData.MinInvestAmount && investAmount < krwBalance)
+
+        while (investAmount < coinTradeData.InvestRoundAmount)
         {
             // 현재 매도 주문을 가져옴
             var orderBookResponse = await Market.RequestMarketOrderBook(coinTradeData.MarketCode);
@@ -233,20 +234,31 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
                 loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
                 return;
             }
-
-            await Task.Delay(Delay);
             
             // 구입이 되었는지 확인하기 위해 주문 정보를 조회
             var orderResponse = await Market.RequestOrder(uuid);
             var orderJson = orderResponse?.Result;
-            if (orderJson == null)
+            var tryCount = 0;
+            while (orderJson == null && tryCount < RequestOrderTryCount)
             {
-                message = $"{orderJson} is null";
-                loggerService.ConsoleLog(message);
-                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
-                return;
+                orderResponse = await Market.RequestOrder(uuid);
+                orderJson = orderResponse?.Result;
+                tryCount++;
+                await Task.Delay(100);
             }
 
+            if (orderJson == null)
+            {
+                message = $"{nameof(orderJson)} is null";
+                loggerService.ConsoleLog(message);
+                loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                await loggerService.TelegramLogAsync(message);
+                
+                coinTradeData.State = ECoinTradeState.Stop;
+                await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Buy Error", coinTradeData);
+                return;
+            }
+            
             // 주문 처리가 안되었다면 취소 
             if (orderJson.GetState() != EMarketOrderState.Done)
             {
@@ -254,17 +266,16 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
                 var cancelJson = cancelOrderResponse?.Result;
                 if (cancelJson == null)
                 {
-                    message = $"{cancelJson} is null";
+                    message = $"{nameof(cancelJson)} is null {nameof(orderJson)} state = {orderJson.GetState()}";
                     loggerService.ConsoleLog(message);
                     loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
                     return;
                 }
             }
             
-            var preKrwBalance = krwBalance;
-            krwBalance = await GetBalanceAsync("KRW");
+            var currentKrwBalance = await GetBalanceAsync("KRW");
             
-            investAmount -= Math.Min(0, preKrwBalance - krwBalance);
+            investAmount = Math.Min(0, krwBalance - currentKrwBalance);
             var coinBalance = await GetBalanceAsync(coinTradeData.Symbol);
 
             message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} " +
