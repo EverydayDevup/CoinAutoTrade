@@ -196,7 +196,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             return;
 
         double buyPrice = 0;
-        double investAmount = 0;
+        double investAmount = coinTradeData.InvestRoundAmount;
 
         var loggerService = Client.LoggerService;
         var message = $"{coinTradeData.MarketCode} {nameof(BuyTradeAsync)}";
@@ -208,7 +208,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
         if (krwBalance < CoinTradeData.TotalInvestAmount || krwBalance < coinTradeData.InvestRoundAmount)
             return;
 
-        while (investAmount < coinTradeData.InvestRoundAmount)
+        while (investAmount > 0)
         {
             // 현재 매도 주문을 가져옴
             var orderBookResponse = await Market.RequestMarketOrderBook(coinTradeData.MarketCode);
@@ -275,7 +275,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             
             var currentKrwBalance = await GetBalanceAsync("KRW");
             
-            investAmount = Math.Min(0, krwBalance - currentKrwBalance);
+            investAmount -= Math.Min(0, krwBalance - currentKrwBalance);
             var coinBalance = await GetBalanceAsync(coinTradeData.Symbol);
 
             message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} " +
