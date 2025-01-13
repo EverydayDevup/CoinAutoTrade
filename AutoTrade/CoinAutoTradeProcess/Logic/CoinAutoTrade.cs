@@ -275,7 +275,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             
             var currentKrwBalance = await GetBalanceAsync("KRW");
             
-            investAmount -= Math.Min(0, krwBalance - currentKrwBalance);
+            investAmount = coinTradeData.InvestRoundAmount - (krwBalance - currentKrwBalance);
             var coinBalance = await GetBalanceAsync(coinTradeData.Symbol);
 
             message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} " +
