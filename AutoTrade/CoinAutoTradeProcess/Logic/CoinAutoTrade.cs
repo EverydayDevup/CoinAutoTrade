@@ -264,20 +264,46 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             {
                 var cancelOrderResponse = await Market.RequestCancelOrder(uuid);
                 var cancelJson = cancelOrderResponse?.Result;
-                tryCount = 0;
-                while (orderJson == null && tryCount < RequestOrderTryCount)
-                {
-                    cancelOrderResponse = await Market.RequestCancelOrder(uuid);
-                    cancelJson = cancelOrderResponse?.Result;
-                    tryCount++;
-                    await Task.Delay(100);
-                }
+
+                await Task.Delay(100);
                 
                 if (cancelJson == null)
                 {
-                    message = $"{nameof(cancelJson)} is null {nameof(orderJson)} state = {orderJson?.GetState()}";
+                    message = $"{nameof(cancelJson)} is null";
                     loggerService.ConsoleLog(message);
                     loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                    
+                    orderResponse = await Market.RequestOrder(uuid);
+                    orderJson = orderResponse?.Result;
+                    tryCount = 0;
+                    
+                    while ((orderJson == null || 
+                           (orderJson.GetState() != EMarketOrderState.Cancel && orderJson.GetState() != EMarketOrderState.Done))
+                           && tryCount < RequestOrderTryCount)
+                    {
+                        message = $"{nameof(cancelJson)} {nameof(orderJson)} retry {orderJson?.GetState()}";
+                        loggerService.ConsoleLog(message);
+                        loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                        
+                        await Market.RequestCancelOrder(uuid);
+                        await Task.Delay(100);
+                        
+                        orderResponse = await Market.RequestOrder(uuid);
+                        orderJson = orderResponse?.Result;
+                        tryCount++;
+                        await Task.Delay(100);
+                    }
+                }
+                
+                if (orderJson == null && (orderJson?.GetState() != EMarketOrderState.Cancel && orderJson?.GetState() != EMarketOrderState.Done))
+                {
+                    message = $"{nameof(cancelJson)} - {nameof(orderJson)} is null";
+                    loggerService.ConsoleLog(message);
+                    loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
+                    await loggerService.TelegramLogAsync(message);
+                
+                    coinTradeData.State = ECoinTradeState.Stop;
+                    await Client.RequestInnerAddOrUpdateCoinTradeDataAsync("Buy Error", coinTradeData);
                     return;
                 }
             }
