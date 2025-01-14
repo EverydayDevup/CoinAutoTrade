@@ -6,7 +6,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
 {
     private IMarket? Market { get; } = market;
     private const int Delay = 5;
-    private const int RequestOrderTryCount = 3;
+    private const int RequestOrderTryCount = 5;
     private bool IsRunning { get; set; }
 
     private List<CoinTradeData>? _coinTradeDataList;
@@ -264,9 +264,18 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             {
                 var cancelOrderResponse = await Market.RequestCancelOrder(uuid);
                 var cancelJson = cancelOrderResponse?.Result;
+                tryCount = 0;
+                while (orderJson == null && tryCount < RequestOrderTryCount)
+                {
+                    cancelOrderResponse = await Market.RequestCancelOrder(uuid);
+                    cancelJson = cancelOrderResponse?.Result;
+                    tryCount++;
+                    await Task.Delay(100);
+                }
+                
                 if (cancelJson == null)
                 {
-                    message = $"{nameof(cancelJson)} is null {nameof(orderJson)} state = {orderJson.GetState()}";
+                    message = $"{nameof(cancelJson)} is null {nameof(orderJson)} state = {orderJson?.GetState()}";
                     loggerService.ConsoleLog(message);
                     loggerService.FileLog(CoinAutoTradeLogDirectoryPath, message);
                     return;
@@ -279,7 +288,7 @@ public class CoinAutoTrade(IMarket? market, CoinAutoTradeProcessClient client)
             var coinBalance = await GetBalanceAsync(coinTradeData.Symbol);
 
             message = $"{nameof(BuyTradeAsync)} [{Client.MarketType}] {coinTradeData.MarketCode} " +
-                      $"{nameof(buyPrice)} = {buyPrice} amount = {orderJson.GetExecutedVolume()} krw = {krwBalance} {coinTradeData.Symbol} = {coinBalance}";
+                      $"{nameof(buyPrice)} = {buyPrice} amount = {orderJson?.GetExecutedVolume()} krw = {krwBalance} {coinTradeData.Symbol} = {coinBalance}";
             
             loggerService.ConsoleLog(message);
             loggerService.FileLog(CoinAutoTradeLogDirectoryPath, $"{message}");
